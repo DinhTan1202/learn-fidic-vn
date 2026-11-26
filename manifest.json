@@ -1,0 +1,16 @@
+{
+  "name": "Learn FIDIC · Sổ tay Hợp đồng Song ngữ",
+  "short_name": "Learn FIDIC",
+  "description": "Sổ tay tra cứu và học Hợp đồng FIDIC (Red, Yellow, Silver Books 1999 & 2017) song ngữ Anh - Việt",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#101216",
+  "theme_color": "#b3261e",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23101216'/%3E%3Crect x='10' y='12' width='12' height='40' rx='3' fill='%23b3261e'/%3E%3Crect x='26' y='10' width='12' height='44' rx='3' fill='%23d99a00'/%3E%3Crect x='42' y='14' width='12' height='36' rx='3' fill='%238c99a6'/%3E%3C/svg%3E",
+      "sizes": "64x64",
+      "type": "image/svg+xml"
+    }
+  ]
+}
