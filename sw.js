@@ -1,4 +1,4 @@
-const CACHE_NAME = 'learn-fidic-v16';
+const CACHE_NAME = 'learn-fidic-v17';
 const ASSETS = [
   './',
   './index.html',
@@ -10,7 +10,9 @@ const ASSETS = [
   './data/red17-part2.js',
   './data/red17-part3.js',
   './data/extra-data.js',
-  './manifest.json'
+  './manifest.json',
+  './icons/icon-192.png',
+  './icons/icon-512.png'
 ];
 
 self.addEventListener('install', (e) => {
