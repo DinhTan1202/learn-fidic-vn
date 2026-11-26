@@ -13,6 +13,7 @@ import { EXTENDED_SUBCLAUSES, VN_LAW_NOTES } from './data/clauses-extended.js';
 import { RED17_PART1 } from './data/red17-part1.js';
 import { RED17_PART2 } from './data/red17-part2.js';
 import { RED17_PART3 } from './data/red17-part3.js';
+import { OTHER_BOOKS_SUBCLAUSES } from './data/other-books.js';
 
 import {
   SUBCLAUSE_META,
@@ -28,7 +29,8 @@ const SUBCLAUSES = [
   ...EXTENDED_SUBCLAUSES,
   ...RED17_PART1,
   ...RED17_PART2,
-  ...RED17_PART3
+  ...RED17_PART3,
+  ...OTHER_BOOKS_SUBCLAUSES
 ].sort((a, b) => {
   if (a.clause !== b.clause) return a.clause - b.clause;
   return a.id.localeCompare(b.id, undefined, { numeric: true });
@@ -441,7 +443,8 @@ function renderBooks({ book, ed, subId }, preserveScroll = false) {
     if (state.search.trim()) {
       const q = state.search.trim().toLowerCase();
       const noteTxt = (state.notes[keyOf(item)] || '').toLowerCase();
-      const hay = `${item.id} ${item.viTitle} ${item.enTitle} ${item.viBody} ${item.enBody} ${noteTxt}`.toLowerCase();
+      const eqTxt = (item.eq99 || []).join(' ').toLowerCase();
+      const hay = `${item.id} ${eqTxt} ${item.viTitle} ${item.enTitle} ${item.viBody} ${item.enBody} ${noteTxt}`.toLowerCase();
       if (!hay.includes(q)) return false;
     }
     return true;
@@ -1515,7 +1518,19 @@ function renderAiDrawer() {
       ${modeTabsHtml}
       ${toolFormHtml}
       <div class="ai-msgs" id="aiMsgs">
-        ${state.aiMsgs.map((m) => `<div class="ai-msg ${m.role}" style="white-space:pre-wrap">${renderAiMarkdown(m.text)}</div>`).join('')}
+        ${state.aiMsgs
+          .map(
+            (m, i) => `
+          <div class="ai-msg ${m.role}" style="white-space:pre-wrap">${renderAiMarkdown(m.text)}${
+              m.role === 'bot' && i > 0
+                ? `<div class="ai-msg-actions">
+                    <button type="button" class="act-btn" data-ai-copy="${i}">📋 ${t('copy')}</button>
+                    <button type="button" class="act-btn" data-ai-print="${i}">🖨 ${t('pdf')}</button>
+                  </div>`
+                : ''
+            }</div>`
+          )
+          .join('')}
         ${state.aiLoading ? `<div class="ai-msg bot" style="color:var(--mute)">⏳ ${biText('Đang suy nghĩ...', 'Thinking...')}</div>` : ''}
       </div>
       ${
@@ -1596,6 +1611,28 @@ function renderAiDrawer() {
     const prompt = `Compare this Particular Conditions (Điều kiện Riêng) text against FIDIC 2017 General Conditions. Identify: (1) Which Sub-Clauses are amended, (2) Risk shift (Employer vs Contractor), (3) Key deadlines or financial impacts, in concise bilingual Vietnamese-English:\n\n${pcText}`;
     const offline = `⚖️ **Phân tích sơ bộ (Offline):**\n${answerFidicQuestion(pcText)}\n\n*(Nhập Gemini API Key tại ⚙ Key để AI phân tích chi tiết sự dịch chuyển rủi ro so với Điều kiện Chung 2017).*`;
     await runAiPrompt(`⚖ Đối chiếu PC`, prompt, offline);
+  });
+
+  document.querySelectorAll('[data-ai-copy]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const msg = state.aiMsgs[Number(btn.dataset.aiCopy)];
+      if (!msg) return;
+      await navigator.clipboard?.writeText(msg.text).catch(() => {});
+      showToast(t('copiedText'));
+    });
+  });
+
+  document.querySelectorAll('[data-ai-print]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const msg = state.aiMsgs[Number(btn.dataset.aiPrint)];
+      if (!msg) return;
+      const w = window.open('', '_blank', 'width=820,height=700');
+      if (!w) return;
+      w.document.write(`<!doctype html><html><head><title>${escapeHtml(state.projectMeta.name)}</title><style>body{font-family:Segoe UI,sans-serif;padding:36px;line-height:1.6;color:#111}pre{white-space:pre-wrap;font-family:inherit}</style></head><body><div style="border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:20px"><strong>${escapeHtml(state.projectMeta.name)}</strong> · ${escapeHtml(state.projectMeta.contract)}</div><pre>${escapeHtml(msg.text)}</pre></body></html>`);
+      w.document.close();
+      w.focus();
+      w.print();
+    });
   });
 
   document.querySelectorAll('.ai-chip[data-ai-q]').forEach((chip) => {
@@ -1886,7 +1923,33 @@ document.getElementById('aiBtn').addEventListener('click', () => {
 });
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(() => {});
+  navigator.serviceWorker
+    .register('./sw.js')
+    .then((reg) => {
+      const showUpdateBanner = (sw) => {
+        if (document.getElementById('pwaUpdateBanner')) return;
+        const bar = document.createElement('div');
+        bar.id = 'pwaUpdateBanner';
+        bar.className = 'update-banner';
+        bar.innerHTML = `<span>✨ ${biText('Có bản cập nhật mới', 'New update available')}</span><button type="button" id="pwaReloadBtn">↻ ${biText('Cập nhật ngay', 'Reload')}</button>`;
+        document.body.appendChild(bar);
+        document.getElementById('pwaReloadBtn').addEventListener('click', () => {
+          sw.postMessage('SKIP_WAITING');
+          location.reload();
+        });
+      };
+      if (reg.waiting) showUpdateBanner(reg.waiting);
+      reg.addEventListener('updatefound', () => {
+        const nw = reg.installing;
+        if (!nw) return;
+        nw.addEventListener('statechange', () => {
+          if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+            showUpdateBanner(nw);
+          }
+        });
+      });
+    })
+    .catch(() => {});
 }
 
 // Scroll-to-Top button

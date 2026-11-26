@@ -1,4 +1,4 @@
-const CACHE_NAME = 'learn-fidic-v17';
+const CACHE_NAME = 'learn-fidic-v18';
 const ASSETS = [
   './',
   './index.html',
@@ -9,11 +9,16 @@ const ASSETS = [
   './data/red17-part1.js',
   './data/red17-part2.js',
   './data/red17-part3.js',
+  './data/other-books.js',
   './data/extra-data.js',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png'
 ];
+
+self.addEventListener('message', (e) => {
+  if (e.data === 'SKIP_WAITING') self.skipWaiting();
+});
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE_NAME).then((c) => c.addAll(ASSETS)));
