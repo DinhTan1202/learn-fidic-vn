@@ -29,6 +29,7 @@ import {
   PROCUREMENT_STEPS,
   MASTER_LIFECYCLE
 } from './data/fidic-guides.js';
+import { ADVISORY_BOOKS, COMMENTARY_NOTES } from './data/commentary-books.js';
 import { encryptJson, decryptJson, hashPassphrase } from './security.js';
 
 const CONTRACT_MODELS = [...BASE_MODELS, ...EXTRA_TEMPLATES];
@@ -345,6 +346,13 @@ function renderCard(item, highlightId = null) {
       )}${state.lang === 'bi' ? `<div style="color:var(--mute);margin-top:4px;font-size:12.5px">${escapeHtml(guideNote.en)}</div>` : ''}</div>`
     : '';
 
+  const commNote = item.ed === '17' ? COMMENTARY_NOTES[item.id] : null;
+  const commHtml = commNote
+    ? `<div class="commentary-box"><strong>📖 ${escapeHtml(commNote.src)}:</strong> ${escapeHtml(
+        state.lang === 'en' ? commNote.en : commNote.vi
+      )}${state.lang === 'bi' ? `<div style="color:var(--mute);margin-top:4px;font-size:12.5px">${escapeHtml(commNote.en)}</div>` : ''}</div>`
+    : '';
+
   const relCases = CASE_LAW.filter((c) => c.clauses.includes(item.id));
   const relCasesHtml = relCases.length
     ? `<div class="case-box"><strong>⚖️ ${biText('Án lệ & Bản án liên quan (Source)', 'Related Case Law')}:</strong> ${relCases
@@ -388,6 +396,7 @@ function renderCard(item, highlightId = null) {
       ${bodyHtml}
       ${tlsHtml}
       ${guideHtml}
+      ${commHtml}
       ${vnLawHtml}
       ${relCasesHtml}
       ${notePreviewHtml}
@@ -959,6 +968,20 @@ function renderLearn() {
         `
         ).join('')}
       </div>
+
+      <h2 style="margin-top:32px">${biText('15. Nguồn Tư vấn & Bình luận Chuyên khảo (3 Sách Quốc tế)', '15. Advisory Commentary Books (Source/3)')}</h2>
+      <div class="section-grid">
+        ${ADVISORY_BOOKS.map(
+          (b) => `
+          <div class="card-box">
+            <span class="tl-pill" style="margin-bottom:8px;display:inline-block">${escapeHtml(b.badge)}</span>
+            <h3>${escapeHtml(b.title)}</h3>
+            <p style="font-size:14px">${escapeHtml(state.lang === 'en' ? b.en : b.vi)}</p>
+            <button type="button" class="act-btn" data-ask-book="${b.id}">🤖 ${biText('Tư vấn theo sách này', 'Consult via AI')}</button>
+          </div>
+        `
+        ).join('')}
+      </div>
     </div>
   `;
 
@@ -1095,6 +1118,21 @@ function renderLearn() {
   };
   ['wizDesign', 'wizPay', 'wizRisk'].forEach((id) => document.getElementById(id)?.addEventListener('change', updateWiz));
   updateWiz();
+
+  $view.querySelectorAll('[data-ask-book]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const b = ADVISORY_BOOKS.find((x) => x.id === btn.dataset.askBook);
+      if (!b) return;
+      state.aiOpen = true;
+      state.aiMode = 'chat';
+      renderAiDrawer();
+      const inp = document.getElementById('aiInput');
+      if (inp) {
+        inp.value = `Dựa trên cuốn "${b.title}", hãy tóm tắt những lưu ý tư vấn quan trọng nhất cho kỹ sư hợp đồng tại Việt Nam.`;
+        document.getElementById('aiForm')?.requestSubmit();
+      }
+    });
+  });
 }
 
 function renderModels() {
@@ -1729,7 +1767,8 @@ function findRelevantContext(q) {
     .map(
       ({ s }) => {
         const g = GUIDE_NOTES[s.id] ? ` [Guide: ${GUIDE_NOTES[s.id].vi}]` : '';
-        return `[${s.book.toUpperCase()} 20${s.ed} - ${s.id} ${s.viTitle} / ${s.enTitle}]: ${s.viBody} | ${s.enBody}${g}`;
+        const c = COMMENTARY_NOTES[s.id] ? ` [Commentary (${COMMENTARY_NOTES[s.id].src}): ${COMMENTARY_NOTES[s.id].vi}]` : '';
+        return `[${s.book.toUpperCase()} 20${s.ed} - ${s.id} ${s.viTitle} / ${s.enTitle}]: ${s.viBody} | ${s.enBody}${g}${c}`;
       }
     );
   return scored.join('\n');

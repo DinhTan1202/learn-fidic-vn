@@ -1634,3 +1634,17 @@ mark.hl-match {
 .guide-box strong {
   color: var(--teal);
 }
+
+/* v23: Advisory Commentary Callout */
+.commentary-box {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 9px;
+  background: light-dark(#eef2ff, #1b1e32);
+  border-left: 3px solid #818cf8;
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.commentary-box strong {
+  color: light-dark(#4338ca, #a5b4fc);
+}

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'learn-fidic-v22';
+const CACHE_NAME = 'learn-fidic-v23';
 const ASSETS = [
   './',
   './index.html',
@@ -14,6 +14,7 @@ const ASSETS = [
   './data/extra-data.js',
   './data/source-library.js',
   './data/fidic-guides.js',
+  './data/commentary-books.js',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png'
