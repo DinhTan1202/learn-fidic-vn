@@ -1620,3 +1620,17 @@ mark.hl-match {
   border-color: var(--teal);
   color: var(--teal);
 }
+
+/* v21: Contract Guide Callout */
+.guide-box {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 9px;
+  background: var(--teal-soft);
+  border-left: 3px solid var(--teal);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.guide-box strong {
+  color: var(--teal);
+}

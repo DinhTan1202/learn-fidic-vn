@@ -22,6 +22,7 @@ import {
   EXTRA_TEMPLATES,
   EXTENDED_QUIZ
 } from './data/source-library.js';
+import { GUIDE_NOTES, PROCUREMENT_STEPS, MASTER_LIFECYCLE } from './data/fidic-guides.js';
 import { encryptJson, decryptJson, hashPassphrase } from './security.js';
 
 const CONTRACT_MODELS = [...BASE_MODELS, ...EXTRA_TEMPLATES];
@@ -330,6 +331,13 @@ function renderCard(item, highlightId = null) {
       )}${state.lang === 'bi' ? `<div style="color:var(--mute);margin-top:4px;font-size:12.5px">${escapeHtml(vnLaw.en)}</div>` : ''}</div>`
     : '';
 
+  const guideNote = item.ed === '17' ? GUIDE_NOTES[item.id] : null;
+  const guideHtml = guideNote
+    ? `<div class="guide-box"><strong>📘 ${escapeHtml(guideNote.src)}:</strong> ${escapeHtml(
+        state.lang === 'en' ? guideNote.en : guideNote.vi
+      )}${state.lang === 'bi' ? `<div style="color:var(--mute);margin-top:4px;font-size:12.5px">${escapeHtml(guideNote.en)}</div>` : ''}</div>`
+    : '';
+
   const relCases = CASE_LAW.filter((c) => c.clauses.includes(item.id));
   const relCasesHtml = relCases.length
     ? `<div class="case-box"><strong>⚖️ ${biText('Án lệ & Bản án liên quan (Source)', 'Related Case Law')}:</strong> ${relCases
@@ -372,6 +380,7 @@ function renderCard(item, highlightId = null) {
       </div>
       ${bodyHtml}
       ${tlsHtml}
+      ${guideHtml}
       ${vnLawHtml}
       ${relCasesHtml}
       ${notePreviewHtml}
@@ -887,6 +896,62 @@ function renderLearn() {
           </tbody>
         </table>
       </div>
+
+      <h2 style="margin-top:32px">${biText('12. Trình Chọn Bộ Sách FIDIC Phù hợp (Contract Guide 2022)', '12. FIDIC Book Selector Wizard')}</h2>
+      <div class="card-box">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:14px">
+          <div>
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px">${biText('Ai lập Thiết kế?', 'Who does the Design?')}</label>
+            <select id="wizDesign" class="filter-select" style="width:100%;border-radius:8px">
+              <option value="employer">${biText('Chủ đầu tư thiết kế', 'Employer designs')}</option>
+              <option value="contractor">${biText('Nhà thầu thiết kế (D&B / EPC)', 'Contractor designs')}</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px">${biText('Cơ chế Thanh toán?', 'Payment Mechanism?')}</label>
+            <select id="wizPay" class="filter-select" style="width:100%;border-radius:8px">
+              <option value="boq">${biText('Đo lường thực tế (BOQ)', 'Remeasurement (BOQ)')}</option>
+              <option value="lump">${biText('Trọn gói (Lump Sum)', 'Lump Sum')}</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px">${biText('Rủi ro Địa chất / Giá cố định?', 'Subsurface Risk / Price Certainty?')}</label>
+            <select id="wizRisk" class="filter-select" style="width:100%;border-radius:8px">
+              <option value="balanced">${biText('Cân bằng (CĐT chịu bất khả kháng)', 'Balanced (Employer bears 4.12)')}</option>
+              <option value="contractor">${biText('Nhà thầu EPC chịu tối đa để chốt giá', 'Max Contractor risk for fixed price')}</option>
+            </select>
+          </div>
+        </div>
+        <div id="wizResult" class="guide-box" style="margin-top:0"></div>
+      </div>
+
+      <h2 style="margin-top:32px">${biText('13. Sơ đồ Toàn cảnh Vòng đời Hợp đồng (Ultimate Diagram)', '13. Master Contract Lifecycle Map')}</h2>
+      <div class="card-box">
+        <div class="flow">
+          ${MASTER_LIFECYCLE.map(
+            (m, i) => `
+            ${i > 0 ? '<span class="flow-arrow">→</span>' : ''}
+            <a href="${m.hash}" class="flow-step">
+              <span class="flow-badge">${escapeHtml(m.day)}</span>
+              <span class="flow-title">${escapeHtml(state.lang === 'en' ? m.titleEn : m.titleVi)}</span>
+            </a>
+          `
+          ).join('')}
+        </div>
+      </div>
+
+      <h2 style="margin-top:32px">${biText('14. Quy trình Đấu thầu FIDIC (Procurement Guide 2011)', '14. FIDIC Procurement Workflow (2011 Guide)')}</h2>
+      <div class="section-grid">
+        ${PROCUREMENT_STEPS.map(
+          (p) => `
+          <div class="card-box">
+            <span class="num" style="margin-bottom:8px">${p.step} · ${escapeHtml(p.badge)}</span>
+            <h3>${escapeHtml(state.lang === 'en' ? p.enTitle : p.viTitle)}</h3>
+            <p style="font-size:14px">${escapeHtml(state.lang === 'en' ? p.en : p.vi)}</p>
+          </div>
+        `
+        ).join('')}
+      </div>
     </div>
   `;
 
@@ -1001,6 +1066,28 @@ function renderLearn() {
       }
     });
   });
+
+  // Book Selector Wizard
+  const updateWiz = () => {
+    const d = document.getElementById('wizDesign')?.value;
+    const p = document.getElementById('wizPay')?.value;
+    const r = document.getElementById('wizRisk')?.value;
+    const out = document.getElementById('wizResult');
+    if (!out) return;
+    let rec = 'red', title = '📕 Sách Đỏ (Red Book 2017)', reason = 'Chủ đầu tư thiết kế, thanh toán theo đo lường khối lượng thực tế (BOQ) và phân bổ rủi ro cân bằng.';
+    if (d === 'contractor' && r === 'contractor') {
+      rec = 'sil';
+      title = '📓 Sách Bạc (Silver Book 2017 - EPC/Turnkey)';
+      reason = 'Nhà thầu thiết kế & thi công trọn gói, chịu phần lớn rủi ro địa chất (4.12) để đổi lấy tính chắc chắn về giá và tiến độ; dùng Đại diện Chủ đầu tư (3.5).';
+    } else if (d === 'contractor' || p === 'lump') {
+      rec = 'yel';
+      title = '📒 Sách Vàng (Yellow Book 2017 - Design & Build)';
+      reason = 'Nhà thầu thiết kế & lắp đặt thiết bị theo Yêu cầu của Chủ đầu tư, thanh toán trọn gói theo mốc nhưng vẫn giữ Nhà tư vấn độc lập (3.7) và phân bổ rủi ro cân bằng.';
+    }
+    out.innerHTML = `<strong>${biText('Khuyến nghị:', 'Recommended:')} ${title}</strong><p style="margin:6px 0 10px">${reason}</p><a href="#${rec}-17" class="btn-primary bk-${rec}">${t('openBook')}</a>`;
+  };
+  ['wizDesign', 'wizPay', 'wizRisk'].forEach((id) => document.getElementById(id)?.addEventListener('change', updateWiz));
+  updateWiz();
 }
 
 function renderModels() {
