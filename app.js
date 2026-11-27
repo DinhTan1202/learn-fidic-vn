@@ -106,6 +106,10 @@ const state = {
   typeFilter: 'all',
   compareMode: false,
   learnTab: 'tools',
+  libBook: 'godwin',
+  libPage: 21,
+  libQuery: '',
+  bookCache: {},
   tocOpen: false,
   aiOpen: false,
   aiMode: 'chat',
@@ -188,7 +192,7 @@ function applyHeaderI18n() {
 function parseHash() {
   const raw = (location.hash || '#').slice(1);
   if (!raw) return { route: 'home' };
-  if (['learn', 'models', 'project', 'saved'].includes(raw)) {
+  if (['learn', 'models', 'project', 'library', 'saved'].includes(raw)) {
     return { route: raw };
   }
   const m = raw.match(/^(red|yel|sil)-(17|99)(?:-(.+))?$/);
@@ -1720,6 +1724,216 @@ function renderProject() {
   });
 }
 
+async function renderLibrary() {
+  document.title = `${t('navLibrary')} · ${t('brand')}`;
+  const isIce = state.libBook === 'ice';
+
+  $view.innerHTML = `
+    <div class="band bk-red">
+      <div class="band-inner">
+        <div class="band-info">
+          <div class="book-badge"><small>SOURCE</small>3 Books</div>
+          <div class="band-title">
+            <h1>📚 ${biText('Thư viện Sách Chuyên khảo FIDIC (Toàn văn)', 'FIDIC Reference Books (Full-Text Reader)')}</h1>
+            <div class="sub">${biText('Đọc toàn văn, tra cứu mục lục và tìm kiếm toàn văn trên 1.710 trang sách chuyên khảo', 'Full-text search and chapter reader across 1,710 pages of reference books')}</div>
+          </div>
+        </div>
+        <div class="band-controls">
+          <div class="bookpick">
+            <button type="button" data-lib-book="godwin" class="${state.libBook === 'godwin' ? 'active' : ''}">Godwin 2020 (244 tr.)</button>
+            <button type="button" data-lib-book="seppala" class="${state.libBook === 'seppala' ? 'active' : ''}">Seppälä 2023 (1.466 tr.)</button>
+            <button type="button" data-lib-book="ice" class="${state.libBook === 'ice' ? 'active' : ''}">ICE Grutters 2014</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wrap" id="libContent">
+      <div class="card-box">${biText('⏳ Đang tải dữ liệu sách...', '⏳ Loading book content...')}</div>
+    </div>
+  `;
+
+  $view.querySelectorAll('[data-lib-book]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      state.libBook = btn.dataset.libBook;
+      state.libPage = state.libBook === 'godwin' ? 21 : 52;
+      state.libQuery = '';
+      renderLibrary();
+    });
+  });
+
+  const $lib = document.getElementById('libContent');
+  if (isIce) {
+    $lib.innerHTML = `
+      <div class="card-box">
+        <h2 style="margin-top:0">ICE FIDIC Users' Guide (3rd Ed., Leo Grutters, 2014 · 318 trang)</h2>
+        <p>${biText(
+          'Tệp PDF gốc trong Source (170 MB) là bản scan dạng ảnh (0 trang text nhúng), nên chưa thể hiển thị toàn văn trực tiếp dưới dạng text nếu chưa chạy OCR. Dưới đây là 4 phần chính của sách:',
+          'The source PDF (170 MB) is an image-only scan with no embedded text layer. Below is its 4-part structure:'
+        )}</p>
+        <div class="section-grid">
+          ${BOOK_CHAPTERS.filter((c) => c.book === 'ice-grutters-2014')
+            .map(
+              (c) => `
+            <div class="card-box">
+              <span class="tl-pill">${escapeHtml(c.pg)}</span>
+              <h3>${escapeHtml(c.title)}</h3>
+              <p style="font-size:14px">${escapeHtml(c.vi)}</p>
+            </div>
+          `
+            )
+            .join('')}
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const fileUrl = state.libBook === 'godwin' ? './data/books/godwin.json' : './data/books/seppala.json';
+  let bookData = state.bookCache[state.libBook];
+  if (!bookData) {
+    try {
+      const res = await fetch(fileUrl);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      bookData = await res.json();
+      state.bookCache[state.libBook] = bookData;
+    } catch (err) {
+      $lib.innerHTML = `<div class="card-box">⚠️ ${biText('Không tải được dữ liệu sách:', 'Failed to load book:')} ${escapeHtml(err.message)}</div>`;
+      return;
+    }
+  }
+
+  const total = bookData.totalPages || bookData.pages.length;
+  const clampPage = (p) => Math.max(1, Math.min(total, Number(p) || 1));
+  state.libPage = clampPage(state.libPage);
+
+  const renderReader = () => {
+    const pIdx = state.libPage - 1;
+    const rawText = bookData.pages[pIdx] || '(Trang trống / Blank page)';
+    const q = state.libQuery.trim().toLowerCase();
+
+    let hitsHtml = '';
+    if (q.length >= 2) {
+      const hits = [];
+      for (let i = 0; i < bookData.pages.length && hits.length < 40; i++) {
+        const txt = bookData.pages[i];
+        const pos = txt.toLowerCase().indexOf(q);
+        if (pos >= 0) {
+          const snippet = txt.slice(Math.max(0, pos - 40), Math.min(txt.length, pos + 110)).replace(/\s+/g, ' ');
+          hits.push({ page: i + 1, snippet });
+        }
+      }
+      hitsHtml = `
+        <div class="lib-hits">
+          <div style="font-size:12.5px;color:var(--mute);font-weight:600">${biText(`Tìm thấy ${hits.length}${hits.length === 40 ? '+' : ''} trang khớp:`, `Found ${hits.length}${hits.length === 40 ? '+' : ''} matching pages:`)}</div>
+          ${hits
+            .map(
+              (h) =>
+                `<button type="button" class="lib-hit" data-jump-page="${h.page}"><strong>Tr. ${h.page}:</strong> ...${highlightText(h.snippet, state.libQuery)}...</button>`
+            )
+            .join('')}
+        </div>
+      `;
+    }
+
+    const tocHtml = bookData.toc
+      .map(
+        (tItem) =>
+          `<button type="button" class="lib-toc-item lvl${tItem.level}" data-jump-page="${tItem.page}">${escapeHtml(
+            tItem.title
+          )} <span style="color:var(--teal);font-size:11px">(${tItem.page})</span></button>`
+      )
+      .join('');
+
+    $lib.innerHTML = `
+      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px">
+        <input type="search" id="libSearchInp" value="${escapeHtml(state.libQuery)}" placeholder="${biText('Tìm toàn văn trong sách (VD: time-bar, 20.2, good faith, concurrent delay)...', 'Full-text search in book...')}" style="flex:1 1 260px;padding:9px 14px;border-radius:10px;border:1px solid var(--rule2);background:var(--bg2);color:var(--ink);font-size:14px" />
+        <div style="display:flex;align-items:center;gap:6px">
+          <button type="button" class="act-btn" id="libPrevBtn" ${state.libPage <= 1 ? 'disabled' : ''}>${t('prev')}</button>
+          <span style="font-size:13px">Tr.</span>
+          <input type="number" id="libPageInp" min="1" max="${total}" value="${state.libPage}" style="width:72px;padding:6px 8px;border-radius:8px;border:1px solid var(--rule2);background:var(--bg2);color:var(--ink);text-align:center" />
+          <span style="font-size:13px;color:var(--mute)">/ ${total}</span>
+          <button type="button" class="act-btn" id="libNextBtn" ${state.libPage >= total ? 'disabled' : ''}>${t('next')}</button>
+        </div>
+      </div>
+      ${hitsHtml}
+      <div class="layout" style="padding:0">
+        <div>
+          <button type="button" class="toc-toggle" id="libTocToggle">☰ ${biText('Mục lục Sách', 'Book TOC')} (${bookData.toc.length})</button>
+          <nav class="index ${state.tocOpen ? 'open' : ''}" aria-label="Book TOC">
+            <div class="index-title">${biText('Mục lục Sách', 'Book TOC')}</div>
+            ${tocHtml}
+          </nav>
+        </div>
+        <div>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px">
+            <strong style="color:var(--ink2)">${escapeHtml(bookData.title)} — ${biText('Trang', 'Page')} ${state.libPage}</strong>
+            <div style="display:flex;gap:6px">
+              <button type="button" class="act-btn" id="libCopyPage">📋 ${t('copy')}</button>
+              <button type="button" class="act-btn saved" id="libTranslatePage">🤖 ${biText('Dịch & Tóm tắt (AI)', 'Translate & Summarize (AI)')}</button>
+            </div>
+          </div>
+          <div class="lib-page-card">${highlightText(rawText, state.libQuery)}</div>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('libTocToggle')?.addEventListener('click', () => {
+      state.tocOpen = !state.tocOpen;
+      $lib.querySelector('.index')?.classList.toggle('open', state.tocOpen);
+    });
+
+    const $ls = document.getElementById('libSearchInp');
+    $ls?.addEventListener('input', (e) => {
+      state.libQuery = e.target.value;
+      const pos = e.target.selectionStart;
+      renderReader();
+      const next = document.getElementById('libSearchInp');
+      if (next) {
+        next.focus();
+        next.setSelectionRange(pos, pos);
+      }
+    });
+
+    document.getElementById('libPrevBtn')?.addEventListener('click', () => {
+      state.libPage = clampPage(state.libPage - 1);
+      renderReader();
+    });
+    document.getElementById('libNextBtn')?.addEventListener('click', () => {
+      state.libPage = clampPage(state.libPage + 1);
+      renderReader();
+    });
+    document.getElementById('libPageInp')?.addEventListener('change', (e) => {
+      state.libPage = clampPage(e.target.value);
+      renderReader();
+    });
+
+    $lib.querySelectorAll('[data-jump-page]').forEach((b) => {
+      b.addEventListener('click', () => {
+        state.libPage = clampPage(b.dataset.jumpPage);
+        renderReader();
+      });
+    });
+
+    document.getElementById('libCopyPage')?.addEventListener('click', async () => {
+      await navigator.clipboard?.writeText(rawText).catch(() => {});
+      showToast(t('copiedText'));
+    });
+
+    document.getElementById('libTranslatePage')?.addEventListener('click', () => {
+      state.aiOpen = true;
+      state.aiMode = 'chat';
+      renderAiDrawer();
+      const inp = document.getElementById('aiInput');
+      if (inp) {
+        inp.value = `Hãy dịch sang tiếng Việt và tóm tắt các ý pháp lý trọng tâm của trang ${state.libPage} (${bookData.title}):\n\n${rawText.slice(0, 2600)}`;
+        document.getElementById('aiForm')?.requestSubmit();
+      }
+    });
+  };
+
+  renderReader();
+}
+
 function renderSaved() {
   document.title = `${t('navSaved')} · ${t('brand')}`;
   const items = SUBCLAUSES.filter((s) => state.saved.includes(keyOf(s)) || Boolean(state.notes[keyOf(s)]));
@@ -2601,6 +2815,7 @@ function openCommandPalette() {
     { label: '🎓 Học FIDIC · Flowcharts · Án lệ', hash: '#learn' },
     { label: '📄 Biểu mẫu Hợp đồng', hash: '#models' },
     { label: '📅 Dự án & Deadline Tracker', hash: '#project' },
+    { label: '📚 Thư viện Sách (Toàn văn 1.710 tr.)', hash: '#library' },
     { label: '🔐 Đã lưu · Mã hóa · Gist Sync', hash: '#saved' }
   ];
 
@@ -2808,6 +3023,7 @@ function render(preserveScroll = false) {
   else if (parsed.route === 'learn') renderLearn();
   else if (parsed.route === 'models') renderModels();
   else if (parsed.route === 'project') renderProject();
+  else if (parsed.route === 'library') renderLibrary();
   else if (parsed.route === 'saved') renderSaved();
 }
 

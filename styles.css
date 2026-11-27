@@ -1694,3 +1694,55 @@ mark.hl-match {
   color: #0d1418;
   border-color: var(--teal);
 }
+
+/* v27: Dedicated Full-Text Book Library Reader */
+.lib-toc-item {
+  display: block;
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  color: var(--ink2);
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  width: 100%;
+}
+.lib-toc-item:hover {
+  background: var(--bg3);
+  color: var(--ink);
+}
+.lib-toc-item.lvl2 { padding-left: 16px; font-size: 12px; color: var(--mute); }
+.lib-toc-item.lvl3 { padding-left: 24px; font-size: 11.5px; color: var(--mute); }
+
+.lib-page-card {
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  line-height: 1.75;
+  font-size: 15px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.lib-hits {
+  margin-bottom: 16px;
+  max-height: 240px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.lib-hit {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  text-align: left;
+  color: var(--ink);
+  font-size: 13px;
+}
+.lib-hit:hover {
+  border-color: var(--teal);
+}
