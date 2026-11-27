@@ -109,6 +109,7 @@ const state = {
   libBook: 'godwin',
   libPage: 21,
   libQuery: '',
+  libTocCollapsed: false,
   libTrans: JSON.parse(localStorage.getItem('fidic_lib_trans') || '{}'),
   bookCache: {},
   tocOpen: false,
@@ -1748,7 +1749,7 @@ async function renderLibrary() {
         </div>
       </div>
     </div>
-    <div class="wrap" id="libContent">
+    <div class="wrap wrap-wide" id="libContent">
       <div class="card-box">${biText('⏳ Đang tải dữ liệu sách...', '⏳ Loading book content...')}</div>
     </div>
   `;
@@ -1853,6 +1854,7 @@ async function renderLibrary() {
 
     $lib.innerHTML = `
       <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px">
+        <button type="button" class="act-btn" id="libDesktopTocBtn">☰ ${state.libTocCollapsed ? biText('Hiện Mục lục', 'Show TOC') : biText('Ẩn Mục lục', 'Hide TOC')}</button>
         <input type="search" id="libSearchInp" value="${escapeHtml(state.libQuery)}" placeholder="${biText('Tìm toàn văn trong sách (VD: time-bar, 20.2, good faith, concurrent delay)...', 'Full-text search in book...')}" style="flex:1 1 260px;padding:9px 14px;border-radius:10px;border:1px solid var(--rule2);background:var(--bg2);color:var(--ink);font-size:14px" />
         <div style="display:flex;align-items:center;gap:6px">
           <button type="button" class="act-btn" id="libPrevBtn" ${state.libPage <= 1 ? 'disabled' : ''}>${t('prev')}</button>
@@ -1863,8 +1865,8 @@ async function renderLibrary() {
         </div>
       </div>
       ${hitsHtml}
-      <div class="layout" style="padding:0">
-        <div>
+      <div class="layout ${state.libTocCollapsed ? 'lib-collapsed' : ''}" style="padding:0">
+        <div class="lib-toc-col">
           <button type="button" class="toc-toggle" id="libTocToggle">☰ ${biText('Mục lục Sách', 'Book TOC')} (${bookData.toc.length})</button>
           <nav class="index ${state.tocOpen ? 'open' : ''}" aria-label="Book TOC">
             <div class="index-title">${biText('Mục lục Sách', 'Book TOC')}</div>
@@ -1891,6 +1893,11 @@ async function renderLibrary() {
         </div>
       </div>
     `;
+
+    document.getElementById('libDesktopTocBtn')?.addEventListener('click', () => {
+      state.libTocCollapsed = !state.libTocCollapsed;
+      renderReader();
+    });
 
     document.getElementById('libTocToggle')?.addEventListener('click', () => {
       state.tocOpen = !state.tocOpen;

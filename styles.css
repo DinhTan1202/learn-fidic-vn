@@ -1746,3 +1746,27 @@ mark.hl-match {
 .lib-hit:hover {
   border-color: var(--teal);
 }
+
+/* v29: Wide Spacious Library Layout & Collapsible Desktop TOC */
+.wrap.wrap-wide {
+  max-width: min(1680px, 96vw);
+}
+.layout.lib-collapsed {
+  grid-template-columns: 1fr;
+}
+.layout.lib-collapsed .lib-toc-col {
+  display: none;
+}
+.lib-page-card {
+  padding: 24px 28px;
+  font-size: 15.5px;
+  line-height: 1.75;
+}
+.lib-toc-item {
+  text-decoration: none;
+}
+.lib-toc-item.active {
+  background: var(--accent-soft);
+  color: var(--ink);
+  font-weight: 600;
+}
