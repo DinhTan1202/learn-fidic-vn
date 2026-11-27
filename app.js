@@ -109,6 +109,7 @@ const state = {
   libBook: 'godwin',
   libPage: 21,
   libQuery: '',
+  libTrans: JSON.parse(localStorage.getItem('fidic_lib_trans') || '{}'),
   bookCache: {},
   tocOpen: false,
   aiOpen: false,
@@ -1809,16 +1810,22 @@ async function renderLibrary() {
   const renderReader = () => {
     const pIdx = state.libPage - 1;
     const rawText = bookData.pages[pIdx] || '(Trang trống / Blank page)';
+    const transKey = `${state.libBook}-${state.libPage}`;
+    const viText = bookData.pages_vi?.[pIdx] || state.libTrans[transKey] || '';
     const q = state.libQuery.trim().toLowerCase();
 
     let hitsHtml = '';
     if (q.length >= 2) {
       const hits = [];
       for (let i = 0; i < bookData.pages.length && hits.length < 40; i++) {
-        const txt = bookData.pages[i];
-        const pos = txt.toLowerCase().indexOf(q);
-        if (pos >= 0) {
-          const snippet = txt.slice(Math.max(0, pos - 40), Math.min(txt.length, pos + 110)).replace(/\s+/g, ' ');
+        const txtEn = bookData.pages[i] || '';
+        const txtVi = bookData.pages_vi?.[i] || '';
+        const posEn = txtEn.toLowerCase().indexOf(q);
+        const posVi = txtVi.toLowerCase().indexOf(q);
+        if (posEn >= 0 || posVi >= 0) {
+          const src = posVi >= 0 ? txtVi : txtEn;
+          const pos = posVi >= 0 ? posVi : posEn;
+          const snippet = src.slice(Math.max(0, pos - 40), Math.min(src.length, pos + 110)).replace(/\s+/g, ' ');
           hits.push({ page: i + 1, snippet });
         }
       }
@@ -1866,13 +1873,21 @@ async function renderLibrary() {
         </div>
         <div>
           <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px">
-            <strong style="color:var(--ink2)">${escapeHtml(bookData.title)} — ${biText('Trang', 'Page')} ${state.libPage}</strong>
+            <strong style="color:var(--ink2)">${escapeHtml(bookData.title)} — ${biText('Trang', 'Page')} ${state.libPage} ${viText ? '· ✅ Song ngữ' : ''}</strong>
             <div style="display:flex;gap:6px">
               <button type="button" class="act-btn" id="libCopyPage">📋 ${t('copy')}</button>
-              <button type="button" class="act-btn saved" id="libTranslatePage">🤖 ${biText('Dịch & Tóm tắt (AI)', 'Translate & Summarize (AI)')}</button>
+              <button type="button" class="act-btn saved" id="libTranslatePage">🤖 ${viText ? biText('Dịch lại (AI)', 'Re-translate (AI)') : biText('Dịch & Lưu (AI)', 'Translate & Cache (AI)')}</button>
             </div>
           </div>
-          <div class="lib-page-card">${highlightText(rawText, state.libQuery)}</div>
+          ${
+            viText
+              ? state.lang === 'vi'
+                ? `<div class="lib-page-card">${highlightText(viText, state.libQuery)}</div>`
+                : state.lang === 'en'
+                ? `<div class="lib-page-card">${highlightText(rawText, state.libQuery)}</div>`
+                : `<div class="txt two"><div class="lib-page-card"><span class="col-label">Tiếng Việt</span><div>${highlightText(viText, state.libQuery)}</div></div><div class="lib-page-card"><span class="col-label">English</span><div>${highlightText(rawText, state.libQuery)}</div></div></div>`
+              : `<div class="lib-page-card">${highlightText(rawText, state.libQuery)}</div>`
+          }
         </div>
       </div>
     `;
@@ -1915,18 +1930,37 @@ async function renderLibrary() {
     });
 
     document.getElementById('libCopyPage')?.addEventListener('click', async () => {
-      await navigator.clipboard?.writeText(rawText).catch(() => {});
+      const txt = viText ? `${viText}\n\n---\n\n${rawText}` : rawText;
+      await navigator.clipboard?.writeText(txt).catch(() => {});
       showToast(t('copiedText'));
     });
 
-    document.getElementById('libTranslatePage')?.addEventListener('click', () => {
-      state.aiOpen = true;
-      state.aiMode = 'chat';
-      renderAiDrawer();
-      const inp = document.getElementById('aiInput');
-      if (inp) {
-        inp.value = `Hãy dịch sang tiếng Việt và tóm tắt các ý pháp lý trọng tâm của trang ${state.libPage} (${bookData.title}):\n\n${rawText.slice(0, 2600)}`;
-        document.getElementById('aiForm')?.requestSubmit();
+    document.getElementById('libTranslatePage')?.addEventListener('click', async () => {
+      if (!state.geminiKey) {
+        state.aiOpen = true;
+        state.aiSettingsOpen = true;
+        renderAiDrawer();
+        showToast(biText('Nhập Gemini API Key để dịch trang này', 'Enter Gemini API Key to translate'));
+        return;
+      }
+      const btn = document.getElementById('libTranslatePage');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '⏳ Đang dịch...';
+      }
+      try {
+        const lockPrompt = `Translate this FIDIC textbook page accurately into standard Vietnamese using strict FIDIC terminology: Employer=Chủ đầu tư, Engineer=Nhà tư vấn, Contractor=Nhà thầu, Variation=Thay đổi, Time for Completion=Thời gian Hoàn thành, Taking-Over Certificate=Chứng chỉ Bàn giao, DNP=Thời hạn Thông báo Sai sót, Delay Damages=Tiền bồi thường chậm trễ, Notice of Claim=Thông báo Khiếu nại, NOD=Thông báo Không hài lòng, DAAB=Ban Phòng ngừa và Xử lý Tranh chấp. Output ONLY the clean Vietnamese translation:\n\n${rawText}`;
+        const translated = await askGemini(lockPrompt);
+        state.libTrans[transKey] = translated;
+        localStorage.setItem('fidic_lib_trans', JSON.stringify(state.libTrans));
+        showToast(biText('Đã dịch & lưu bản dịch vào bộ nhớ trình duyệt', 'Translated & cached locally'));
+        renderReader();
+      } catch (err) {
+        showToast(`⚠️ ${err.message}`);
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = `🤖 ${biText('Dịch & Lưu (AI)', 'Translate & Cache (AI)')}`;
+        }
       }
     });
   };
