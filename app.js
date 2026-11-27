@@ -22,7 +22,13 @@ import {
   EXTRA_TEMPLATES,
   EXTENDED_QUIZ
 } from './data/source-library.js';
-import { GUIDE_NOTES, PROCUREMENT_STEPS, MASTER_LIFECYCLE } from './data/fidic-guides.js';
+import {
+  GUIDE_NOTES,
+  CONTRACT_DATA_ITEMS,
+  SAMPLE_PARTICULAR_CONDITIONS,
+  PROCUREMENT_STEPS,
+  MASTER_LIFECYCLE
+} from './data/fidic-guides.js';
 import { encryptJson, decryptJson, hashPassphrase } from './security.js';
 
 const CONTRACT_MODELS = [...BASE_MODELS, ...EXTRA_TEMPLATES];
@@ -79,6 +85,7 @@ const state = {
   checks: initialActiveProj.checks || {},
   tracker: initialActiveProj.tracker || [],
   projectMeta: { name: initialActiveProj.name, contract: initialActiveProj.contract },
+  contractData: JSON.parse(localStorage.getItem('fidic_contract_data') || '{}'),
   openNotes: new Set(),
   search: '',
   allBooksFilter: false,
@@ -1117,6 +1124,48 @@ function renderModels() {
         `
         ).join('')}
       </div>
+
+      <h2 style="margin-top:32px">${biText('Bảng Điền Nhanh Dữ liệu Hợp đồng (Contract Data - Part A)', 'Contract Data Builder (Part A · Guide 2022)')}</h2>
+      <div class="card-box">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>${biText('Điều khoản', 'Sub-Clause')}</th><th>${biText('Thông số Dữ liệu Hợp đồng', 'Contract Data Item')}</th><th>${biText('Giá trị áp dụng cho Dự án', 'Project Value')}</th></tr>
+            </thead>
+            <tbody>
+              ${CONTRACT_DATA_ITEMS.map(
+                (it) => `
+                <tr>
+                  <td><a href="#red-17-${it.key.replace(/\./g, '-')}" class="ai-clause-link">${it.key}</a></td>
+                  <td><strong>${escapeHtml(state.lang === 'en' ? it.labelEn : it.labelVi)}</strong></td>
+                  <td><input type="text" data-cd-key="${it.key}" value="${escapeHtml(state.contractData[it.key] ?? it.def)}" style="width:100%;padding:6px 10px;border-radius:7px;border:1px solid var(--rule2);background:var(--bg);color:var(--ink);font-size:13px" /></td>
+                </tr>
+              `
+              ).join('')}
+            </tbody>
+          </table>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button type="button" class="act-btn saved" id="saveCdBtn">✓ ${biText('Lưu Dữ liệu Hợp đồng', 'Save Contract Data')}</button>
+          <button type="button" class="act-btn" onclick="window.print()">🖨 ${t('pdf')}</button>
+        </div>
+      </div>
+
+      <h2 style="margin-top:32px">${biText('Mẫu Điều kiện Riêng Chuẩn (Sample Particular Conditions - Part B)', 'Sample Particular Conditions (Guide 2022)')}</h2>
+      <div class="section-grid">
+        ${SAMPLE_PARTICULAR_CONDITIONS.map(
+          (pc) => `
+          <div class="paper">
+            <h4>${escapeHtml(state.lang === 'en' ? pc.enTitle : pc.viTitle)}</h4>
+            <p style="margin:0">${escapeHtml(state.lang === 'en' ? pc.enBody : pc.viBody)}</p>
+            ${state.lang === 'bi' ? `<hr style="margin:12px 0;border:0;border-top:1px solid #cbd5e1"><p style="margin:0;color:#475569">${escapeHtml(pc.enBody)}</p>` : ''}
+            <div class="paper-actions">
+              <button type="button" class="btn-ghost" data-copy-pc="${pc.id}">📋 ${t('copy')}</button>
+            </div>
+          </div>
+        `
+        ).join('')}
+      </div>
     </div>
   `;
 
@@ -1128,6 +1177,23 @@ function renderModels() {
       await navigator.clipboard?.writeText(txt).catch(() => {});
       showToast(t('copiedTpl'));
     });
+  });
+
+  $view.querySelectorAll('[data-copy-pc]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const pc = SAMPLE_PARTICULAR_CONDITIONS.find((x) => x.id === btn.dataset.copyPc);
+      if (!pc) return;
+      await navigator.clipboard?.writeText(`${pc.viTitle}\n\n${pc.viBody}\n\n${pc.enBody}`).catch(() => {});
+      showToast(t('copiedTpl'));
+    });
+  });
+
+  document.getElementById('saveCdBtn')?.addEventListener('click', () => {
+    $view.querySelectorAll('[data-cd-key]').forEach((inp) => {
+      state.contractData[inp.dataset.cdKey] = inp.value;
+    });
+    localStorage.setItem('fidic_contract_data', JSON.stringify(state.contractData));
+    showToast(biText('Đã lưu Dữ liệu Hợp đồng Part A', 'Contract Data saved'));
   });
 }
 
@@ -1661,8 +1727,10 @@ function findRelevantContext(q) {
     .sort((a, b) => b.score - a.score)
     .slice(0, 5)
     .map(
-      ({ s }) =>
-        `[${s.book.toUpperCase()} 20${s.ed} - ${s.id} ${s.viTitle} / ${s.enTitle}]: ${s.viBody} | ${s.enBody}`
+      ({ s }) => {
+        const g = GUIDE_NOTES[s.id] ? ` [Guide: ${GUIDE_NOTES[s.id].vi}]` : '';
+        return `[${s.book.toUpperCase()} 20${s.ed} - ${s.id} ${s.viTitle} / ${s.enTitle}]: ${s.viBody} | ${s.enBody}${g}`;
+      }
     );
   return scored.join('\n');
 }
