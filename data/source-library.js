@@ -69,7 +69,7 @@ export const CASE_LAW = [
     book: 'sil',
     ref: '868/2023/QD-PQTT · TAND TP. HCM',
     parties: 'DAP2 Lào Cai v TTCL & TVC',
-    clauses: ['8.7', '11.9', '21.6'],
+    clauses: ['8.8', '11.9', '21.6'],
     vi: 'Tranh chấp hợp đồng EPC nhà máy phân bón (Sách Bạc): Liên quan tới phạt chậm tiến độ (Delay Damages), bảo hành khiếm khuyết và yêu cầu hủy phán quyết trọng tài.',
     en: 'Silver Book EPC dispute (DAP2 Lao Cai): Addressed Delay Damages, defect liability, and setting-aside proceedings.'
   },
@@ -105,7 +105,7 @@ export const CASE_LAW = [
     book: 'red',
     ref: '01/2021/KDTM-PT · TAND Khánh Hòa',
     parties: 'Long Giang & ACCCO v K-Homes',
-    clauses: ['8.7', '14.7', '15.2'],
+    clauses: ['8.8', '14.7', '15.2'],
     vi: 'Bản án phúc thẩm về tranh chấp hợp đồng thi công Sách Đỏ 1999: Giải quyết phạt vi phạm chậm tiến độ và thanh toán khối lượng hoàn thành.',
     en: 'Appellate commercial judgment on Red Book 1999: Addressed Delay Damages and payment for completed works.'
   },

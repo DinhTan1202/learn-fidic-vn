@@ -32,7 +32,7 @@ export const EXTENDED_SUBCLAUSES = [
     timelimits: [], eq99: ['4.1']
   },
   {
-    book: 'red', ed: '17', clause: 4, id: '4.21',
+    book: 'red', ed: '17', clause: 4, id: '4.20',
     viTitle: 'Báo cáo Tiến độ Định kỳ', enTitle: 'Progress Reports',
     viBody: 'Nhà thầu phải lập và nộp Báo cáo Tiến độ hàng tháng (trong vòng 7 ngày sau ngày cuối cùng của mỗi tháng) bao gồm tiến độ thực tế, ảnh chụp, nhân lực, thiết bị và an toàn lao động.',
     enBody: 'Monthly progress reports must be submitted within 7 days after the last day of each month, detailing actual progress, photos, personnel, equipment, and safety.',
@@ -41,10 +41,10 @@ export const EXTENDED_SUBCLAUSES = [
     ], eq99: ['4.21']
   },
   {
-    book: 'red', ed: '17', clause: 8, id: '8.7',
+    book: 'red', ed: '17', clause: 8, id: '8.8',
     viTitle: 'Tiền Bồi thường Thiệt hại do Chậm trễ (Delay Damages)', enTitle: 'Delay Damages',
-    viBody: 'Nếu Nhà thầu không hoàn thành đúng Thời gian Hoàn thành, Nhà thầu phải trả Tiền bồi thường chậm trễ (LDs) cho Chủ đầu tư cho mỗi ngày chậm, tối đa không vượt quá mức trần ghi trong Dữ liệu Hợp đồng (thường 5%–10% Giá Hợp đồng). Chủ đầu tư phải khiếu nại khoản này theo Điều khoản 20.2.',
-    enBody: 'If the Contractor fails to meet the Time for Completion, it pays Delay Damages for each day of delay up to the cap stated in Contract Data. Employer must claim Delay Damages under Sub-Clause 20.2.',
+    viBody: 'Nếu Nhà thầu không hoàn thành đúng Thời gian Hoàn thành, Nhà thầu phải trả Tiền bồi thường chậm trễ (LDs) cho Chủ đầu tư cho mỗi ngày chậm, tối đa không vượt quá mức trần ghi trong Dữ liệu Hợp đồng. Chủ đầu tư phải khiếu nại khoản này theo Điều khoản 20.2, và nếu chạm trần LDs, Chủ đầu tư có quyền chấm dứt theo 15.2.1(c).',
+    enBody: 'If the Contractor fails to meet the Time for Completion, it pays Delay Damages for each day of delay up to the cap stated in Contract Data. Employer must claim under 20.2 and gains termination right at the cap under 15.2.1(c).',
     timelimits: [], eq99: ['8.7']
   },
   {
@@ -116,7 +116,7 @@ export const VN_LAW_NOTES = {
     vi: 'Theo Luật Xây dựng & NĐ 37/2015/NĐ-CP: Hợp đồng mẫu FIDIC khi áp dụng tại Việt Nam vẫn phải tuân thủ thứ tự ưu tiên và các quy định bắt buộc của pháp luật Việt Nam nếu chọn luật áp dụng là Luật Việt Nam.',
     en: 'Under VN Construction Law & Decree 37/2015/ND-CP: Mandatory Vietnamese statutory provisions prevail if Vietnamese law is the governing law.'
   },
-  '8.7': {
+  '8.8': {
     vi: 'Lưu ý tại Việt Nam: Luật Xây dựng (Điều 146) giới hạn mức phạt vi phạm hợp đồng đối với công trình vốn nhà nước không quá 12% giá trị phần hợp đồng bị vi phạm (thường quy định trần LDs 8%–10% trong Dữ liệu HĐ).',
     en: 'Vietnam Law Note: For state-funded projects, Construction Law Art. 146 caps contractual penalties at 12% of the breached contract value.'
   },

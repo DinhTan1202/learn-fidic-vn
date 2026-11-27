@@ -29,7 +29,14 @@ import {
   PROCUREMENT_STEPS,
   MASTER_LIFECYCLE
 } from './data/fidic-guides.js';
-import { ADVISORY_BOOKS, COMMENTARY_NOTES } from './data/commentary-books.js';
+import {
+  ADVISORY_BOOKS,
+  COMMENTARY_NOTES,
+  COMMON_CIVIL_LAW_MATRIX,
+  CONTRACT_PITFALLS,
+  CONTEMPORARY_RECORDS_GUIDE,
+  EOT_METHODS
+} from './data/commentary-books.js';
 import { encryptJson, decryptJson, hashPassphrase } from './security.js';
 
 const CONTRACT_MODELS = [...BASE_MODELS, ...EXTRA_TEMPLATES];
@@ -982,6 +989,81 @@ function renderLearn() {
         `
         ).join('')}
       </div>
+
+      <h2 style="margin-top:32px">${biText('16. Ma trận Xung đột Common Law ↔ Civil Law / Việt Nam (Seppälä 2023)', '16. Common Law vs Civil Law Matrix (Seppälä 2023)')}</h2>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>${biText('Chủ đề Pháp lý', 'Legal Topic')}</th>
+              <th>⚖️ Common Law (FIDIC gốc)</th>
+              <th>🇻🇳 Civil Law / Thực tiễn Việt Nam</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${COMMON_CIVIL_LAW_MATRIX.map(
+              (r) => `
+              <tr>
+                <td><strong>${escapeHtml(state.lang === 'en' ? r.topicEn : r.topicVi)}</strong></td>
+                <td>${escapeHtml(r.common)}</td>
+                <td>${escapeHtml(r.civil)}</td>
+              </tr>
+            `
+            ).join('')}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 style="margin-top:32px">${biText('17. Thư viện Bẫy Hợp đồng Cần Tránh (Red Flags · Godwin 2020)', '17. Contract Pitfalls & Red Flags (Godwin 2020)')}</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px" id="pitFilterBar">
+        <button type="button" class="chip active" data-pit-side="all">${biText('Tất cả (8)', 'All (8)')}</button>
+        <button type="button" class="chip" data-pit-side="contractor">👷 ${biText('Rủi ro cho Nhà thầu', 'Contractor Risks')}</button>
+        <button type="button" class="chip" data-pit-side="employer">🏛 ${biText('Rủi ro cho Chủ đầu tư / NTV', 'Employer / Engineer Risks')}</button>
+      </div>
+      <div class="section-grid">
+        ${CONTRACT_PITFALLS.map(
+          (p) => `
+          <div class="card-box" data-pit-item="${p.side}">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <span class="pit-badge ${p.side}">${p.side === 'contractor' ? biText('Cho Nhà thầu', 'Contractor') : biText('Cho Chủ đầu tư', 'Employer')}</span>
+              <a href="#red-17-${p.clause.replace(/\./g, '-')}" class="ai-clause-link">${p.clause}</a>
+            </div>
+            <h3>${escapeHtml(state.lang === 'en' ? p.enTitle : p.viTitle)}</h3>
+            <p style="font-size:14px;margin-bottom:0">${escapeHtml(state.lang === 'en' ? p.en : p.vi)}</p>
+          </div>
+        `
+        ).join('')}
+      </div>
+
+      <h2 style="margin-top:32px">${biText('18. Cẩm nang Công trường: Hồ sơ Đồng thời & Phân tích EOT (ICE Guide)', '18. Site Guide: Contemporary Records & EOT Methods')}</h2>
+      <div class="section-grid">
+        <div class="card-box">
+          <h3 style="margin-top:0">📂 ${biText('6 Nhóm Hồ sơ Đồng thời Bắt buộc (20.2.3)', '6 Mandatory Contemporary Records (20.2.3)')}</h3>
+          <div class="tls" style="margin-top:8px">
+            ${CONTEMPORARY_RECORDS_GUIDE.map(
+              (rc, idx) => `
+              <div class="tl">
+                <span class="d">#${idx + 1}</span>
+                <div class="tl-desc">${escapeHtml(state.lang === 'en' ? rc.en : rc.vi)}</div>
+              </div>
+            `
+            ).join('')}
+          </div>
+        </div>
+        <div class="card-box">
+          <h3 style="margin-top:0">⏱ ${biText('4 Phương pháp Phân tích Chậm trễ EOT', '4 EOT Delay Analysis Methods')}</h3>
+          <div class="tls" style="margin-top:8px">
+            ${EOT_METHODS.map(
+              (em) => `
+              <div class="tl" style="align-items:flex-start">
+                <span class="d" style="min-width:96px;font-size:11.5px">${escapeHtml(em.type)}</span>
+                <div class="tl-desc"><strong>${escapeHtml(em.name)}</strong><br>${escapeHtml(state.lang === 'en' ? em.en : em.vi)}</div>
+              </div>
+            `
+            ).join('')}
+          </div>
+        </div>
+      </div>
     </div>
   `;
 
@@ -1131,6 +1213,17 @@ function renderLearn() {
         inp.value = `Dựa trên cuốn "${b.title}", hãy tóm tắt những lưu ý tư vấn quan trọng nhất cho kỹ sư hợp đồng tại Việt Nam.`;
         document.getElementById('aiForm')?.requestSubmit();
       }
+    });
+  });
+
+  // Contract Pitfalls filter
+  $view.querySelectorAll('[data-pit-side]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const side = btn.dataset.pitSide;
+      $view.querySelectorAll('[data-pit-side]').forEach((b) => b.classList.toggle('active', b === btn));
+      $view.querySelectorAll('[data-pit-item]').forEach((card) => {
+        card.style.display = side === 'all' || card.dataset.pitItem === side ? '' : 'none';
+      });
     });
   });
 }
@@ -1957,8 +2050,9 @@ function renderAiDrawer() {
   const modeTabsHtml = `
     <div class="ai-mode-tabs">
       <button type="button" data-ai-mode="chat" class="${state.aiMode === 'chat' ? 'active' : ''}">💬 ${biText('Hỏi đáp', 'Chat')}</button>
-      <button type="button" data-ai-mode="draft" class="${state.aiMode === 'draft' ? 'active' : ''}">✍ ${biText('Soạn Thư tín', 'Draft Notice')}</button>
-      <button type="button" data-ai-mode="pc" class="${state.aiMode === 'pc' ? 'active' : ''}">⚖ ${biText('Đối chiếu PC', 'Review PC')}</button>
+      <button type="button" data-ai-mode="draft" class="${state.aiMode === 'draft' ? 'active' : ''}">✍ ${biText('Soạn Thư', 'Draft')}</button>
+      <button type="button" data-ai-mode="pc" class="${state.aiMode === 'pc' ? 'active' : ''}">⚖ ${biText('Soi ĐKR', 'Review PC')}</button>
+      <button type="button" data-ai-mode="dispute" class="${state.aiMode === 'dispute' ? 'active' : ''}">🎓 ${biText('Tranh chấp', 'Dispute')}</button>
     </div>
   `;
 
@@ -1981,8 +2075,20 @@ function renderAiDrawer() {
       : state.aiMode === 'pc'
       ? `
         <form class="ai-tool-form" id="aiPcForm">
-          <textarea id="pcInput" placeholder="${biText('Dán nội dung Điều kiện Riêng (Particular Conditions) cần đối chiếu với FIDIC 2017...', 'Paste Particular Conditions clause to compare against FIDIC 2017 General Conditions...')}" required></textarea>
+          <textarea id="pcInput" placeholder="${biText('Dán nội dung Điều kiện Riêng (Particular Conditions) cần đối chiếu với FIDIC 2017...', 'Paste Particular Conditions clause to compare against FIDIC 2017...')}" required></textarea>
           <button type="submit" class="btn-primary bk-red" ${state.aiLoading ? 'disabled' : ''}>⚖ ${biText('Phân tích Rủi ro vs Điều kiện Chung', 'Analyze Risk vs GC 2017')}</button>
+        </form>
+      `
+      : state.aiMode === 'dispute'
+      ? `
+        <form class="ai-tool-form" id="aiDisputeForm">
+          <select id="disputeRole">
+            <option value="Contractor">${biText('Góc nhìn bảo vệ Nhà thầu', 'Contractor Perspective')}</option>
+            <option value="Employer">${biText('Góc nhìn bảo vệ Chủ đầu tư', 'Employer Perspective')}</option>
+            <option value="DAAB / Neutral">${biText('Góc nhìn trung lập (Nhà tư vấn / DAAB)', 'Neutral (Engineer / DAAB)')}</option>
+          </select>
+          <textarea id="disputeFacts" placeholder="${biText('Mô tả tình huống tranh chấp (VD: CĐT giữ lại IPC, trễ Notice 28 ngày, chấm dứt 15.2, phạt LDs)...', 'Describe dispute facts (e.g. withheld IPC, late 28d Notice, 15.2 termination, LDs)...')}" required></textarea>
+          <button type="submit" class="btn-primary bk-red" ${state.aiLoading ? 'disabled' : ''}>🎓 ${biText('Phân tích theo Seppälä 2023 & Godwin 2020', 'Analyze via Seppälä & Godwin')}</button>
         </form>
       `
       : '';
@@ -2107,9 +2213,19 @@ function renderAiDrawer() {
     e.preventDefault();
     const pcText = document.getElementById('pcInput').value.trim();
     if (!pcText || state.aiLoading) return;
-    const prompt = `Compare this Particular Conditions (Điều kiện Riêng) text against FIDIC 2017 General Conditions. Identify: (1) Which Sub-Clauses are amended, (2) Risk shift (Employer vs Contractor), (3) Key deadlines or financial impacts, in concise bilingual Vietnamese-English:\n\n${pcText}`;
+    const prompt = `Compare this Particular Conditions (Điều kiện Riêng) text against FIDIC 2017 General Conditions and the 5 FIDIC Golden Principles. Identify: (1) Which Sub-Clauses are amended, (2) Risk shift (Employer vs Contractor), (3) Key deadlines or financial impacts, in concise bilingual Vietnamese-English:\n\n${pcText}`;
     const offline = `⚖️ **Phân tích sơ bộ (Offline):**\n${answerFidicQuestion(pcText)}\n\n*(Nhập Gemini API Key tại ⚙ Key để AI phân tích chi tiết sự dịch chuyển rủi ro so với Điều kiện Chung 2017).*`;
     await runAiPrompt(`⚖ Đối chiếu PC`, prompt, offline);
+  });
+
+  document.getElementById('aiDisputeForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const role = document.getElementById('disputeRole').value;
+    const facts = document.getElementById('disputeFacts').value.trim();
+    if (!facts || state.aiLoading) return;
+    const prompt = `Analyze this FIDIC contract dispute from the ${role} perspective, grounded in Christopher Seppälä (2023 Commentary), William Godwin (2020), and Vietnamese construction law practice:\n"${facts}"\nStructure clearly in 4 steps:\n1. Căn cứ Điều khoản (Sub-Clauses & time limits)\n2. Góc nhìn Common Law vs Civil Law / Việt Nam\n3. Rủi ro & Hồ sơ chứng minh cần thiết\n4. Khuyến nghị hành động cụ thể.`;
+    const offline = `🎓 **Phân tích sơ bộ (${role} - Offline):**\n${answerFidicQuestion(facts)}\n\n*(Nhập Gemini API Key tại ⚙ Key để AI phân tích 4 bước chuyên sâu theo Seppälä 2023 & Godwin 2020).*`;
+    await runAiPrompt(`🎓 Tranh chấp (${role}): ${facts}`, prompt, offline);
   });
 
   document.querySelectorAll('[data-ai-copy]').forEach((btn) => {

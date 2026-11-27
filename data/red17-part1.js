@@ -164,17 +164,19 @@ export const RED17_PART1 = [
   },
   {
     book: 'red', ed: '17', clause: 4, id: '4.4',
-    viTitle: 'Nhà thầu phụ được Chỉ định / Thầu phụ', enTitle: 'Subcontractors (General)',
-    viBody: 'Trong bản 2017, quy định về Thầu phụ được chuyển sang Điều khoản 5.1 và 5.2; Điều khoản 4.4 quy định nghĩa vụ chung của Nhà thầu đối với mọi sản phẩm và nhân sự của bên thứ ba.',
-    enBody: 'In 2017, Subcontracting is expanded into Clause 5; 4.4–4.5 cover quality and cooperation obligations on Site.',
-    timelimits: [], eq99: ['4.4']
+    viTitle: 'Tài liệu của Nhà thầu', enTitle: "Contractor's Documents",
+    viBody: 'Quy định việc lập, nộp và xem xét Tài liệu của Nhà thầu (bao gồm bản vẽ thi công, bản vẽ hoàn công, tài liệu vận hành & bảo trì O&M nếu có trong Đặc tính kỹ thuật); Nhà tư vấn có 21 ngày xem xét trừ khi quy định khác.',
+    enBody: 'Governs preparation, submission, and Engineer review (21 days unless stated otherwise) of Contractor’s Documents, including as-built records and O&M manuals where specified.',
+    timelimits: [
+      { badge: '21 ngày', badgeEn: '21 days', vi: 'Thời hạn Nhà tư vấn xem xét Tài liệu của Nhà thầu', en: 'Engineer Review Period for Contractor’s Documents' }
+    ], eq99: ['4.1']
   },
   {
     book: 'red', ed: '17', clause: 4, id: '4.5',
-    viTitle: 'Nhà thầu phụ được Chỉ định (Chuyển sang 5.2)', enTitle: 'Nominated Subcontractors',
-    viBody: 'Trong Sách Đỏ 2017, nội dung về Nhà thầu phụ được Chỉ định nằm tại Điều khoản 5.2.',
-    enBody: 'In Red Book 2017, Nominated Subcontractors are governed under Sub-Clause 5.2.',
-    timelimits: [], eq99: ['5.1']
+    viTitle: 'Đào tạo Nhân sự Vận hành', enTitle: 'Training',
+    viBody: 'Điểm mới trong Red Book 2017: Nếu Đặc tính kỹ thuật có quy định, Nhà thầu phải đào tạo nhân sự của Chủ đầu tư về vận hành và bảo trì Công trình trước khi bàn giao (tương ứng Điều khoản 11.2(c)).',
+    enBody: 'New in 2017 Red Book: Where stated in the Specification, the Contractor must train the Employer’s employees in operation and maintenance of the Works.',
+    timelimits: [], eq99: []
   },
   {
     book: 'red', ed: '17', clause: 4, id: '4.6',
@@ -272,25 +274,25 @@ export const RED17_PART1 = [
     timelimits: [], eq99: ['4.19']
   },
   {
-    book: 'red', ed: '17', clause: 4, id: '4.20',
-    viTitle: 'Hồ sơ Hoàn công & Tài liệu Vận hành (nếu có)', enTitle: 'Progress Reports / As-Built',
-    viBody: 'Trong Sách Đỏ 2017, nội dung về thiết bị Chủ đầu tư chuyển sang 2.6, còn nghĩa vụ lập hồ sơ hoàn công (nếu Nhà thầu thiết kế một phần) thực hiện theo chỉ dẫn kỹ thuật.',
-    enBody: 'In Red Book 2017, Employer’s Equipment moved to 2.6; Contractor’s Documents and As-Built obligations follow 4.1 & Specification.',
-    timelimits: [], eq99: ['4.20']
-  },
-  {
-    book: 'red', ed: '17', clause: 4, id: '4.22',
+    book: 'red', ed: '17', clause: 4, id: '4.21',
     viTitle: 'An ninh Công trường', enTitle: 'Security of the Site',
     viBody: 'Nhà thầu chịu trách nhiệm ngăn chặn người không có thẩm quyền xâm nhập công trường.',
     enBody: 'The Contractor is responsible for keeping unauthorised persons off the Site.',
     timelimits: [], eq99: ['4.22']
   },
   {
+    book: 'red', ed: '17', clause: 4, id: '4.22',
+    viTitle: 'Hoạt động của Nhà thầu trên Công trường', enTitle: "Contractor's Operations on Site",
+    viBody: 'Nhà thầu giới hạn hoạt động trong phạm vi công trường, giữ công trường gọn gàng và dọn dẹp phế thải sau khi bàn giao.',
+    enBody: 'The Contractor confines operations to Site, keeps Site free of unnecessary obstruction, and clears wreckage upon Taking Over.',
+    timelimits: [], eq99: ['4.23']
+  },
+  {
     book: 'red', ed: '17', clause: 4, id: '4.23',
-    viTitle: 'Hoạt động của Nhà thầu trên Công trường & Cổ vật', enTitle: "Contractor's Operations on Site & Fossils",
-    viBody: 'Nhà thầu giới hạn hoạt động trong phạm vi công trường, dọn dẹp mặt bằng sau hoàn thành; mọi cổ vật/di chỉ phát hiện đều thuộc tài sản của Chủ đầu tư và phải thông báo ngay.',
-    enBody: 'The Contractor confines operations to Site and clears wreckage; fossils or articles of value belong to the Employer and must be notified immediately.',
-    timelimits: [], eq99: ['4.23', '4.24']
+    viTitle: 'Phát hiện Khảo cổ và Địa chất', enTitle: 'Archaeological and Geological Findings',
+    viBody: 'Mọi cổ vật, di chỉ khảo cổ hoặc khoáng vật có giá trị phát hiện trên công trường thuộc tài sản của Chủ đầu tư; Nhà thầu phải thông báo ngay cho Nhà tư vấn và tuân thủ chỉ dẫn bảo vệ.',
+    enBody: 'All fossils, coins, antiquities, and archaeological items found on Site are under the Employer’s care; Contractor must promptly give Notice and follow instructions.',
+    timelimits: [], eq99: ['4.24']
   },
 
   // Clause 5

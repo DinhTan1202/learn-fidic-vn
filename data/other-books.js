@@ -79,7 +79,7 @@ export const OTHER_BOOKS_SUBCLAUSES = [
     ], eq99: ['8.1']
   },
   {
-    book: 'yel', ed: '17', clause: 8, id: '8.7',
+    book: 'yel', ed: '17', clause: 8, id: '8.8',
     viTitle: 'Tiền Bồi thường Chậm trễ (Sách Vàng)', enTitle: 'Delay Damages (Yellow)',
     viBody: 'Áp dụng tương tự Sách Đỏ: trả LDs cho mỗi ngày chậm hoàn thành, tối đa theo mức trần trong Dữ liệu Hợp đồng.',
     enBody: 'Same as Red Book: daily Delay Damages up to the cap in Contract Data.',

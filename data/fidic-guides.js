@@ -54,7 +54,7 @@ export const GUIDE_NOTES = {
     vi: 'Khái niệm "Unforeseeable" được đánh giá khách quan tại Ngày Cơ sở (Base Date = 28 ngày trước ngày nộp thầu), dựa trên tiêu chuẩn một nhà thầu có kinh nghiệm chứ không phải chủ quan của riêng Nhà thầu.',
     en: '"Unforeseeable" is tested objectively as of Base Date (28 days before tender submission) against an experienced contractor standard.'
   },
-  '4.21': {
+  '4.20': {
     src: 'Contract Guide 2022',
     vi: 'Báo cáo Tiến độ hàng tháng là tài liệu chứng minh đồng thời (contemporary record) cực kỳ quan trọng cho các khiếu nại EOT/Chi phí sau này.',
     en: 'Monthly Progress Reports serve as vital contemporary records supporting future EOT/Cost claims.'
@@ -84,10 +84,10 @@ export const GUIDE_NOTES = {
     vi: 'Hướng dẫn 2022 lưu ý vấn đề Chậm trễ Đồng thời (Concurrent Delay): nếu Hợp đồng không có quy định riêng trong Điều kiện Riêng, đánh giá theo nguyên tắc công bằng dựa trên đường găng tiến độ.',
     en: 'Guide 2022 highlights Concurrent Delay: unless Particular Conditions specify rules, entitlement is assessed fairly against the critical path.'
   },
-  '8.7': {
+  '8.8': {
     src: 'Contract Guide 2022 & 2000',
-    vi: 'Tiền bồi thường chậm trễ (LDs) là khoản bồi thường ấn định trước (liquidated damages), không phải tiền phạt; Chủ đầu tư vẫn phải làm thủ tục khiếu nại theo 20.2 để khấu trừ.',
-    en: 'Delay Damages are pre-agreed liquidated damages; Employer must still claim them under Sub-Clause 20.2.'
+    vi: 'Tiền bồi thường chậm trễ (LDs) là khoản bồi thường ấn định trước (liquidated damages), không phải tiền phạt; Chủ đầu tư vẫn phải làm thủ tục khiếu nại theo 20.2 để khấu trừ (và có quyền chấm dứt theo 15.2.1(c) nếu chạm trần).',
+    en: 'Delay Damages are pre-agreed liquidated damages; Employer must claim them under Sub-Clause 20.2 and gains termination right at the cap under 15.2.1(c).'
   },
   '8.12': {
     src: 'Contract Guide 2022',
@@ -200,7 +200,7 @@ export const CONTRACT_DATA_ITEMS = [
   { key: '1.3', labelVi: 'Hình thức trao đổi điện tử', labelEn: 'Electronic transmission system', def: 'Email / CDE hệ thống quản lý dự án' },
   { key: '1.4', labelVi: 'Luật điều chỉnh & Ngôn ngữ ưu tiên', labelEn: 'Governing Law & Ruling Language', def: 'Luật Việt Nam / Tiếng Anh & Tiếng Việt' },
   { key: '4.2', labelVi: 'Giá trị Bảo lãnh Thực hiện HĐ', labelEn: 'Performance Security %', def: '10% Giá Hợp đồng được chấp nhận' },
-  { key: '8.7', labelVi: 'Mức & Trần Bồi thường Chậm trễ (LDs)', labelEn: 'Delay Damages rate & cap', def: '0.05%/ngày, tối đa 10% Giá HĐ' },
+  { key: '8.8', labelVi: 'Mức & Trần Bồi thường Chậm trễ (LDs)', labelEn: 'Delay Damages rate & cap', def: '0.05%/ngày, tối đa 10% Giá HĐ' },
   { key: '11.1', labelVi: 'Thời hạn Thông báo Sai sót (DNP)', labelEn: 'Defects Notification Period', def: '365 ngày (12 tháng)' },
   { key: '14.2', labelVi: 'Tỷ lệ Thanh toán Tạm ứng', labelEn: 'Total Advance Payment %', def: '15% - 20% Giá HĐ' },
   { key: '14.9', labelVi: 'Tỷ lệ & Trần Tiền Giữ lại (Retention)', labelEn: 'Retention % & Limit', def: '5% mỗi kỳ IPC, tối đa 5% Giá HĐ' },
@@ -226,10 +226,10 @@ export const SAMPLE_PARTICULAR_CONDITIONS = [
   },
   {
     id: 'pc-cap-lds',
-    viTitle: 'Mẫu ĐK Riêng 03: Tuân thủ Trần Phạt Luật Xây dựng VN (8.7)',
-    enTitle: 'Sample PC 03: Vietnam Statutory Penalty Cap Alignment (8.7)',
-    viBody: 'Đối với dự án sử dụng vốn nhà nước tại Việt Nam, tổng mức Tiền bồi thường chậm trễ (Delay Damages) theo Điều khoản 8.7 và các khoản phạt vi phạm khác không vượt quá 12% giá trị phần hợp đồng bị vi phạm theo Luật Xây dựng.',
-    enBody: 'For state-funded projects in Vietnam, aggregate Delay Damages under Sub-Clause 8.7 shall not exceed 12% of the value of the breached contract portion under Construction Law.'
+    viTitle: 'Mẫu ĐK Riêng 03: Tuân thủ Trần Phạt Luật Xây dựng VN (8.8)',
+    enTitle: 'Sample PC 03: Vietnam Statutory Penalty Cap Alignment (8.8)',
+    viBody: 'Đối với dự án sử dụng vốn nhà nước tại Việt Nam, tổng mức Tiền bồi thường chậm trễ (Delay Damages) theo Điều khoản 8.8 và các khoản phạt vi phạm khác không vượt quá 12% giá trị phần hợp đồng bị vi phạm theo Luật Xây dựng.',
+    enBody: 'For state-funded projects in Vietnam, aggregate Delay Damages under Sub-Clause 8.8 shall not exceed 12% of the value of the breached contract portion under Construction Law.'
   }
 ];
 

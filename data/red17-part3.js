@@ -50,10 +50,19 @@ export const RED17_PART3 = [
   },
   {
     book: 'red', ed: '17', clause: 16, id: '16.3',
-    viTitle: 'Hậu quả & Thanh toán khi Chấm dứt bởi Nhà thầu', enTitle: 'Contractor’s Obligations & Payment after Termination',
-    viBody: 'Khi chấm dứt theo 16.2 có hiệu lực, Nhà thầu ngừng việc, bàn giao tài liệu và rời công trường; Chủ đầu tư hoàn trả Bảo lãnh Thực hiện và thanh toán toàn bộ giá trị đã làm + chi phí + lợi nhuận bị mất trong 56 ngày (theo 16.4).',
-    enBody: 'Upon termination under 16.2, Contractor ceases work and demobilises; Employer returns Performance Security and pays for work done, demobilisation, and loss of profit.',
-    timelimits: [], eq99: ['16.3', '16.4']
+    viTitle: 'Nghĩa vụ của Nhà thầu sau khi Chấm dứt', enTitle: 'Contractor’s Obligations after Termination',
+    viBody: 'Khi chấm dứt theo 16.2 (hoặc 18.5/18.6) có hiệu lực, Nhà thầu phải ngừng ngay mọi công việc (trừ việc bảo đảm an toàn), bàn giao Tài liệu Nhà thầu và rời khỏi công trường.',
+    enBody: 'After termination under 16.2 (or 18.5/18.6) takes effect, the Contractor must cease all further work (except safety protection), deliver Contractor’s Documents, and leave the Site.',
+    timelimits: [], eq99: ['16.3']
+  },
+  {
+    book: 'red', ed: '17', clause: 16, id: '16.4',
+    viTitle: 'Thanh toán sau khi Chấm dứt bởi Nhà thầu', enTitle: 'Payment after Termination by Contractor',
+    viBody: 'Chủ đầu tư phải hoàn trả Bảo lãnh Thực hiện Hợp đồng và thanh toán cho Nhà thầu toàn bộ giá trị công việc đã làm, chi phí rút quân và khoản bồi thường lợi nhuận bị mất trong vòng 56 ngày kể từ ngày chấm dứt có hiệu lực.',
+    enBody: 'The Employer must promptly return Performance Security and pay for work executed, demobilisation, and loss of profit or other loss/damage within 56 days after termination.',
+    timelimits: [
+      { badge: '56 ngày', badgeEn: '56 days', vi: 'Thanh toán quyết toán sau chấm dứt bởi Nhà thầu trong 56 ngày', en: 'Pay within 56 days after termination by Contractor' }
+    ], eq99: ['16.4']
   },
 
   // Clause 17

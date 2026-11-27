@@ -22,7 +22,7 @@ export const RED17_PART2 = [
     timelimits: [], eq99: ['8.5']
   },
   {
-    book: 'red', ed: '17', clause: 8, id: '8.8',
+    book: 'red', ed: '17', clause: 8, id: '8.7',
     viTitle: 'Tốc độ Tiến độ', enTitle: 'Rate of Progress',
     viBody: 'Nếu tiến độ thực tế quá chậm không phải do nguyên nhân được gia hạn EOT, Nhà tư vấn có quyền yêu cầu Nhà thầu nộp tiến độ điều chỉnh và áp dụng các biện pháp đẩy nhanh tiến độ bằng chi phí của Nhà thầu.',
     enBody: 'If actual progress is too slow (for reasons not entitling EOT), the Engineer may instruct the Contractor to submit a revised programme and adopt expediting measures at Contractor’s cost.',
