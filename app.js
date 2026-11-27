@@ -32,6 +32,7 @@ import {
 } from './data/fidic-guides.js';
 import {
   ADVISORY_BOOKS,
+  BOOK_CHAPTERS,
   COMMENTARY_NOTES,
   COMMON_CIVIL_LAW_MATRIX,
   CONTRACT_PITFALLS,
@@ -721,6 +722,7 @@ function renderLearn() {
         <button type="button" class="learn-tab ${state.learnTab === 'tools' ? 'active' : ''}" data-ltab="tools">🎯 ${biText('Công cụ & Quy trình', 'Tools & Workflows')}</button>
         <button type="button" class="learn-tab ${state.learnTab === 'legal' ? 'active' : ''}" data-ltab="legal">⚖️ ${biText('Pháp lý & Án lệ', 'Legal & Case Law')}</button>
         <button type="button" class="learn-tab ${state.learnTab === 'ref' ? 'active' : ''}" data-ltab="ref">📖 ${biText('Tra cứu & EOT', 'Reference & EOT')}</button>
+        <button type="button" class="learn-tab ${state.learnTab === 'books' ? 'active' : ''}" data-ltab="books">📚 ${biText('Sách Chuyên khảo', '3 Reference Books')}</button>
         <button type="button" class="learn-tab ${state.learnTab === 'quiz' ? 'active' : ''}" data-ltab="quiz">🎓 ${biText('Trắc nghiệm (Quiz)', 'Quiz')}</button>
       </div>
       <div class="section-grid" data-lgroup="tools">
@@ -1073,6 +1075,22 @@ function renderLearn() {
           </div>
         </div>
       </div>
+
+      <h2 style="margin-top:32px">${biText('19. Mục lục Chi tiết 3 Sách Chuyên khảo (Source/3)', '19. Chapter Index of the 3 Reference Books')}</h2>
+      <div class="card-box">
+        <p style="margin-top:0;font-size:13.5px;color:var(--mute)">${biText(
+          'Tra cứu nhanh từng chương và số trang trong 3 cuốn sách gốc tại thư mục Source\\3- Cac sach ve Hop dong FIDIC (file PDF gốc lưu cục bộ trên máy để bảo vệ bản quyền & giới hạn 100MB của GitHub).',
+          'Search chapters and exact page numbers across the 3 reference books in Source\\3- Cac sach ve Hop dong FIDIC.'
+        )}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px" id="bookChapFilter">
+          <button type="button" class="chip active" data-bchap="all">${biText('Cả 3 Sách', 'All 3 Books')} (${BOOK_CHAPTERS.length})</button>
+          <button type="button" class="chip" data-bchap="godwin-2020">Godwin (2020)</button>
+          <button type="button" class="chip" data-bchap="commentary-2023">Seppälä (2023)</button>
+          <button type="button" class="chip" data-bchap="ice-grutters-2014">ICE Grutters (2014)</button>
+          <input type="search" id="bookChapSearch" placeholder="${biText('Lọc theo chương, điều khoản, từ khóa...', 'Filter chapters, clauses...')}" style="flex:1 1 200px;padding:6px 12px;border-radius:999px;border:1px solid var(--rule2);background:var(--bg);color:var(--ink);font-size:13px" />
+        </div>
+        <div class="section-grid" id="bookChapGrid"></div>
+      </div>
     </div>
   `;
 
@@ -1081,6 +1099,7 @@ function renderLearn() {
     '1.': 'tools', '2.': 'tools', '12.': 'tools', '13.': 'tools', '14.': 'tools',
     '8.': 'legal', '9.': 'legal', '15.': 'legal', '16.': 'legal', '17.': 'legal',
     '3.': 'ref', '4.': 'ref', '5.': 'ref', '6.': 'ref', '10.': 'ref', '11.': 'ref', '18.': 'ref',
+    '19.': 'books',
     '7.': 'quiz'
   };
   const wrapEl = $view.querySelector('.wrap');
@@ -1266,6 +1285,61 @@ function renderLearn() {
       });
     });
   });
+
+  // Reference Book Chapter Explorer (19)
+  let curBookFilter = 'all';
+  const renderBookChapters = () => {
+    const grid = document.getElementById('bookChapGrid');
+    const q = (document.getElementById('bookChapSearch')?.value || '').trim().toLowerCase();
+    if (!grid) return;
+    const rows = BOOK_CHAPTERS.filter((ch) => {
+      if (curBookFilter !== 'all' && ch.book !== curBookFilter) return false;
+      if (q && !`${ch.title} ${ch.vi} ${ch.clauses.join(' ')} ${ch.pg}`.toLowerCase().includes(q)) return false;
+      return true;
+    });
+    grid.innerHTML = rows
+      .map(
+        (ch) => `
+      <div class="card-box" style="padding:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span class="tl-pill">${escapeHtml(ch.book)}</span>
+          <strong style="font-size:12px;color:var(--teal)">${escapeHtml(ch.pg)}</strong>
+        </div>
+        <h4 style="margin:0 0 6px;font-size:14.5px">${escapeHtml(ch.title)}</h4>
+        <p style="margin:0 0 10px;font-size:13px;color:var(--ink2)">${escapeHtml(ch.vi)}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:5px;align-items:center;justify-content:space-between">
+          <div style="display:flex;flex-wrap:wrap;gap:4px">
+            ${ch.clauses.map((cl) => `<a href="#red-17-${cl.replace(/\./g, '-')}" class="ai-clause-link">${cl}</a>`).join('')}
+          </div>
+          <button type="button" class="act-btn" data-ask-chap="${escapeHtml(ch.title)} (${ch.pg})">🤖 ${biText('Hỏi AI', 'Ask AI')}</button>
+        </div>
+      </div>
+    `
+      )
+      .join('') || `<div style="color:var(--mute)">${t('noResults')}</div>`;
+
+    grid.querySelectorAll('[data-ask-chap]').forEach((b) => {
+      b.addEventListener('click', () => {
+        state.aiOpen = true;
+        state.aiMode = 'chat';
+        renderAiDrawer();
+        const inp = document.getElementById('aiInput');
+        if (inp) {
+          inp.value = `Tóm tắt các điểm trọng yếu nhất trong "${b.dataset.askChap}" và lưu ý áp dụng tại Việt Nam.`;
+          document.getElementById('aiForm')?.requestSubmit();
+        }
+      });
+    });
+  };
+  $view.querySelectorAll('[data-bchap]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      curBookFilter = btn.dataset.bchap;
+      $view.querySelectorAll('[data-bchap]').forEach((b) => b.classList.toggle('active', b === btn));
+      renderBookChapters();
+    });
+  });
+  document.getElementById('bookChapSearch')?.addEventListener('input', renderBookChapters);
+  renderBookChapters();
 }
 
 function renderModels() {

@@ -315,3 +315,38 @@ export const EOT_METHODS = [
     en: 'Constructs the As-Built programme and removes Employer delay events to determine when completion would have occurred "but for" those events.'
   }
 ];
+
+export const BOOK_CHAPTERS = [
+  // William Godwin (Wiley, 2020) - All 16 Chapters
+  { book: 'godwin-2020', pg: 'p. 21', title: 'Chapter 1: Overview of the 2017 Contracts', vi: 'Tổng quan bộ sách 2017, so sánh Đỏ/Vàng/Bạc 1999, rủi ro mới cho Nhà thầu & Chủ đầu tư (Mục 1.4), Dữ liệu HĐ & Golden Principles.', clauses: ['1.1', '4.15', '8.6', '15.5'] },
+  { book: 'godwin-2020', pg: 'p. 37', title: 'Chapter 2: Key General Provisions', vi: 'Định nghĩa, hình thức văn bản Notice (1.3), Luật & Ngôn ngữ (1.4), Thứ tự ưu tiên tài liệu (1.5), Giới hạn trách nhiệm (1.15) & Chấm dứt (1.16).', clauses: ['1.3', '1.4', '1.5', '1.15', '1.16'] },
+  { book: 'godwin-2020', pg: 'p. 47', title: 'Chapter 3: Employer, Engineer & Contract Administration', vi: 'Quyền tiếp cận công trường (2.1), Tài chính CĐT (2.4), Thẩm quyền & vai trò trung lập của Nhà tư vấn (3.2, 3.7).', clauses: ['2.1', '2.4', '3.2', '3.7'] },
+  { book: 'godwin-2020', pg: 'p. 61', title: 'Chapter 4: The Contractor & Fitness for Purpose', vi: 'Nghĩa vụ chung & fitness for purpose (4.1), Bảo lãnh thực hiện (4.2), Thầu phụ (5.1), QM/CV (4.9) & Địa chất bất thường (4.12).', clauses: ['4.1', '4.2', '4.9', '4.12'] },
+  { book: 'godwin-2020', pg: 'p. 77', title: 'Chapter 5: Design', vi: 'Nghĩa vụ thiết kế (5.1), Kiểm tra Tài liệu Nhà thầu 21 ngày (5.2), Cam kết thiết kế & sai sót trong Yêu cầu Chủ đầu tư (1.9).', clauses: ['1.9', '5.1', '5.2', '5.3'] },
+  { book: 'godwin-2020', pg: 'p. 85', title: 'Chapter 6: Staff, Labour, Plant & Materials', vi: 'Nhân sự chủ chốt (6.12), An toàn lao động (6.7), Thử nghiệm (7.4), Từ chối sai sót (7.5) & Quyền sở hữu vật tư (7.7).', clauses: ['6.7', '6.12', '7.4', '7.5', '7.7'] },
+  { book: 'godwin-2020', pg: 'p. 91', title: 'Chapter 7: Commencement, Delays, EOT & Suspension', vi: 'Khởi công (8.1), Tiến độ (8.3), Cảnh báo sớm (8.4), EOT (8.5), Chậm trễ đồng thời, Delay Damages (8.8) & Tạm ngừng (8.9–8.12).', clauses: ['8.1', '8.3', '8.4', '8.5', '8.8'] },
+  { book: 'godwin-2020', pg: 'p. 113', title: 'Chapter 8: Testing & Taking Over', vi: 'Kiểm định khi Hoàn thành (9.1–9.4), Chứng chỉ Bàn giao (10.1), Tự ý sử dụng trước bàn giao (10.2) & Kiểm định sau hoàn thành.', clauses: ['9.1', '10.1', '10.2', '10.3'] },
+  { book: 'godwin-2020', pg: 'p. 127', title: 'Chapter 9: Defects after Taking Over', vi: 'Khắc phục sai sót (11.1–11.2), Gia hạn DNP tối đa 2 năm (11.3), Chứng chỉ Thực hiện (11.9) & Nghĩa vụ tồn đọng (11.10).', clauses: ['11.1', '11.3', '11.4', '11.9'] },
+  { book: 'godwin-2020', pg: 'p. 133', title: 'Chapter 10: Measurement, Price & Payment', vi: 'Đo lường BOQ (12.1–12.3), Tạm ứng (14.2), Cấp IPC 28d (14.6), Thanh toán 56d (14.7), Lãi chậm trả (14.8) & Tiền giữ lại (14.9).', clauses: ['12.3', '14.2', '14.6', '14.7', '14.8', '14.9'] },
+  { book: 'godwin-2020', pg: 'p. 149', title: 'Chapter 11: Variations & Price Adjustments', vi: 'Quyền thay đổi & cắt giảm khối lượng (13.1), Value Engineering (13.2), Quy trình 13.3 & Thay đổi luật/giấy phép (13.6).', clauses: ['13.1', '13.2', '13.3', '13.6'] },
+  { book: 'godwin-2020', pg: 'p. 163', title: 'Chapter 12: Termination & Suspension', vi: 'Chấm dứt do lỗi NT (15.2), Chấm dứt vì lợi ích CĐT & bồi thường lợi nhuận (15.5–15.6), Tạm ngừng (16.1) & Chấm dứt bởi NT (16.2).', clauses: ['15.1', '15.2', '15.5', '16.1', '16.2'] },
+  { book: 'godwin-2020', pg: 'p. 183', title: 'Chapter 13: Care of Works, Indemnities & Insurance', vi: 'Bảo quản công trình (17.1–17.2), Bồi thường thiết kế 17.4, Sở hữu trí tuệ (17.3) & Bảo hiểm (19.1–19.2).', clauses: ['17.1', '17.2', '17.4', '19.1'] },
+  { book: 'godwin-2020', pg: 'p. 195', title: 'Chapter 14: Exceptional Events', vi: 'Sự kiện Ngoại lệ (18.1), Thông báo 14 ngày (18.2), Hậu quả (18.4) & Chấm dứt tùy chọn sau 84/140 ngày (18.5).', clauses: ['18.1', '18.2', '18.4', '18.5'] },
+  { book: 'godwin-2020', pg: 'p. 201', title: 'Chapter 15: Employers’ and Contractors’ Claims', vi: 'Phân loại 3 nhóm khiếu nại (20.1) và 7 bước thủ tục khiếu nại tiền/EOT đối xứng (20.2.1–20.2.7).', clauses: ['20.1', '20.2'] },
+  { book: 'godwin-2020', pg: 'p. 215', title: 'Chapter 16: Dispute Resolution', vi: 'Standing DAAB (21.1), Phòng ngừa tranh chấp (21.3), Quyết định DAAB 84 ngày (21.4), Hòa giải 28 ngày (21.5) & Trọng tài (21.6).', clauses: ['21.1', '21.3', '21.4', '21.6'] },
+
+  // Christopher R. Seppala (2023) - Main Chapters & Clause Blocks
+  { book: 'commentary-2023', pg: 'p. 52', title: 'Chapter 1: General Introduction', vi: 'Giới thiệu FIDIC, lịch sử Sách Đỏ 1957–2017, nguyên tắc pháp lý quốc tế (UNIDROIT Principles 2016) & SCL Delay Protocol.', clauses: ['1.1'] },
+  { book: 'commentary-2023', pg: 'p. 96', title: 'Chapter 2: Applicable Law (Common Law vs Civil Law)', vi: 'Đối chiếu chuyên sâu Common Law vs Civil Law (Thiện chí, Engineer vs Maître d’Oeuvre, LDs vs Penalty, Hardship, Lãi gộp, Thời hiệu).', clauses: ['1.4', '1.16', '3.7', '8.8', '14.8'] },
+  { book: 'commentary-2023', pg: 'p. 210', title: 'Chapter 3: Contract Interpretation', vi: 'Quy tắc giải thích hợp đồng quốc tế, giải quyết mâu thuẫn tài liệu (1.5) và vai trò của DAAB/Trọng tài khi diễn giải.', clauses: ['1.2', '1.5'] },
+  { book: 'commentary-2023', pg: 'p. 260', title: 'Chapter 4 (Part I): Clauses 1–7 (General, Employer, Engineer, Contractor)', vi: 'Bình luận chi tiết từng điều khoản 1.1–7.8: Notice 1.3, Giới hạn trách nhiệm 1.15, Bảo lãnh 4.2, Địa chất 4.12, Đào tạo 4.5.', clauses: ['1.3', '1.15', '3.7', '4.2', '4.12'] },
+  { book: 'commentary-2023', pg: 'p. 706', title: 'Chapter 4 (Part II): Clauses 8–14 (Time, Taking Over, Defects, Variations, Payment)', vi: 'Bình luận chi tiết 8.1–14.15: EOT & Concurrent Delay (8.5), Delay Damages (8.8), Valuation >10% (12.3), Variations (13.3), IPC/FPC (14.6–14.13).', clauses: ['8.5', '8.8', '10.1', '12.3', '13.3', '14.6'] },
+  { book: 'commentary-2023', pg: 'p. 1030', title: 'Chapter 4 (Part III): Clauses 15–21 (Termination, Risk, Claims, DAAB)', vi: 'Bình luận chi tiết 15.1–21.8: Chấm dứt (15.2, 15.5, 16.2), Rủi ro (17–18), Khiếu nại 20.2 (p.1172), DAAB & Trọng tài (21.1–21.8).', clauses: ['15.2', '15.5', '18.1', '20.2', '21.4', '21.6'] },
+  { book: 'commentary-2023', pg: 'p. 1334', title: 'Chapter 5: DAAB Agreement & Procedural Rules', vi: 'Hướng dẫn Hợp đồng Thành viên DAAB, Quy tắc tố tụng DAAB và thủ tục phòng ngừa tranh chấp tại công trường.', clauses: ['21.1', '21.3', '21.4'] },
+
+  // Leo Grutters (ICE Users' Guide 3rd Ed., 2014)
+  { book: 'ice-grutters-2014', pg: 'pp. 1–77', title: 'Part I: Overview & Contract Selection (Red / Yellow / Silver / MDB)', vi: 'Tổng quan bộ sách FIDIC, ma trận phân bổ rủi ro giữa các màu sách và hướng dẫn lựa chọn hợp đồng phù hợp.', clauses: ['1.1', '1.5'] },
+  { book: 'ice-grutters-2014', pg: 'pp. 78–150', title: 'Part II: Parties, Engineer, Design & Site Administration', vi: 'Quản trị công trường hàng ngày: kỷ luật văn bản Notice (1.3), hồ sơ nhân sự thiết bị (6.10), kiểm tra & nghiệm thu (Clause 7).', clauses: ['1.3', '3.5', '6.10', '7.3'] },
+  { book: 'ice-grutters-2014', pg: 'pp. 151–243', title: 'Part III: Time, EOT, Variations & Payment Control', vi: 'Quản lý tiến độ đường găng (8.3), đánh giá EOT, kiểm soát phát sinh Variations (13.3) và lập/duyệt hồ sơ thanh toán IPC (14.6).', clauses: ['8.3', '8.5', '13.3', '14.6'] },
+  { book: 'ice-grutters-2014', pg: 'pp. 244–318', title: 'Part IV: Claims, Contemporary Records & Dispute Resolution', vi: 'Thực hành lập hồ sơ khiếu nại (20.1/20.2), lưu giữ hồ sơ đồng thời, mẫu biểu thư tín chuẩn và quy trình DAB/DAAB.', clauses: ['20.1', '20.2', '21.4'] }
+];
