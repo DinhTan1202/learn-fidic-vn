@@ -110,6 +110,10 @@ const state = {
   libPage: 21,
   libQuery: '',
   libTocCollapsed: false,
+  libSplit: Math.min(78, Math.max(22, Number(localStorage.getItem('fidic_lib_split') || 50))),
+  libNotes: JSON.parse(localStorage.getItem('fidic_lib_notes') || '{}'),
+  libHighlights: JSON.parse(localStorage.getItem('fidic_lib_highlights') || '{}'),
+  libNoteOpen: false,
   libTrans: JSON.parse(localStorage.getItem('fidic_lib_trans') || '{}'),
   bookCache: {},
   tocOpen: false,
@@ -1808,11 +1812,30 @@ async function renderLibrary() {
   const clampPage = (p) => Math.max(1, Math.min(total, Number(p) || 1));
   state.libPage = clampPage(state.libPage);
 
+  const renderLibText = (text, query, hls) => {
+    let html = highlightText(text, query);
+    if (!hls || !hls.length) return html;
+    for (const hl of hls) {
+      const needle = escapeHtml(hl.text || '').trim();
+      if (!needle || needle.length < 2) continue;
+      const escNeedle = needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const re = new RegExp(`(<[^>]+>)|(${escNeedle})`, 'g');
+      const titleAttr = hl.comment ? ` title="${escapeHtml(hl.comment)}"` : '';
+      html = html.replace(re, (m, tag, match) => {
+        if (tag) return tag;
+        return `<mark class="user-hl" data-hl-color="${escapeHtml(hl.color || 'yellow')}"${titleAttr}>${match}</mark>`;
+      });
+    }
+    return html;
+  };
+
   const renderReader = () => {
     const pIdx = state.libPage - 1;
     const rawText = bookData.pages[pIdx] || '(Trang trống / Blank page)';
     const transKey = `${state.libBook}-${state.libPage}`;
     const viText = bookData.pages_vi?.[pIdx] || state.libTrans[transKey] || '';
+    const pageHls = state.libHighlights[transKey] || [];
+    const pageNote = state.libNotes[transKey] || '';
     const q = state.libQuery.trim().toLowerCase();
 
     let hitsHtml = '';
@@ -1843,17 +1866,24 @@ async function renderLibrary() {
       `;
     }
 
+    let activeTocIdx = -1;
+    bookData.toc.forEach((tItem, idx) => {
+      if (tItem.page <= state.libPage) activeTocIdx = idx;
+    });
+
     const tocHtml = bookData.toc
       .map(
-        (tItem) =>
-          `<button type="button" class="lib-toc-item lvl${tItem.level}" data-jump-page="${tItem.page}">${escapeHtml(
+        (tItem, idx) =>
+          `<button type="button" class="lib-toc-item lvl${tItem.level} ${idx === activeTocIdx ? 'active' : ''}" data-jump-page="${tItem.page}">${escapeHtml(
             tItem.title
           )} <span style="color:var(--teal);font-size:11px">(${tItem.page})</span></button>`
       )
       .join('');
 
+    const showAnnPanel = state.libNoteOpen || Boolean(pageNote) || pageHls.length > 0;
+
     $lib.innerHTML = `
-      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px">
+      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px">
         <button type="button" class="act-btn" id="libDesktopTocBtn">☰ ${state.libTocCollapsed ? biText('Hiện Mục lục', 'Show TOC') : biText('Ẩn Mục lục', 'Hide TOC')}</button>
         <input type="search" id="libSearchInp" value="${escapeHtml(state.libQuery)}" placeholder="${biText('Tìm toàn văn trong sách (VD: time-bar, 20.2, good faith, concurrent delay)...', 'Full-text search in book...')}" style="flex:1 1 260px;padding:9px 14px;border-radius:10px;border:1px solid var(--rule2);background:var(--bg2);color:var(--ink);font-size:14px" />
         <div style="display:flex;align-items:center;gap:6px">
@@ -1865,7 +1895,7 @@ async function renderLibrary() {
         </div>
       </div>
       ${hitsHtml}
-      <div class="layout ${state.libTocCollapsed ? 'lib-collapsed' : ''}" style="padding:0">
+      <div class="lib-layout ${state.libTocCollapsed ? 'lib-collapsed' : ''}">
         <div class="lib-toc-col">
           <button type="button" class="toc-toggle" id="libTocToggle">☰ ${biText('Mục lục Sách', 'Book TOC')} (${bookData.toc.length})</button>
           <nav class="index ${state.tocOpen ? 'open' : ''}" aria-label="Book TOC">
@@ -1873,26 +1903,192 @@ async function renderLibrary() {
             ${tocHtml}
           </nav>
         </div>
-        <div>
-          <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px">
-            <strong style="color:var(--ink2)">${escapeHtml(bookData.title)} — ${biText('Trang', 'Page')} ${state.libPage} ${viText ? '· ✅ Song ngữ' : ''}</strong>
-            <div style="display:flex;gap:6px">
+        <div style="min-width:0">
+          <div class="lib-toolbar">
+            <div class="lib-toolbar-group">
+              <span class="lib-page-badge">${biText('Trang', 'Page')} ${state.libPage} / ${total}</span>
+              <strong style="color:var(--ink);font-size:14px">${escapeHtml(bookData.title)}</strong>
+              ${viText ? `<span style="font-size:12px;color:var(--teal);font-weight:600">✅ ${biText('Song ngữ', 'Bilingual')}</span>` : ''}
+            </div>
+            <div class="lib-toolbar-group">
+              <button type="button" class="act-btn" id="libHighlightBtn" title="${biText('Bôi đen đoạn văn bản rồi bấm để Highlight & Comment', 'Select text first, then click to Highlight & Comment')}">🖍 ${biText('Highlight chọn', 'Highlight')}${pageHls.length ? ` (${pageHls.length})` : ''}</button>
+              <button type="button" class="act-btn ${pageNote ? 'has-note' : ''}" id="libNoteBtn">📝 ${biText('Ghi chú', 'Note')}${pageNote ? ' ●' : ''}</button>
               <button type="button" class="act-btn" id="libCopyPage">📋 ${t('copy')}</button>
               <button type="button" class="act-btn saved" id="libTranslatePage">🤖 ${viText ? biText('Dịch lại (AI)', 'Re-translate (AI)') : biText('Dịch & Lưu (AI)', 'Translate & Cache (AI)')}</button>
             </div>
           </div>
+          <div id="libHlBarSlot"></div>
           ${
             viText
               ? state.lang === 'vi'
-                ? `<div class="lib-page-card">${highlightText(viText, state.libQuery)}</div>`
+                ? `<div class="lib-page-card">${renderLibText(viText, state.libQuery, pageHls)}</div>`
                 : state.lang === 'en'
-                ? `<div class="lib-page-card">${highlightText(rawText, state.libQuery)}</div>`
-                : `<div class="txt two"><div class="lib-page-card"><span class="col-label">Tiếng Việt</span><div>${highlightText(viText, state.libQuery)}</div></div><div class="lib-page-card"><span class="col-label">English</span><div>${highlightText(rawText, state.libQuery)}</div></div></div>`
-              : `<div class="lib-page-card">${highlightText(rawText, state.libQuery)}</div>`
+                ? `<div class="lib-page-card">${renderLibText(rawText, state.libQuery, pageHls)}</div>`
+                : `<div class="lib-split" id="libSplitPane" style="--lib-split:${state.libSplit}%"><div class="lib-page-card"><span class="col-label">Tiếng Việt</span><div>${renderLibText(viText, state.libQuery, pageHls)}</div></div><div class="lib-resizer" id="libResizer" title="${biText('Kéo để điều chỉnh độ rộng khung Việt / Anh', 'Drag to resize VI / EN panes')}"></div><div class="lib-page-card"><span class="col-label">English</span><div>${renderLibText(rawText, state.libQuery, pageHls)}</div></div></div>`
+              : `<div class="lib-page-card">${renderLibText(rawText, state.libQuery, pageHls)}</div>`
+          }
+          ${
+            showAnnPanel
+              ? `<div class="lib-ann-panel">
+                  <div class="lib-ann-head">
+                    <strong style="font-size:13.5px;color:var(--ink)">📌 ${biText('Ghi chú & Highlight cá nhân — Trang', 'Personal Notes & Highlights — Page')} ${state.libPage}</strong>
+                    <span class="lib-local-badge">🔒 ${biText('Chỉ lưu cục bộ trên máy này (không đẩy lên web)', 'Saved locally on this device only')}</span>
+                  </div>
+                  ${
+                    state.libNoteOpen || pageNote
+                      ? `<div class="note-box" style="margin-top:6px">
+                          <textarea id="libPageNoteInput" placeholder="${biText('Viết ghi chú cá nhân cho trang này...', 'Write personal notes for this page...')}">${escapeHtml(pageNote)}</textarea>
+                          <div class="note-actions">
+                            <button type="button" class="act-btn saved" id="libSaveNoteBtn">💾 ${biText('Lưu ghi chú', 'Save note')}</button>
+                            ${pageNote ? `<button type="button" class="act-btn" id="libDelNoteBtn">🗑 ${biText('Xóa ghi chú', 'Delete note')}</button>` : ''}
+                          </div>
+                        </div>`
+                      : ''
+                  }
+                  ${
+                    pageHls.length
+                      ? `<div class="lib-hl-list">
+                          ${pageHls
+                            .map(
+                              (hl, idx) => `
+                            <div class="lib-hl-item" data-hl-color="${escapeHtml(hl.color || 'yellow')}">
+                              <div class="lib-hl-item-top">
+                                <div style="flex:1">
+                                  <div style="font-style:italic;color:var(--ink)">“${escapeHtml(hl.text)}”</div>
+                                  ${hl.comment ? `<div style="margin-top:4px;color:var(--teal);font-weight:500">💬 ${escapeHtml(hl.comment)}</div>` : ''}
+                                </div>
+                                <div style="display:flex;gap:4px;flex-shrink:0">
+                                  <button type="button" class="act-btn" data-edit-hl="${idx}" title="${biText('Sửa bình luận', 'Edit comment')}">✏️</button>
+                                  <button type="button" class="act-btn" data-del-hl="${idx}" title="${biText('Xóa highlight', 'Delete highlight')}">✕</button>
+                                </div>
+                              </div>
+                            </div>`
+                            )
+                            .join('')}
+                        </div>`
+                      : ''
+                  }
+                </div>`
+              : ''
           }
         </div>
       </div>
     `;
+
+    // Draggable split resizer between VI and EN panes
+    const $split = document.getElementById('libSplitPane');
+    const $resizer = document.getElementById('libResizer');
+    if ($split && $resizer) {
+      $resizer.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        $resizer.classList.add('dragging');
+        const rect = $split.getBoundingClientRect();
+        const onMove = (ev) => {
+          const pct = Math.min(78, Math.max(22, ((ev.clientX - rect.left) / rect.width) * 100));
+          state.libSplit = Math.round(pct);
+          $split.style.setProperty('--lib-split', `${state.libSplit}%`);
+        };
+        const onUp = () => {
+          $resizer.classList.remove('dragging');
+          localStorage.setItem('fidic_lib_split', String(state.libSplit));
+          window.removeEventListener('pointermove', onMove);
+          window.removeEventListener('pointerup', onUp);
+        };
+        window.addEventListener('pointermove', onMove);
+        window.addEventListener('pointerup', onUp);
+      });
+    }
+
+    // Highlight & Comment bar
+    document.getElementById('libHighlightBtn')?.addEventListener('click', () => {
+      const sel = window.getSelection()?.toString().trim() || '';
+      if (sel.length < 2) {
+        showToast(biText('Hãy bôi đen một đoạn văn bản rồi bấm Highlight', 'Select a text passage first, then click Highlight'));
+        return;
+      }
+      const $slot = document.getElementById('libHlBarSlot');
+      if (!$slot) return;
+      let chosenColor = 'yellow';
+      $slot.innerHTML = `
+        <div class="lib-hl-bar">
+          <span class="lib-hl-quote">“${escapeHtml(sel)}”</span>
+          <button type="button" class="lib-color-dot active" data-color="yellow" title="Vàng"></button>
+          <button type="button" class="lib-color-dot" data-color="teal" title="Xanh ngọc"></button>
+          <button type="button" class="lib-color-dot" data-color="pink" title="Hồng"></button>
+          <input type="text" id="libHlCommentInp" placeholder="${biText('Thêm bình luận / comment (tùy chọn)...', 'Add optional comment...')}" style="flex:1 1 200px;padding:6px 10px;border-radius:8px;border:1px solid var(--rule2);background:var(--bg);color:var(--ink);font-size:13px" />
+          <button type="button" class="act-btn saved" id="libHlSaveBtn">✓ ${biText('Lưu', 'Save')}</button>
+          <button type="button" class="act-btn" id="libHlCancelBtn">✕</button>
+        </div>
+      `;
+      $slot.querySelectorAll('.lib-color-dot').forEach((dot) => {
+        dot.addEventListener('click', () => {
+          chosenColor = dot.dataset.color;
+          $slot.querySelectorAll('.lib-color-dot').forEach((d) => d.classList.toggle('active', d === dot));
+        });
+      });
+      document.getElementById('libHlCancelBtn')?.addEventListener('click', () => {
+        $slot.innerHTML = '';
+      });
+      document.getElementById('libHlSaveBtn')?.addEventListener('click', () => {
+        const comment = document.getElementById('libHlCommentInp')?.value.trim() || '';
+        const list = state.libHighlights[transKey] ? [...state.libHighlights[transKey]] : [];
+        list.push({ text: sel.slice(0, 600), color: chosenColor, comment, createdAt: Date.now() });
+        state.libHighlights[transKey] = list;
+        localStorage.setItem('fidic_lib_highlights', JSON.stringify(state.libHighlights));
+        window.getSelection()?.removeAllRanges();
+        showToast(biText('Đã lưu Highlight & Comment cục bộ', 'Saved Highlight & Comment locally'));
+        renderReader();
+      });
+    });
+
+    // Note toggle & save
+    document.getElementById('libNoteBtn')?.addEventListener('click', () => {
+      state.libNoteOpen = !state.libNoteOpen;
+      renderReader();
+    });
+    document.getElementById('libSaveNoteBtn')?.addEventListener('click', () => {
+      const val = document.getElementById('libPageNoteInput')?.value || '';
+      if (val.trim()) {
+        state.libNotes[transKey] = val;
+      } else {
+        delete state.libNotes[transKey];
+      }
+      localStorage.setItem('fidic_lib_notes', JSON.stringify(state.libNotes));
+      showToast(biText('Đã lưu ghi chú trang (cục bộ)', 'Saved page note (locally)'));
+      renderReader();
+    });
+    document.getElementById('libDelNoteBtn')?.addEventListener('click', () => {
+      delete state.libNotes[transKey];
+      state.libNoteOpen = false;
+      localStorage.setItem('fidic_lib_notes', JSON.stringify(state.libNotes));
+      showToast(biText('Đã xóa ghi chú trang', 'Deleted page note'));
+      renderReader();
+    });
+
+    // Edit / Delete Highlight
+    $lib.querySelectorAll('[data-edit-hl]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = Number(btn.dataset.editHl);
+        const list = state.libHighlights[transKey] || [];
+        if (!list[idx]) return;
+        const next = window.prompt(biText('Chỉnh sửa bình luận:', 'Edit comment:'), list[idx].comment || '');
+        if (next === null) return;
+        list[idx].comment = next.trim();
+        localStorage.setItem('fidic_lib_highlights', JSON.stringify(state.libHighlights));
+        renderReader();
+      });
+    });
+    $lib.querySelectorAll('[data-del-hl]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = Number(btn.dataset.delHl);
+        const list = state.libHighlights[transKey] || [];
+        list.splice(idx, 1);
+        if (list.length) state.libHighlights[transKey] = list;
+        else delete state.libHighlights[transKey];
+        localStorage.setItem('fidic_lib_highlights', JSON.stringify(state.libHighlights));
+        renderReader();
+      });
+    });
 
     document.getElementById('libDesktopTocBtn')?.addEventListener('click', () => {
       state.libTocCollapsed = !state.libTocCollapsed;
