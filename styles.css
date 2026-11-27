@@ -1841,6 +1841,12 @@ mark.hl-match {
 .lib-bi-head {
   padding: 0 12px 10px;
 }
+.lib-bi-vi {
+  grid-column: 1;
+}
+.lib-bi-en {
+  grid-column: 3;
+}
 .lib-bi-cell {
   padding: 12px;
   font-size: 15.5px;
@@ -2001,4 +2007,5 @@ mark.user-hl[data-hl-color="pink"] {
   .lib-toc-col { position: static; max-height: 260px; }
   .lib-split { grid-template-columns: 1fr; gap: 14px; }
   .lib-resizer { display: none; }
+  .lib-bi-vi, .lib-bi-en { grid-column: auto; }
 }

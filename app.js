@@ -1794,7 +1794,7 @@ async function renderLibrary() {
     return;
   }
 
-  const fileUrl = state.libBook === 'godwin' ? './data/books/godwin.json?v=34' : './data/books/seppala.json?v=34';
+  const fileUrl = state.libBook === 'godwin' ? './data/books/godwin.json?v=35' : './data/books/seppala.json?v=35';
   let bookData = state.bookCache[state.libBook];
   if (!bookData) {
     try {
@@ -1930,10 +1930,10 @@ async function renderLibrary() {
                 const rows = viParas
                   .map(
                     (vp, idx) =>
-                      `<div class="lib-bi-cell">${renderLibText(vp, state.libQuery, pageHls)}</div><div class="lib-bi-cell">${renderLibText(enParas[idx], state.libQuery, pageHls)}</div>`
+                      `<div class="lib-bi-cell lib-bi-vi">${renderLibText(vp, state.libQuery, pageHls)}</div><div class="lib-bi-cell lib-bi-en">${renderLibText(enParas[idx], state.libQuery, pageHls)}</div>`
                   )
                   .join('');
-                return `<div class="lib-split lib-bi-aligned" id="libSplitPane" style="--lib-split:${state.libSplit}%"><div class="lib-bi-head"><span class="col-label" style="margin-bottom:0">Tiếng Việt</span></div><div class="lib-resizer" id="libResizer" style="grid-row:1 / span ${viParas.length + 1}" title="${resizerTitle}"></div><div class="lib-bi-head"><span class="col-label" style="margin-bottom:0">English</span></div>${rows}</div>`;
+                return `<div class="lib-split lib-bi-aligned" id="libSplitPane" style="--lib-split:${state.libSplit}%"><div class="lib-bi-head lib-bi-vi"><span class="col-label" style="margin-bottom:0">Tiếng Việt</span></div><div class="lib-resizer" id="libResizer" style="grid-column:2;grid-row:1 / span ${viParas.length + 1}" title="${resizerTitle}"></div><div class="lib-bi-head lib-bi-en"><span class="col-label" style="margin-bottom:0">English</span></div>${rows}</div>`;
               }
               return `<div class="lib-split" id="libSplitPane" style="--lib-split:${state.libSplit}%"><div class="lib-page-card"><span class="col-label">Tiếng Việt</span><div>${renderLibText(viText, state.libQuery, pageHls)}</div></div><div class="lib-resizer" id="libResizer" title="${resizerTitle}"></div><div class="lib-page-card"><span class="col-label">English</span><div>${renderLibText(rawText, state.libQuery, pageHls)}</div></div></div>`;
             })()
