@@ -1794,7 +1794,7 @@ async function renderLibrary() {
     return;
   }
 
-  const fileUrl = state.libBook === 'godwin' ? './data/books/godwin.json?v=35' : './data/books/seppala.json?v=35';
+  const fileUrl = state.libBook === 'godwin' ? './data/books/godwin.json?v=36' : './data/books/seppala.json?v=36';
   let bookData = state.bookCache[state.libBook];
   if (!bookData) {
     try {
