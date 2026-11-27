@@ -17,6 +17,7 @@ import { OTHER_BOOKS_SUBCLAUSES } from './data/other-books.js';
 import {
   GOLDEN_PRINCIPLES,
   CASE_LAW,
+  MAPPING_99_17,
   SOURCE_DOCS,
   EXTRA_TEMPLATES,
   EXTENDED_QUIZ
@@ -329,6 +330,13 @@ function renderCard(item, highlightId = null) {
       )}${state.lang === 'bi' ? `<div style="color:var(--mute);margin-top:4px;font-size:12.5px">${escapeHtml(vnLaw.en)}</div>` : ''}</div>`
     : '';
 
+  const relCases = CASE_LAW.filter((c) => c.clauses.includes(item.id));
+  const relCasesHtml = relCases.length
+    ? `<div class="case-box"><strong>⚖️ ${biText('Án lệ & Bản án liên quan (Source)', 'Related Case Law')}:</strong> ${relCases
+        .map((c) => `<a href="#learn" class="case-pill" title="${escapeHtml(c.parties)}">${escapeHtml(c.ref)}</a>`)
+        .join(' ')}</div>`
+    : '';
+
   const notePreviewHtml =
     userNote && !isNoteOpen ? `<div class="note-preview"><strong>📝 ${t('note')}:</strong> ${escapeHtml(userNote)}</div>` : '';
 
@@ -365,6 +373,7 @@ function renderCard(item, highlightId = null) {
       ${bodyHtml}
       ${tlsHtml}
       ${vnLawHtml}
+      ${relCasesHtml}
       ${notePreviewHtml}
       ${noteEditorHtml}
       <div class="foot">
@@ -807,12 +816,18 @@ function renderLearn() {
         ).join('')}
       </div>
 
-      <h2 style="margin-top:32px">${biText('8. 5 Nguyên tắc Vàng FIDIC 2019 (Golden Principles)', '8. FIDIC Golden Principles (2019)')}</h2>
+      <h2 style="margin-top:32px">${biText('8. 5 Nguyên tắc Vàng FIDIC 2019 & Kiểm tra Điều kiện Riêng', '8. FIDIC Golden Principles (2019) & PC Compliance Check')} <span class="tl-pill" id="gpScorePill">5/5 GP</span></h2>
       <div class="section-grid">
         ${GOLDEN_PRINCIPLES.map(
           (g) => `
           <div class="card-box">
-            <span class="num" style="margin-bottom:8px">${g.gp}</span>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <span class="num">${g.gp}</span>
+              <label style="font-size:12.5px;display:flex;align-items:center;gap:6px;cursor:pointer">
+                <input type="checkbox" class="gp-chk" checked style="accent-color:var(--teal)" />
+                <span>${biText('HĐ tuân thủ', 'Compliant')}</span>
+              </label>
+            </div>
             <h3>${escapeHtml(state.lang === 'en' ? g.enTitle : g.viTitle)}</h3>
             <p style="font-size:14px">${escapeHtml(state.lang === 'en' ? g.en : g.vi)}</p>
           </div>
@@ -820,23 +835,46 @@ function renderLearn() {
         ).join('')}
       </div>
 
-      <h2 style="margin-top:32px">${biText('9. Thư viện Bản án & Án lệ Thực tế (từ Source)', '9. Case Law & Judgments Library')}</h2>
-      <div class="section-grid">
+      <h2 style="margin-top:32px">${biText('9. Thư viện 12 Bản án & Án lệ Thực tế (từ Source)', '9. Case Law & Judgments Library (12 Cases)')}</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px" id="caseFilterBar">
+        <button type="button" class="chip active" data-case-book="all">${biText('Tất cả (12)', 'All (12)')}</button>
+        <button type="button" class="chip" data-case-book="red">📕 ${biText('Sách Đỏ', 'Red Book')}</button>
+        <button type="button" class="chip" data-case-book="sil">📓 ${biText('Sách Bạc / Trắng', 'Silver / White')}</button>
+        <button type="button" class="chip" data-case-book="yel">📒 ${biText('Sách Vàng', 'Yellow Book')}</button>
+      </div>
+      <div class="section-grid" id="caseLawGrid">
         ${CASE_LAW.map(
           (c) => `
-          <div class="card-box bk-${c.book}" style="border-top:4px solid var(--accent)">
+          <div class="card-box bk-${c.book}" data-case-item="${c.book}" style="border-top:4px solid var(--accent)">
             <div style="font-size:12px;font-weight:700;color:var(--accent)">${escapeHtml(c.ref)}</div>
             <h3 style="margin-top:4px">${escapeHtml(c.parties)}</h3>
             <p style="font-size:14px">${escapeHtml(state.lang === 'en' ? c.en : c.vi)}</p>
-            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
-              ${c.clauses.map((cl) => `<a href="#${c.book === 'yel' || c.book === 'sil' ? 'red' : c.book}-17-${cl.replace(/\./g, '-')}" class="ai-clause-link">${cl}</a>`).join('')}
+            <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-top:10px">
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                ${c.clauses.map((cl) => `<a href="#${c.book === 'yel' || c.book === 'sil' ? 'red' : c.book}-17-${cl.replace(/\./g, '-')}" class="ai-clause-link">${cl}</a>`).join('')}
+              </div>
+              <button type="button" class="act-btn" data-ask-case="${c.id}">🤖 ${biText('Phân tích AI', 'Ask AI')}</button>
             </div>
           </div>
         `
         ).join('')}
       </div>
 
-      <h2 style="margin-top:32px">${biText('10. Danh mục Tài liệu Tham khảo (Source/)', '10. Reference Library Index (Source/)')}</h2>
+      <h2 style="margin-top:32px">${biText('10. Bảng Quy đổi & Thay đổi Lớn 1999 ↔ 2017 (Contract Guide 2022)', '10. Major 1999 ↔ 2017 Changes (Contract Guide 2022)')}</h2>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th>1999</th><th>2017</th><th>${biText('Thay đổi cốt lõi', 'Key Structural Change')}</th></tr>
+          </thead>
+          <tbody>
+            ${MAPPING_99_17.map(
+              (m) => `<tr><td><strong>${escapeHtml(m.c99)}</strong></td><td><span class="tl-pill">${escapeHtml(m.c17)}</span></td><td>${escapeHtml(state.lang === 'en' ? m.en : m.vi)}</td></tr>`
+            ).join('')}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 style="margin-top:32px">${biText('11. Danh mục Tài liệu Tham khảo (Source/)', '11. Reference Library Index (Source/)')}</h2>
       <div class="table-wrap">
         <table class="data-table">
           <thead>
@@ -926,6 +964,41 @@ function renderLearn() {
       const score = Array.from(quizAnswers.values()).filter(Boolean).length;
       const pill = document.getElementById('quizScorePill');
       if (pill) pill.textContent = `${score}/${QUIZ.length}`;
+    });
+  });
+
+  // Golden Principles compliance score
+  $view.querySelectorAll('.gp-chk').forEach((cb) => {
+    cb.addEventListener('change', () => {
+      const checked = Array.from($view.querySelectorAll('.gp-chk')).filter((x) => x.checked).length;
+      const gpPill = document.getElementById('gpScorePill');
+      if (gpPill) gpPill.textContent = `${checked}/5 GP`;
+    });
+  });
+
+  // Case Law filter & Ask AI
+  $view.querySelectorAll('[data-case-book]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const bk = btn.dataset.caseBook;
+      $view.querySelectorAll('[data-case-book]').forEach((b) => b.classList.toggle('active', b === btn));
+      $view.querySelectorAll('[data-case-item]').forEach((card) => {
+        card.style.display = bk === 'all' || card.dataset.caseItem === bk ? '' : 'none';
+      });
+    });
+  });
+
+  $view.querySelectorAll('[data-ask-case]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const c = CASE_LAW.find((x) => x.id === btn.dataset.askCase);
+      if (!c) return;
+      state.aiOpen = true;
+      state.aiMode = 'chat';
+      renderAiDrawer();
+      const inp = document.getElementById('aiInput');
+      if (inp) {
+        inp.value = `Phân tích bài học thực tiễn từ bản án ${c.ref} (${c.parties}) liên quan đến điều khoản ${c.clauses.join(', ')}: ${c.vi}`;
+        document.getElementById('aiForm')?.requestSubmit();
+      }
     });
   });
 }

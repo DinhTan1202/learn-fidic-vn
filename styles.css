@@ -1592,3 +1592,31 @@ mark.hl-match {
   padding: 24px;
   text-align: center;
 }
+
+/* v20: Case Law Box on Cards */
+.case-box {
+  margin-top: 10px;
+  padding: 9px 14px;
+  border-radius: 9px;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  font-size: 13px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.case-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--bg3);
+  border: 1px solid var(--rule2);
+  color: var(--ink2);
+  font-size: 12px;
+  font-weight: 600;
+}
+.case-pill:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+}

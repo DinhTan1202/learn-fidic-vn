@@ -108,16 +108,64 @@ export const CASE_LAW = [
     clauses: ['8.7', '14.7', '15.2'],
     vi: 'Bản án phúc thẩm về tranh chấp hợp đồng thi công Sách Đỏ 1999: Giải quyết phạt vi phạm chậm tiến độ và thanh toán khối lượng hoàn thành.',
     en: 'Appellate commercial judgment on Red Book 1999: Addressed Delay Damages and payment for completed works.'
+  },
+  {
+    id: 'bg-bw-1230',
+    book: 'red',
+    ref: '1230/2022/QD-PQTT · TAND TP. HCM',
+    parties: 'BG v BW',
+    clauses: ['14.6', '14.7', '21.6'],
+    vi: 'Quyết định không hủy phán quyết trọng tài liên quan tới hợp đồng thi công Sách Đỏ 1999: Thanh toán khối lượng, nghiệm thu và hiệu lực thỏa thuận trọng tài.',
+    en: 'HCMC Court decision upholding arbitral award under Red Book 1999 on measurement, payment, and arbitration validity.'
+  },
+  {
+    id: 'ab-nhatrang-agc',
+    book: 'red',
+    ref: '296/2020/KDTM-PT · TAND TP. HCM',
+    parties: 'A&B Saigon Nha Trang v AGC',
+    clauses: ['10.1', '11.9', '14.9'],
+    vi: 'Bản án phúc thẩm về tranh chấp hợp đồng xây dựng Sách Đỏ 1999: Bàn giao công trình, bảo hành sai sót (DNP) và hoàn trả tiền giữ lại (Retention Money).',
+    en: 'Appellate judgment on Red Book 1999: Addressed taking over, defects liability, and release of Retention Money.'
+  },
+  {
+    id: 'mac-btc-66',
+    book: 'red',
+    ref: '66/2023/KDTM-PT · TAND TP. Hà Nội',
+    parties: 'MAC v BTC',
+    clauses: ['13.3', '14.7', '15.2'],
+    vi: 'Bản án phúc thẩm về hợp đồng xây dựng Sách Đỏ: Xem xét khối lượng phát sinh (Variations), xác nhận thanh toán và quyền chấm dứt hợp đồng.',
+    en: 'Hanoi appellate judgment on Red Book: Examined Variations valuation, payment certification, and termination rights.'
+  },
+  {
+    id: 'bas-white-book',
+    book: 'sil',
+    ref: '08/2021/KDTM-PT · Quyển Trắng 1998',
+    parties: 'Tranh chấp Hợp đồng Tư vấn (White Book 1998)',
+    clauses: ['4.1', '16.2', '21.6'],
+    vi: 'Bản án áp dụng FIDIC White Book 1998 (Hợp đồng Dịch vụ Tư vấn - Điều khoản 4 & 16): Nghĩa vụ cẩn trọng của Tư vấn, thanh toán phí tư vấn và chấm dứt hợp đồng.',
+    en: 'Judgment applying FIDIC White Book 1998 (Client/Consultant Agreement - Clauses 4 & 16): Consultant standard of care, fee payment, and termination.'
   }
+];
+
+export const MAPPING_99_17 = [
+  { c99: '2.5 + 20.1', c17: '20.1 + 20.2', vi: 'Hợp nhất Khiếu nại CĐT (2.5) và Nhà thầu (20.1) thành quy trình bình đẳng; tăng hạn hồ sơ chi tiết từ 42 lên 84 ngày.', en: 'Merges Employer (2.5) & Contractor (20.1) claims into symmetrical 20.2; extends detailed claim from 42 to 84 days.' },
+  { c99: '3.5', c17: '3.7', vi: 'Bổ sung vai trò trung lập rõ ràng của NTV + mốc cứng 42 ngày tham vấn + 42 ngày quyết định + 28 ngày NOD.', en: 'Adds explicit Engineer neutrality + fixed 42d consultation + 42d determination + 28d NOD.' },
+  { c99: 'Mới / New', c17: '8.4', vi: 'Thêm cơ chế Cảnh báo Sớm (Advance Warning) bắt buộc hai bên báo trước rủi ro chậm tiến độ/tăng chi phí.', en: 'Adds mandatory Advance Warning of probable future adverse events.' },
+  { c99: '15.5', c17: '15.5 + 15.6', vi: 'Chấm dứt vì lợi ích CĐT: bản 2017 cho phép Nhà thầu được bồi thường lợi nhuận bị mất.', en: 'Termination for convenience: 2017 entitles Contractor to loss of profit.' },
+  { c99: '17.6', c17: '1.15', vi: 'Chuyển Giới hạn Trách nhiệm từ 17.6 lên 1.15 trong Quy định chung.', en: 'Moves Limitation of Liability from 17.6 to 1.15.' },
+  { c99: '19.1–19.7', c17: '18.1–18.6', vi: 'Đổi tên "Force Majeure" (Chương 19) thành "Exceptional Events" (Chương 18).', en: 'Renames Force Majeure (Clause 19) to Exceptional Events (Clause 18).' },
+  { c99: '20.2–20.8', c17: '21.1–21.8', vi: 'Tách Tranh chấp & Trọng tài thành Chương 21 riêng; đổi DAB thành DAAB (thêm chức năng phòng ngừa 21.3).', en: 'Splits Disputes into Clause 21; renames DAB to Standing DAAB with Dispute Avoidance (21.3).' }
 ];
 
 export const SOURCE_DOCS = [
   { cat: 'FIDIC Guide', name: '1- Contract Guide 2022 (FIDIC 2017).pdf', size: '440 MB', desc: 'Hướng dẫn chính thức của FIDIC cho Bộ sách 2017 (2nd Edition).' },
   { cat: 'FIDIC Guide', name: '2- Contract_Guide 2000 (FIDIC 1999).docx', size: '3.3 MB', desc: 'Hướng dẫn chính thức của FIDIC cho Bộ sách 1999.' },
+  { cat: 'FIDIC Guide', name: '3- FIDIC procurement-procedures-guide 2011.pdf', size: '0.7 MB', desc: 'Hướng dẫn quy trình đấu thầu và lựa chọn nhà thầu theo FIDIC.' },
   { cat: 'Principles', name: '4- FIDIC Golden Principle 2019.pdf', size: '0.3 MB', desc: '5 Nguyên tắc Vàng không được vi phạm khi sửa Điều kiện Riêng.' },
   { cat: 'Diagrams', name: 'FIDIC Ultimate Diagram 1999.pdf / So do FIDIC 1999.pdf', size: '7.3 MB', desc: 'Sơ đồ tổng thể các mốc thời gian và quy trình FIDIC 1999.' },
   { cat: 'Books', name: '2023 The-FIDIC-Red-Book-Contract-an-International-Clause-By-Clause-Commentary.pdf', size: '6.2 MB', desc: 'Bình luận chi tiết từng điều khoản Red Book quốc tế (2023).' },
-  { cat: 'Books', name: '2020 2017-fidic-contracts Godwin (Wiley, 2020).pdf', size: '1.6 MB', desc: 'Phân tích chuyên sâu Hợp đồng FIDIC 2017 (Godwin).' }
+  { cat: 'Books', name: '2020 2017-fidic-contracts Godwin (Wiley, 2020).pdf', size: '1.6 MB', desc: 'Phân tích chuyên sâu Hợp đồng FIDIC 2017 (Godwin).' },
+  { cat: 'Books', name: '2014 ICE-FIDIC-USER-S-GUIDE-3rd-edtion (Leo Grutters).pdf', size: '170 MB', desc: 'Cẩm nang thực hành FIDIC của ICE (Leo Grutters).' }
 ];
 
 export const EXTRA_TEMPLATES = [
