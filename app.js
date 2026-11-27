@@ -14,6 +14,7 @@ import { RED17_PART1 } from './data/red17-part1.js';
 import { RED17_PART2 } from './data/red17-part2.js';
 import { RED17_PART3 } from './data/red17-part3.js';
 import { OTHER_BOOKS_SUBCLAUSES } from './data/other-books.js';
+import { OTHER_BOOKS_EXT } from './data/other-books-ext.js';
 import {
   GOLDEN_PRINCIPLES,
   CASE_LAW,
@@ -57,7 +58,8 @@ const SUBCLAUSES = [
   ...RED17_PART1,
   ...RED17_PART2,
   ...RED17_PART3,
-  ...OTHER_BOOKS_SUBCLAUSES
+  ...OTHER_BOOKS_SUBCLAUSES,
+  ...OTHER_BOOKS_EXT
 ].sort((a, b) => {
   if (a.clause !== b.clause) return a.clause - b.clause;
   return a.id.localeCompare(b.id, undefined, { numeric: true });
@@ -102,6 +104,7 @@ const state = {
   roleFilter: 'all',
   typeFilter: 'all',
   compareMode: false,
+  learnTab: 'tools',
   tocOpen: false,
   aiOpen: false,
   aiMode: 'chat',
@@ -713,8 +716,14 @@ function renderLearn() {
   document.title = `${t('navLearn')} · ${t('brand')}`;
   $view.innerHTML = `
     <div class="wrap">
-      <h1 style="margin-top:0">${biText('Lộ trình Học FIDIC', 'FIDIC Learning Path')}</h1>
-      <div class="section-grid">
+      <h1 style="margin-top:0">${biText('Trung tâm Học & Tra cứu FIDIC', 'FIDIC Learning & Reference Hub')}</h1>
+      <div class="learn-tabs" id="learnTabs" role="tablist">
+        <button type="button" class="learn-tab ${state.learnTab === 'tools' ? 'active' : ''}" data-ltab="tools">🎯 ${biText('Công cụ & Quy trình', 'Tools & Workflows')}</button>
+        <button type="button" class="learn-tab ${state.learnTab === 'legal' ? 'active' : ''}" data-ltab="legal">⚖️ ${biText('Pháp lý & Án lệ', 'Legal & Case Law')}</button>
+        <button type="button" class="learn-tab ${state.learnTab === 'ref' ? 'active' : ''}" data-ltab="ref">📖 ${biText('Tra cứu & EOT', 'Reference & EOT')}</button>
+        <button type="button" class="learn-tab ${state.learnTab === 'quiz' ? 'active' : ''}" data-ltab="quiz">🎓 ${biText('Trắc nghiệm (Quiz)', 'Quiz')}</button>
+      </div>
+      <div class="section-grid" data-lgroup="tools">
         ${LEARN_ITEMS.map(
           (it) => `
           <div class="card-box">
@@ -1066,6 +1075,37 @@ function renderLearn() {
       </div>
     </div>
   `;
+
+  // Sub-tab filtering for clean Learning Hub
+  const tabMap = {
+    '1.': 'tools', '2.': 'tools', '12.': 'tools', '13.': 'tools', '14.': 'tools',
+    '8.': 'legal', '9.': 'legal', '15.': 'legal', '16.': 'legal', '17.': 'legal',
+    '3.': 'ref', '4.': 'ref', '5.': 'ref', '6.': 'ref', '10.': 'ref', '11.': 'ref', '18.': 'ref',
+    '7.': 'quiz'
+  };
+  const wrapEl = $view.querySelector('.wrap');
+  if (wrapEl) {
+    let curTab = 'tools';
+    Array.from(wrapEl.children).forEach((el) => {
+      if (el.tagName === 'H1' || el.id === 'learnTabs') return;
+      if (el.tagName === 'H2') {
+        const prefix = (el.textContent || '').trim().match(/^(\d+\.)/)?.[1];
+        if (prefix && tabMap[prefix]) curTab = tabMap[prefix];
+      }
+      el.dataset.lgroup = curTab;
+    });
+  }
+  const applyLearnTab = (tab) => {
+    state.learnTab = tab;
+    $view.querySelectorAll('#learnTabs .learn-tab').forEach((b) => b.classList.toggle('active', b.dataset.ltab === tab));
+    $view.querySelectorAll('[data-lgroup]').forEach((el) => {
+      el.style.display = el.dataset.lgroup === tab ? '' : 'none';
+    });
+  };
+  $view.querySelectorAll('#learnTabs .learn-tab').forEach((btn) => {
+    btn.addEventListener('click', () => applyLearnTab(btn.dataset.ltab));
+  });
+  applyLearnTab(state.learnTab);
 
   // Deadline Calculator
   const $calcDate = document.getElementById('calcDate');

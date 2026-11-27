@@ -1665,3 +1665,32 @@ mark.hl-match {
   background: rgba(179, 38, 30, 0.18);
   color: #f87171;
 }
+
+/* v25: Clean Sub-Tabs for Learn FIDIC */
+.learn-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+}
+.learn-tab {
+  padding: 9px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--rule2);
+  background: var(--bg2);
+  color: var(--mute);
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+.learn-tab:hover {
+  color: var(--ink);
+  border-color: var(--mute);
+}
+.learn-tab.active {
+  background: var(--teal);
+  color: #0d1418;
+  border-color: var(--teal);
+}
