@@ -4,8 +4,8 @@ import {
   SUBCLAUSES as BASE_SUBCLAUSES,
   LEARN_ITEMS,
   TIME_CHEATSHEET,
-  QUIZ,
-  CONTRACT_MODELS,
+  QUIZ as BASE_QUIZ,
+  CONTRACT_MODELS as BASE_MODELS,
   PROJECT_CASE
 } from './data/fidic-data.js';
 
@@ -14,6 +14,17 @@ import { RED17_PART1 } from './data/red17-part1.js';
 import { RED17_PART2 } from './data/red17-part2.js';
 import { RED17_PART3 } from './data/red17-part3.js';
 import { OTHER_BOOKS_SUBCLAUSES } from './data/other-books.js';
+import {
+  GOLDEN_PRINCIPLES,
+  CASE_LAW,
+  SOURCE_DOCS,
+  EXTRA_TEMPLATES,
+  EXTENDED_QUIZ
+} from './data/source-library.js';
+import { encryptJson, decryptJson, hashPassphrase } from './security.js';
+
+const CONTRACT_MODELS = [...BASE_MODELS, ...EXTRA_TEMPLATES];
+const QUIZ = [...BASE_QUIZ, ...EXTENDED_QUIZ];
 
 import {
   SUBCLAUSE_META,
@@ -79,6 +90,11 @@ const state = {
   aiMode: 'chat',
   aiSettingsOpen: false,
   aiLoading: false,
+  aiImage: null,
+  gistToken: localStorage.getItem('fidic_gist_token') || '',
+  gistId: localStorage.getItem('fidic_gist_id') || '',
+  lockHash: localStorage.getItem('fidic_lock_hash') || '',
+  unlocked: !localStorage.getItem('fidic_lock_hash'),
   geminiKey: localStorage.getItem('fidic_gemini_key') || '',
   geminiModel: (() => {
     const savedModel = localStorage.getItem('fidic_gemini_model');
@@ -777,7 +793,7 @@ function renderLearn() {
         </div>
       </div>
 
-      <h2 style="margin-top:32px">${biText('7. Kiểm tra nhanh (Quiz)', '7. Quick Knowledge Check')}</h2>
+      <h2 style="margin-top:32px">${biText('7. Kiểm tra nhanh (Quiz)', '7. Quick Knowledge Check')} <span class="tl-pill" id="quizScorePill">0/${QUIZ.length}</span></h2>
       <div class="section-grid">
         ${QUIZ.map(
           (q, idx) => `
@@ -785,9 +801,53 @@ function renderLearn() {
             <h3>${escapeHtml(state.lang === 'en' ? q.qEn : q.qVi)}</h3>
             ${state.lang === 'bi' ? `<p style="color:var(--mute);font-size:13.5px">${escapeHtml(q.qEn)}</p>` : ''}
             ${q.options.map((opt, oi) => `<button type="button" class="quiz-opt" data-opt="${oi}">${escapeHtml(opt)}</button>`).join('')}
+            ${q.exp ? `<div class="quiz-exp" data-exp>${escapeHtml(q.exp)}</div>` : ''}
           </div>
         `
         ).join('')}
+      </div>
+
+      <h2 style="margin-top:32px">${biText('8. 5 Nguyên tắc Vàng FIDIC 2019 (Golden Principles)', '8. FIDIC Golden Principles (2019)')}</h2>
+      <div class="section-grid">
+        ${GOLDEN_PRINCIPLES.map(
+          (g) => `
+          <div class="card-box">
+            <span class="num" style="margin-bottom:8px">${g.gp}</span>
+            <h3>${escapeHtml(state.lang === 'en' ? g.enTitle : g.viTitle)}</h3>
+            <p style="font-size:14px">${escapeHtml(state.lang === 'en' ? g.en : g.vi)}</p>
+          </div>
+        `
+        ).join('')}
+      </div>
+
+      <h2 style="margin-top:32px">${biText('9. Thư viện Bản án & Án lệ Thực tế (từ Source)', '9. Case Law & Judgments Library')}</h2>
+      <div class="section-grid">
+        ${CASE_LAW.map(
+          (c) => `
+          <div class="card-box bk-${c.book}" style="border-top:4px solid var(--accent)">
+            <div style="font-size:12px;font-weight:700;color:var(--accent)">${escapeHtml(c.ref)}</div>
+            <h3 style="margin-top:4px">${escapeHtml(c.parties)}</h3>
+            <p style="font-size:14px">${escapeHtml(state.lang === 'en' ? c.en : c.vi)}</p>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
+              ${c.clauses.map((cl) => `<a href="#${c.book === 'yel' || c.book === 'sil' ? 'red' : c.book}-17-${cl.replace(/\./g, '-')}" class="ai-clause-link">${cl}</a>`).join('')}
+            </div>
+          </div>
+        `
+        ).join('')}
+      </div>
+
+      <h2 style="margin-top:32px">${biText('10. Danh mục Tài liệu Tham khảo (Source/)', '10. Reference Library Index (Source/)')}</h2>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th>${biText('Nhóm', 'Category')}</th><th>${biText('Tên tài liệu', 'Document')}</th><th>${biText('Dung lượng', 'Size')}</th><th>${biText('Mô tả', 'Description')}</th></tr>
+          </thead>
+          <tbody>
+            ${SOURCE_DOCS.map(
+              (d) => `<tr><td><span class="tl-pill">${escapeHtml(d.cat)}</span></td><td><strong>${escapeHtml(d.name)}</strong></td><td>${escapeHtml(d.size)}</td><td>${escapeHtml(d.desc)}</td></tr>`
+            ).join('')}
+          </tbody>
+        </table>
       </div>
     </div>
   `;
@@ -849,17 +909,23 @@ function renderLearn() {
   renderGlossary();
 
   // Quiz
+  const quizAnswers = new Map();
   $view.querySelectorAll('.quiz-opt').forEach((btn) => {
     btn.addEventListener('click', () => {
       const box = btn.closest('[data-quiz]');
       const qIdx = Number(box.dataset.quiz);
       const picked = Number(btn.dataset.opt);
       const correct = QUIZ[qIdx].answer;
+      quizAnswers.set(qIdx, picked === correct);
       box.querySelectorAll('.quiz-opt').forEach((b, i) => {
         b.classList.remove('correct', 'wrong');
         if (i === correct) b.classList.add('correct');
         else if (i === picked) b.classList.add('wrong');
       });
+      box.querySelector('[data-exp]')?.classList.add('show');
+      const score = Array.from(quizAnswers.values()).filter(Boolean).length;
+      const pill = document.getElementById('quizScorePill');
+      if (pill) pill.textContent = `${score}/${QUIZ.length}`;
     });
   });
 }
@@ -945,7 +1011,8 @@ function renderProject() {
       <div class="card-box" style="margin-bottom:20px">
         <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px">
           <h1 style="margin:0;font-size:22px">📅 ${biText('Bảng Theo dõi Thời hạn Dự án (Deadline Tracker)', 'Project Deadline Tracker')}</h1>
-          <div style="display:flex;gap:8px">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="act-btn" id="weeklyReportBtn">📊 ${biText('Báo cáo Tuần', 'Weekly Report')}</button>
             <button type="button" class="act-btn" id="exportIcsBtn">📆 ${biText('Xuất Lịch (.ics)', 'Export .ics')}</button>
             <button type="button" class="act-btn" id="exportCsvBtn">⬇ CSV</button>
             <button type="button" class="act-btn" onclick="window.print()">🖨 ${t('pdf')}</button>
@@ -1095,6 +1162,25 @@ function renderProject() {
     });
   });
 
+  document.getElementById('weeklyReportBtn')?.addEventListener('click', () => {
+    const today = new Date().toLocaleDateString('vi-VN');
+    const totalChk = CHECKLISTS.reduce((a, c) => a + c.items.length, 0);
+    const doneChk = Object.values(state.checks).filter(Boolean).length;
+    const rows = state.tracker
+      .map((ev) => {
+        const s28 = calcStatus(ev.date, 28);
+        const s84 = calcStatus(ev.date, 84);
+        return `<tr><td>${escapeHtml(ev.title)}</td><td>${ev.date}</td><td>${s28.dateFmt} (${s28.lbl})</td><td>${s84.dateFmt} (${s84.lbl})</td></tr>`;
+      })
+      .join('');
+    const w = window.open('', '_blank', 'width=900,height=720');
+    if (!w) return;
+    w.document.write(`<!doctype html><html><head><title>Weekly Contract Report - ${escapeHtml(state.projectMeta.name)}</title><style>body{font-family:Segoe UI,sans-serif;padding:32px;color:#111}table{width:100%;border-collapse:collapse;margin-top:14px}th,td{border:1px solid #ccc;padding:8px;text-align:left;font-size:13px}th{background:#f3f4f6}</style></head><body><h1>BÁO CÁO HỢP ĐỒNG TUẦN / WEEKLY CONTRACT REPORT</h1><p><strong>Dự án:</strong> ${escapeHtml(state.projectMeta.name)} | <strong>Số HĐ:</strong> ${escapeHtml(state.projectMeta.contract)} | <strong>Ngày:</strong> ${today}</p><p><strong>Checklist hoàn thành:</strong> ${doneChk}/${totalChk} | <strong>Ghi chú cá nhân:</strong> ${Object.keys(state.notes).length}</p><table><thead><tr><th>Sự việc</th><th>Ngày biết</th><th>Hạn 28d (Notice)</th><th>Hạn 84d (Claim)</th></tr></thead><tbody>${rows || '<tr><td colspan="4">Không có sự việc phát sinh</td></tr>'}</tbody></table></body></html>`);
+    w.document.close();
+    w.focus();
+    w.print();
+  });
+
   document.getElementById('exportIcsBtn').addEventListener('click', () => {
     if (!state.tracker.length) {
       showToast(biText('Chưa có sự việc để xuất lịch', 'No events to export'));
@@ -1171,19 +1257,30 @@ function renderSaved() {
   $view.innerHTML = `
     <div class="wrap">
       <div class="card-box" style="margin-bottom:18px">
-        <h3 style="margin-top:0">🖨 ${biText('Thông tin Tiêu đề In / Đồng bộ Dữ liệu', 'Print Header & Cloud/File Sync')}</h3>
+        <h3 style="margin-top:0">🔐 ${biText('Bảo mật Dữ liệu & Đồng bộ Đám mây', 'Data Security & Cloud Sync')}</h3>
         <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px">
           <input type="text" id="metaProj" value="${escapeHtml(state.projectMeta.name)}" placeholder="Project Name" style="flex:1 1 200px;padding:7px 10px;border-radius:8px;border:1px solid var(--rule2);background:var(--bg);color:var(--ink)" />
           <input type="text" id="metaContract" value="${escapeHtml(state.projectMeta.contract)}" placeholder="Contract No." style="flex:1 1 160px;padding:7px 10px;border-radius:8px;border:1px solid var(--rule2);background:var(--bg);color:var(--ink)" />
           <button type="button" class="act-btn saved" id="saveMetaBtn">✓ ${biText('Lưu tiêu đề in', 'Save Print Header')}</button>
         </div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px">
-          <button type="button" class="act-btn" id="exportNotesBtn">⬇ ${biText('Xuất Sao lưu (JSON)', 'Export Backup (JSON)')}</button>
-          <button type="button" class="act-btn" id="saveOneDriveBtn">☁ ${biText('Lưu vào Thư mục OneDrive / Đĩa', 'Save to OneDrive / Disk')}</button>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+          <button type="button" class="act-btn" id="exportNotesBtn">⬇ ${biText('Xuất JSON', 'Export JSON')}</button>
+          <button type="button" class="act-btn saved" id="exportEncBtn">🔒 ${biText('Xuất Sao lưu Mã hóa (AES-256)', 'Export Encrypted')}</button>
+          <button type="button" class="act-btn" id="saveOneDriveBtn">☁ ${biText('Lưu ra OneDrive / Đĩa', 'Save to OneDrive')}</button>
           <label class="act-btn" style="cursor:pointer">
-            ⬆ ${biText('Nhập Sao lưu', 'Import Backup')}
+            ⬆ ${biText('Nhập Sao lưu (JSON / Mã hóa)', 'Import Backup')}
             <input type="file" id="importNotesInput" accept="application/json" hidden />
           </label>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding-top:10px;border-top:1px solid var(--rule);margin-bottom:10px">
+          <input type="password" id="gistTokenInp" value="${escapeHtml(state.gistToken)}" placeholder="GitHub PAT (scope: gist)" style="flex:1 1 190px;padding:6px 10px;border-radius:8px;border:1px solid var(--rule2);background:var(--bg);color:var(--ink);font-size:13px" />
+          <input type="text" id="gistIdInp" value="${escapeHtml(state.gistId)}" placeholder="Gist ID (tự tạo nếu trống)" style="flex:1 1 160px;padding:6px 10px;border-radius:8px;border:1px solid var(--rule2);background:var(--bg);color:var(--ink);font-size:13px" />
+          <button type="button" class="act-btn" id="gistPushBtn">☁⬆ ${biText('Đẩy lên Gist', 'Push Gist')}</button>
+          <button type="button" class="act-btn" id="gistPullBtn">☁⬇ ${biText('Tải từ Gist', 'Pull Gist')}</button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+          <button type="button" class="act-btn" id="setLockBtn">🔑 ${state.lockHash ? biText('Đổi / Tắt Khóa App', 'Change / Remove Lock') : biText('Bật Khóa Ứng dụng (PIN)', 'Enable App Lock')}</button>
+          <button type="button" class="act-btn" id="wipeAllBtn" style="color:#ef4444;border-color:rgba(239,68,68,0.4)">🧹 ${biText('Xóa sạch Key & Dữ liệu nhạy cảm', 'Wipe Sensitive Data')}</button>
         </div>
       </div>
 
@@ -1208,12 +1305,40 @@ function renderSaved() {
     showToast(biText('Đã lưu thông tin tiêu đề in', 'Print header saved'));
   });
 
-  const buildBackupJson = () =>
-    JSON.stringify(
-      { saved: state.saved, notes: state.notes, checks: state.checks, tracker: state.tracker, projectMeta: state.projectMeta },
-      null,
-      2
-    );
+  const buildBackupObj = () => ({
+    saved: state.saved,
+    notes: state.notes,
+    projects: state.projects,
+    activeProjectId: state.activeProjectId,
+    checks: state.checks,
+    tracker: state.tracker,
+    projectMeta: state.projectMeta
+  });
+  const buildBackupJson = () => JSON.stringify(buildBackupObj(), null, 2);
+
+  const applyImportedObj = (parsed) => {
+    if (Array.isArray(parsed.saved)) {
+      state.saved = Array.from(new Set([...state.saved, ...parsed.saved]));
+      localStorage.setItem('fidic_saved', JSON.stringify(state.saved));
+    }
+    if (parsed.notes && typeof parsed.notes === 'object') {
+      state.notes = { ...state.notes, ...parsed.notes };
+      localStorage.setItem('fidic_notes', JSON.stringify(state.notes));
+    }
+    if (Array.isArray(parsed.projects) && parsed.projects.length) {
+      state.projects = parsed.projects;
+      state.activeProjectId = parsed.activeProjectId || parsed.projects[0].id;
+      const act = state.projects.find((p) => p.id === state.activeProjectId) || state.projects[0];
+      state.tracker = act.tracker || [];
+      state.checks = act.checks || {};
+      state.projectMeta = { name: act.name, contract: act.contract };
+      syncActiveProject();
+    } else {
+      if (parsed.checks) state.checks = { ...state.checks, ...parsed.checks };
+      if (Array.isArray(parsed.tracker)) state.tracker = parsed.tracker;
+      syncActiveProject();
+    }
+  };
 
   document.getElementById('exportNotesBtn').addEventListener('click', () => {
     const blob = new Blob([buildBackupJson()], { type: 'application/json' });
@@ -1221,6 +1346,18 @@ function renderSaved() {
     a.href = URL.createObjectURL(blob);
     a.download = 'fidic-notebook-backup.json';
     a.click();
+  });
+
+  document.getElementById('exportEncBtn').addEventListener('click', async () => {
+    const pass = prompt(biText('Nhập mật khẩu mã hóa AES-256 (tối thiểu 4 ký tự):', 'Enter AES-256 encryption passphrase:'));
+    if (!pass || pass.length < 4) return;
+    const encStr = await encryptJson(buildBackupObj(), pass);
+    const blob = new Blob([encStr], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'fidic-notebook-encrypted.json';
+    a.click();
+    showToast(biText('Đã xuất bản sao lưu mã hóa AES-256', 'Encrypted backup exported'));
   });
 
   document.getElementById('saveOneDriveBtn').addEventListener('click', async () => {
@@ -1246,28 +1383,104 @@ function renderSaved() {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
-      const parsed = JSON.parse(await file.text());
-      if (Array.isArray(parsed.saved)) {
-        state.saved = Array.from(new Set([...state.saved, ...parsed.saved]));
-        localStorage.setItem('fidic_saved', JSON.stringify(state.saved));
+      const text = await file.text();
+      const rawObj = JSON.parse(text);
+      let parsed = rawObj;
+      if (rawObj.encrypted) {
+        const pass = prompt(biText('File đã mã hóa AES-256. Nhập mật khẩu giải mã:', 'Encrypted file. Enter passphrase:'));
+        if (!pass) return;
+        parsed = await decryptJson(text, pass);
       }
-      if (parsed.notes && typeof parsed.notes === 'object') {
-        state.notes = { ...state.notes, ...parsed.notes };
-        localStorage.setItem('fidic_notes', JSON.stringify(state.notes));
-      }
-      if (parsed.checks) {
-        state.checks = { ...state.checks, ...parsed.checks };
-        localStorage.setItem('fidic_checks', JSON.stringify(state.checks));
-      }
-      if (Array.isArray(parsed.tracker)) {
-        state.tracker = parsed.tracker;
-        localStorage.setItem('fidic_tracker', JSON.stringify(state.tracker));
-      }
+      applyImportedObj(parsed);
       showToast(biText('Đã nhập dữ liệu sổ tay thành công', 'Notebook backup imported'));
       render();
     } catch {
-      showToast(biText('Tệp JSON không hợp lệ', 'Invalid JSON file'));
+      showToast(biText('Sai mật khẩu hoặc tệp JSON không hợp lệ', 'Invalid passphrase or JSON file'));
     }
+  });
+
+  document.getElementById('gistPushBtn').addEventListener('click', async () => {
+    const token = document.getElementById('gistTokenInp').value.trim();
+    let gid = document.getElementById('gistIdInp').value.trim();
+    if (!token) return showToast(biText('Cần nhập GitHub PAT (scope: gist)', 'GitHub PAT required'));
+    localStorage.setItem('fidic_gist_token', token);
+    state.gistToken = token;
+    const pass = prompt(biText('Nhập mật khẩu mã hóa dữ liệu trước khi đẩy lên Gist (bỏ trống nếu không mã hóa):', 'Optional AES-256 passphrase before pushing to Gist:'));
+    const content = pass ? await encryptJson(buildBackupObj(), pass) : buildBackupJson();
+    try {
+      const url = gid ? `https://api.github.com/gists/${encodeURIComponent(gid)}` : 'https://api.github.com/gists';
+      const res = await fetch(url, {
+        method: gid ? 'PATCH' : 'POST',
+        headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          description: 'Learn FIDIC Notebook Sync',
+          public: false,
+          files: { 'fidic-notebook-sync.json': { content } }
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
+      state.gistId = data.id;
+      localStorage.setItem('fidic_gist_id', data.id);
+      showToast(biText(`Đã đồng bộ lên Gist (${data.id.slice(0, 7)})`, `Pushed to Gist (${data.id.slice(0, 7)})`));
+      render();
+    } catch (err) {
+      showToast(`⚠️ Gist: ${err.message}`);
+    }
+  });
+
+  document.getElementById('gistPullBtn').addEventListener('click', async () => {
+    const token = document.getElementById('gistTokenInp').value.trim();
+    const gid = document.getElementById('gistIdInp').value.trim();
+    if (!token || !gid) return showToast(biText('Cần nhập GitHub PAT và Gist ID', 'GitHub PAT and Gist ID required'));
+    localStorage.setItem('fidic_gist_token', token);
+    localStorage.setItem('fidic_gist_id', gid);
+    try {
+      const res = await fetch(`https://api.github.com/gists/${encodeURIComponent(gid)}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || `HTTP ${res.status}`);
+      const content = data?.files?.['fidic-notebook-sync.json']?.content;
+      if (!content) throw new Error('Sync file not found in Gist');
+      const rawObj = JSON.parse(content);
+      let parsed = rawObj;
+      if (rawObj.encrypted) {
+        const pass = prompt(biText('Dữ liệu Gist đã mã hóa. Nhập mật khẩu giải mã:', 'Encrypted Gist. Enter passphrase:'));
+        if (!pass) return;
+        parsed = await decryptJson(content, pass);
+      }
+      applyImportedObj(parsed);
+      showToast(biText('Đã tải dữ liệu từ Gist thành công', 'Pulled from Gist'));
+      render();
+    } catch (err) {
+      showToast(`⚠️ Gist: ${err.message}`);
+    }
+  });
+
+  document.getElementById('setLockBtn').addEventListener('click', async () => {
+    if (state.lockHash) {
+      const cur = prompt(biText('Nhập mật khẩu hiện tại để tắt khóa (hoặc Cancel):', 'Enter current passphrase to remove lock:'));
+      if (!cur) return;
+      if ((await hashPassphrase(cur)) !== state.lockHash) return showToast(biText('Sai mật khẩu!', 'Wrong passphrase!'));
+      state.lockHash = '';
+      localStorage.removeItem('fidic_lock_hash');
+      showToast(biText('Đã tắt Khóa Ứng dụng', 'App Lock disabled'));
+      render();
+    } else {
+      const pin = prompt(biText('Đặt mật khẩu/PIN khóa ứng dụng:', 'Set App Lock passphrase/PIN:'));
+      if (!pin || pin.length < 4) return showToast(biText('Tối thiểu 4 ký tự', 'Minimum 4 characters'));
+      state.lockHash = await hashPassphrase(pin);
+      localStorage.setItem('fidic_lock_hash', state.lockHash);
+      showToast(biText('Đã bật Khóa Ứng dụng', 'App Lock enabled'));
+      render();
+    }
+  });
+
+  document.getElementById('wipeAllBtn').addEventListener('click', () => {
+    if (!confirm(biText('Xóa toàn bộ API Key, GitHub Token, Ghi chú và Dự án trên trình duyệt này?', 'Wipe all API keys, tokens, notes, and projects from this browser?'))) return;
+    localStorage.clear();
+    location.reload();
   });
 }
 
@@ -1294,7 +1507,7 @@ function findRelevantContext(q) {
   return scored.join('\n');
 }
 
-async function askGemini(q) {
+async function askGemini(q, imageObj = null) {
   const todayStr = new Date().toLocaleDateString('vi-VN');
   const context = findRelevantContext(q);
   const systemText = [
@@ -1317,6 +1530,10 @@ async function askGemini(q) {
     : q;
 
   const fullPrompt = `${systemText}\n\n---\n\n${promptText}`;
+  const userParts = [{ text: fullPrompt }];
+  if (imageObj?.base64) {
+    userParts.push({ inlineData: { mimeType: imageObj.mimeType, data: imageObj.base64 } });
+  }
 
   const callModel = async (modelName) => {
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(
@@ -1327,7 +1544,7 @@ async function askGemini(q) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{ role: 'user', parts: [{ text: fullPrompt }] }],
+        contents: [{ role: 'user', parts: userParts }],
         generationConfig: { maxOutputTokens: 2048 }
       })
     });
@@ -1484,9 +1701,11 @@ function renderAiDrawer() {
         <form class="ai-tool-form" id="aiDraftForm">
           <select id="draftType">
             <option value="20.2 Notice of Claim">${biText('Thông báo Khiếu nại (20.2)', 'Notice of Claim (20.2)')}</option>
+            <option value="20.2 84-Day Fully Detailed Claim Builder">${biText('Dàn ý Hồ sơ Khiếu nại 84 ngày (20.2.4)', '84-Day Fully Detailed Claim Builder')}</option>
             <option value="8.5 EOT Request">${biText('Đề nghị Gia hạn Thời gian (8.5 / 20.2)', 'Extension of Time Notice (8.5 / 20.2)')}</option>
             <option value="3.7.5 Notice of Dissatisfaction">${biText('Thông báo Không hài lòng NOD (3.7.5)', 'Notice of Dissatisfaction (3.7.5)')}</option>
             <option value="13.3 Variation Proposal">${biText('Đề xuất Thay đổi (13.3)', 'Variation Proposal (13.3)')}</option>
+            <option value="16.1 Notice of Suspension">${biText('Thông báo Tạm ngừng (16.1)', 'Notice of Suspension (16.1)')}</option>
           </select>
           <textarea id="draftFacts" placeholder="${biText('Nhập tóm tắt sự việc, ngày phát sinh, ảnh hưởng...', 'Enter event summary, date, impact...')}" required></textarea>
           <button type="submit" class="btn-primary bk-red" ${state.aiLoading ? 'disabled' : ''}>✍ ${biText('Tạo Thư tín Song ngữ', 'Generate Bilingual Letter')}</button>
@@ -1542,8 +1761,21 @@ function renderAiDrawer() {
             </div>`
           : ''
       }
+      ${
+        state.aiImage
+          ? `<div class="ai-img-preview">
+              <img src="${state.aiImage.dataUrl}" alt="Attached" />
+              <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(state.aiImage.name)}</span>
+              <button type="button" class="act-btn" id="removeAiImg">✕</button>
+            </div>`
+          : ''
+      }
       <form class="ai-form" id="aiForm">
-        <input type="text" id="aiInput" placeholder="${biText('Nhập câu hỏi FIDIC...', 'Ask a FIDIC question...')}" ${state.aiLoading ? 'disabled' : ''} required />
+        <label class="act-btn" title="${biText('Đính kèm ảnh công văn / hợp đồng', 'Attach image')}" style="cursor:pointer;padding:0 10px;display:inline-flex;align-items:center">
+          📷
+          <input type="file" id="aiImgInput" accept="image/*" hidden />
+        </label>
+        <input type="text" id="aiInput" placeholder="${biText('Nhập câu hỏi FIDIC hoặc đính kèm ảnh...', 'Ask a FIDIC question or attach image...')}" ${state.aiLoading ? 'disabled' : ''} required />
         <button type="submit" class="btn-primary bk-red" ${state.aiLoading ? 'disabled' : ''}>${biText('Gửi', 'Send')}</button>
       </form>
     </div>
@@ -1694,18 +1926,38 @@ function renderAiDrawer() {
     renderAiDrawer();
   });
 
+  document.getElementById('aiImgInput')?.addEventListener('change', (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = String(reader.result || '');
+      const base64 = dataUrl.split(',')[1] || '';
+      state.aiImage = { mimeType: file.type || 'image/jpeg', dataUrl, base64, name: file.name };
+      renderAiDrawer();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('removeAiImg')?.addEventListener('click', () => {
+    state.aiImage = null;
+    renderAiDrawer();
+  });
+
   document.getElementById('aiForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const inp = document.getElementById('aiInput');
     const q = inp.value.trim();
     if (!q || state.aiLoading) return;
-    state.aiMsgs.push({ role: 'user', text: q });
+    const attached = state.aiImage;
+    state.aiImage = null;
+    state.aiMsgs.push({ role: 'user', text: attached ? `📷 [${attached.name}] ${q}` : q });
 
     if (state.geminiKey) {
       state.aiLoading = true;
       renderAiDrawer();
       try {
-        const reply = await askGemini(q);
+        const reply = await askGemini(q, attached);
         state.aiMsgs.push({ role: 'bot', text: reply });
       } catch (err) {
         state.aiMsgs.push({
@@ -1717,7 +1969,12 @@ function renderAiDrawer() {
         renderAiDrawer();
       }
     } else {
-      state.aiMsgs.push({ role: 'bot', text: answerFidicQuestion(q) });
+      state.aiMsgs.push({
+        role: 'bot',
+        text: attached
+          ? biText('⚠️ Cần nhập Gemini API Key (⚙ Key) để AI đọc ảnh công văn.', '⚠️ Gemini API Key required for image analysis.')
+          : answerFidicQuestion(q)
+      });
       renderAiDrawer();
     }
   });
@@ -1826,7 +2083,88 @@ function closeModal() {
   state.presIdx = -1;
 }
 
+function openCommandPalette() {
+  const html = `
+    <div class="cmdk-backdrop" id="cmdkBackdrop" role="dialog" aria-modal="true" aria-label="Quick Jump">
+      <div class="cmdk-box">
+        <input type="search" class="cmdk-input" id="cmdkInput" placeholder="${biText('Tìm nhanh điều khoản (VD: 20.2, 3.7, DAAB, #learn)... (Esc để đóng)', 'Quick jump to clause, glossary, or page... (Esc to close)')}" autofocus />
+        <div class="cmdk-list" id="cmdkList"></div>
+      </div>
+    </div>
+  `;
+  $modalRoot.innerHTML = html;
+  const $inp = document.getElementById('cmdkInput');
+  const $list = document.getElementById('cmdkList');
+
+  const quickPages = [
+    { label: '🏠 Trang chủ / Home', hash: '#' },
+    { label: '📕 Sách Đỏ 2017 · Red Book', hash: '#red-17' },
+    { label: '📒 Sách Vàng 2017 · Yellow Book', hash: '#yel-17' },
+    { label: '📓 Sách Bạc 2017 · Silver Book', hash: '#sil-17' },
+    { label: '🎓 Học FIDIC · Flowcharts · Án lệ', hash: '#learn' },
+    { label: '📄 Biểu mẫu Hợp đồng', hash: '#models' },
+    { label: '📅 Dự án & Deadline Tracker', hash: '#project' },
+    { label: '🔐 Đã lưu · Mã hóa · Gist Sync', hash: '#saved' }
+  ];
+
+  const renderList = (q = '') => {
+    const low = q.trim().toLowerCase();
+    const pages = quickPages.filter((p) => p.label.toLowerCase().includes(low));
+    const clauses = SUBCLAUSES.filter((s) =>
+      `${s.id} ${s.viTitle} ${s.enTitle} ${(s.eq99 || []).join(' ')}`.toLowerCase().includes(low)
+    ).slice(0, 12);
+
+    $list.innerHTML = [
+      ...pages.map((p) => `<a href="${p.hash}" class="cmdk-item" data-cmdk-jump><span>${escapeHtml(p.label)}</span><span style="color:var(--mute);font-size:12px">${p.hash}</span></a>`),
+      ...clauses.map((c) => `<a href="#${c.book}-${c.ed}-${c.id.replace(/\./g, '-')}" class="cmdk-item" data-cmdk-jump><span><strong>${c.id}</strong> ${escapeHtml(state.lang === 'en' ? c.enTitle : c.viTitle)}</span><span class="tl-pill">${c.book.toUpperCase()} ${c.ed === '99' ? '1999' : '2017'}</span></a>`)
+    ].join('') || `<div style="padding:12px;color:var(--mute)">${t('noResults')}</div>`;
+
+    $list.querySelectorAll('[data-cmdk-jump]').forEach((a) => a.addEventListener('click', closeModal));
+  };
+
+  $inp.addEventListener('input', (e) => renderList(e.target.value));
+  document.getElementById('cmdkBackdrop').addEventListener('click', (e) => {
+    if (e.target.id === 'cmdkBackdrop') closeModal();
+  });
+  renderList();
+  $inp.focus();
+}
+
+function renderLockScreen() {
+  const el = document.createElement('div');
+  el.className = 'lock-screen';
+  el.id = 'lockScreen';
+  el.innerHTML = `
+    <div class="lock-card">
+      <div style="font-size:32px;margin-bottom:8px">🔐</div>
+      <h2 style="margin:0 0 8px">${biText('Sổ tay FIDIC đang khóa', 'FIDIC Notebook Locked')}</h2>
+      <p style="color:var(--mute);font-size:13.5px;margin:0 0 16px">${biText('Nhập mật khẩu/PIN để mở khóa dữ liệu dự án và API Key.', 'Enter your passphrase/PIN to unlock.')}</p>
+      <form id="unlockForm" style="display:flex;flex-direction:column;gap:10px">
+        <input type="password" id="unlockPin" placeholder="PIN / Passphrase" style="padding:10px 12px;border-radius:9px;border:1px solid var(--rule2);background:var(--bg);color:var(--ink);text-align:center" autofocus required />
+        <button type="submit" class="btn-primary bk-red" style="justify-content:center">${biText('Mở khóa', 'Unlock')}</button>
+      </form>
+    </div>
+  `;
+  document.body.appendChild(el);
+  document.getElementById('unlockForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const val = document.getElementById('unlockPin').value;
+    if ((await hashPassphrase(val)) === state.lockHash) {
+      state.unlocked = true;
+      el.remove();
+      render(false);
+    } else {
+      showToast(biText('Sai mật khẩu!', 'Wrong passphrase!'));
+    }
+  });
+}
+
 document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault();
+    openCommandPalette();
+    return;
+  }
   if (e.key === 'Escape') closeModal();
   if (state.presIdx >= 0 && state.presList.length) {
     if (e.key === 'ArrowRight' && state.presIdx < state.presList.length - 1) {
@@ -1980,4 +2318,8 @@ window.addEventListener('hashchange', () => render(false));
 
 applyTheme();
 applyHeaderI18n();
-render(false);
+if (!state.unlocked) {
+  renderLockScreen();
+} else {
+  render(false);
+}

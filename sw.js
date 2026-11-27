@@ -1,9 +1,10 @@
-const CACHE_NAME = 'learn-fidic-v18';
+const CACHE_NAME = 'learn-fidic-v19';
 const ASSETS = [
   './',
   './index.html',
   './styles.css',
   './app.js',
+  './security.js',
   './data/fidic-data.js',
   './data/clauses-extended.js',
   './data/red17-part1.js',
@@ -11,6 +12,7 @@ const ASSETS = [
   './data/red17-part3.js',
   './data/other-books.js',
   './data/extra-data.js',
+  './data/source-library.js',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png'
