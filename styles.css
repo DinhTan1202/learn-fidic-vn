@@ -1832,6 +1832,24 @@ mark.hl-match {
   gap: 0;
   align-items: stretch;
 }
+.lib-split.lib-bi-aligned {
+  background: var(--bg2);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+}
+.lib-bi-head {
+  padding: 0 12px 10px;
+}
+.lib-bi-cell {
+  padding: 12px;
+  font-size: 15.5px;
+  line-height: 1.78;
+  border-top: 1px solid var(--rule);
+  min-width: 0;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
 .lib-resizer {
   width: 12px;
   cursor: col-resize;
@@ -1866,7 +1884,8 @@ mark.hl-match {
   word-break: break-word;
   min-width: 0;
 }
-.lib-page-card .col-label {
+.lib-page-card .col-label,
+.lib-bi-head .col-label {
   display: inline-flex;
   align-items: center;
   gap: 6px;
