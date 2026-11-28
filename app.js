@@ -53,6 +53,9 @@ import {
   BOOK_COMPARISON_ROWS
 } from './data/extra-data.js';
 import { FCCM_META, FCCM_SETS } from './data/fccm-exams.js';
+import { FCCM_PDF_100_SETS } from './data/fccm-full-100.js';
+
+const ALL_FCCM_SETS = [...FCCM_SETS, ...FCCM_PDF_100_SETS];
 
 const SUBCLAUSES = [
   ...BASE_SUBCLAUSES,
@@ -1824,7 +1827,7 @@ async function renderLibrary() {
     return;
   }
 
-  const fileUrl = state.libBook === 'godwin' ? './data/books/godwin.json?v=40' : './data/books/seppala.json?v=40';
+  const fileUrl = state.libBook === 'godwin' ? './data/books/godwin.json?v=41' : './data/books/seppala.json?v=41';
   let bookData = state.bookCache[state.libBook];
   if (!bookData) {
     try {
@@ -2338,17 +2341,20 @@ async function renderLibrary() {
 }
 
 function getFccmActiveQuestions() {
+  if (state.fccmSetId === 'pdf-mock-100') {
+    return [...FCCM_PDF_100_SETS.flatMap((s) => s.questions)].sort((a, b) => (a.num || 0) - (b.num || 0));
+  }
   if (state.fccmSetId === 'fcl-100') {
-    const all = [...FCCM_SETS.flatMap((s) => s.questions), ...state.fccmCustomQuestions];
+    const all = [...ALL_FCCM_SETS.flatMap((s) => s.questions), ...state.fccmCustomQuestions];
     return all.slice(0, 100);
   }
   if (state.fccmSetId === 'all-bank') {
-    return [...FCCM_SETS.flatMap((s) => s.questions), ...state.fccmCustomQuestions];
+    return [...ALL_FCCM_SETS.flatMap((s) => s.questions), ...state.fccmCustomQuestions];
   }
   if (state.fccmSetId === 'ai-custom') {
     return state.fccmCustomQuestions;
   }
-  return (FCCM_SETS.find((s) => s.id === state.fccmSetId) || FCCM_SETS[0]).questions;
+  return (ALL_FCCM_SETS.find((s) => s.id === state.fccmSetId) || ALL_FCCM_SETS[0]).questions;
 }
 
 function renderFccm() {
@@ -2358,8 +2364,8 @@ function renderFccm() {
     state.fccmTimerId = null;
   }
 
-  const sortedSets = [...FCCM_SETS].sort((a, b) => (a.level || 1) - (b.level || 1));
-  const currentSet = FCCM_SETS.find((s) => s.id === state.fccmSetId);
+  const sortedSets = [...ALL_FCCM_SETS].sort((a, b) => (a.level || 1) - (b.level || 1));
+  const currentSet = ALL_FCCM_SETS.find((s) => s.id === state.fccmSetId);
   const questions = getFccmActiveQuestions();
   const totalQ = questions.length;
   state.fccmIdx = Math.max(0, Math.min(Math.max(0, totalQ - 1), state.fccmIdx));
@@ -2378,7 +2384,7 @@ function renderFccm() {
     state.fccmFlags = {};
     state.fccmSubmitted = false;
     const qs = getFccmActiveQuestions();
-    state.fccmSecondsLeft = setId === 'fcl-100' ? 250 * 60 : Math.max(10, Math.round(qs.length * 2.5)) * 60;
+    state.fccmSecondsLeft = (setId === 'fcl-100' || setId === 'pdf-mock-100') ? 250 * 60 : Math.max(10, Math.round(qs.length * 2.5)) * 60;
     renderFccm();
   };
 
@@ -2414,11 +2420,12 @@ function renderFccm() {
   const showExplain = q && (state.fccmSubmitted || (state.fccmMode === 'practice' && state.fccmAnswers[q.id] !== undefined));
 
   const setName = (s) => (state.lang === 'en' ? s.titleEn : s.titleVi);
-  const bankTotal = FCCM_SETS.reduce((a, b) => a + b.questions.length, 0) + state.fccmCustomQuestions.length;
+  const bankTotal = ALL_FCCM_SETS.reduce((a, b) => a + b.questions.length, 0) + state.fccmCustomQuestions.length;
   const setOptions = [
     ...sortedSets.map(
       (s) => `<option value="${s.id}" ${state.fccmSetId === s.id ? 'selected' : ''}>${escapeHtml(s.levelBadge || '⭐')} · ${escapeHtml(setName(s))} (${s.questions.length})</option>`
     ),
+    `<option value="pdf-mock-100" ${state.fccmSetId === 'pdf-mock-100' ? 'selected' : ''}>📋 ${state.lang === 'en' ? 'Mock Exam PDF Paper (100 Qs · Q1–Q100 · 250m)' : 'Bộ đề Mock PDF Đầy đủ (100 câu · Q1–Q100 · 250 phút)'}</option>`,
     `<option value="fcl-100" ${state.fccmSetId === 'fcl-100' ? 'selected' : ''}>🏆 ${state.lang === 'en' ? 'Official FCL Simulation (100 Qs · 250m)' : 'Đề Thi Thử Chuẩn FCL (100 câu · 250 phút)'}</option>`,
     `<option value="all-bank" ${state.fccmSetId === 'all-bank' ? 'selected' : ''}>📚 ${state.lang === 'en' ? `Full Bank (${bankTotal} Qs)` : `Toàn bộ ngân hàng (${bankTotal} câu)`}</option>`,
     ...(state.fccmCustomQuestions.length
