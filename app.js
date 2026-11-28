@@ -52,6 +52,7 @@ import {
   CROSS_REFS,
   BOOK_COMPARISON_ROWS
 } from './data/extra-data.js';
+import { FCCM_META, FCCM_SETS } from './data/fccm-exams.js';
 
 const SUBCLAUSES = [
   ...BASE_SUBCLAUSES,
@@ -80,6 +81,28 @@ function loadProjects() {
     localStorage.getItem('fidic_proj_meta') || '{"name":"Dự án Cầu vượt Quốc lộ","contract":"HĐ-FIDIC-2017/01"}'
   );
   return [{ id: 'p1', name: legacyMeta.name, contract: legacyMeta.contract, tracker: legacyTracker, checks: legacyChecks }];
+}
+
+const DEFAULT_SHORTCUTS = {
+  prevPage: 'ArrowLeft',
+  nextPage: 'ArrowRight',
+  toggleToc: 't',
+  focusSearch: '/',
+  bookmarkPage: 'b',
+  highlightSel: 'h',
+  toggleNote: 'n',
+  cycleLang: 'l',
+  toggleTheme: 'd',
+  openPalette: 'Ctrl+k'
+};
+
+function loadShortcuts() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('fidic_shortcuts') || '{}');
+    return { ...DEFAULT_SHORTCUTS, ...saved };
+  } catch {
+    return { ...DEFAULT_SHORTCUTS };
+  }
 }
 
 const initialProjects = loadProjects();
@@ -113,9 +136,23 @@ const state = {
   libSplit: Math.min(78, Math.max(22, Number(localStorage.getItem('fidic_lib_split') || 50))),
   libNotes: JSON.parse(localStorage.getItem('fidic_lib_notes') || '{}'),
   libHighlights: JSON.parse(localStorage.getItem('fidic_lib_highlights') || '{}'),
+  libBookmarks: JSON.parse(localStorage.getItem('fidic_lib_bookmarks') || '[]'),
+  libBmOpen: false,
   libNoteOpen: false,
   libTrans: JSON.parse(localStorage.getItem('fidic_lib_trans') || '{}'),
   bookCache: {},
+  shortcuts: loadShortcuts(),
+  shortcutListenAction: null,
+  fccmSetId: 'set-1-foundations',
+  fccmMode: 'practice',
+  fccmIdx: 0,
+  fccmAnswers: {},
+  fccmFlags: {},
+  fccmSubmitted: false,
+  fccmSecondsLeft: 30 * 60,
+  fccmTimerId: null,
+  fccmCustomQuestions: JSON.parse(localStorage.getItem('fidic_fccm_custom') || '[]'),
+  fccmHistory: JSON.parse(localStorage.getItem('fidic_fccm_history') || '[]'),
   tocOpen: false,
   aiOpen: false,
   aiMode: 'chat',
@@ -198,7 +235,7 @@ function applyHeaderI18n() {
 function parseHash() {
   const raw = (location.hash || '#').slice(1);
   if (!raw) return { route: 'home' };
-  if (['learn', 'models', 'project', 'library', 'saved'].includes(raw)) {
+  if (['learn', 'models', 'project', 'library', 'fccm', 'saved'].includes(raw)) {
     return { route: raw };
   }
   const m = raw.match(/^(red|yel|sil)-(17|99)(?:-(.+))?$/);
@@ -1734,67 +1771,60 @@ async function renderLibrary() {
   document.title = `${t('navLibrary')} · ${t('brand')}`;
   const isIce = state.libBook === 'ice';
 
-  $view.innerHTML = `
-    <div class="band bk-red">
-      <div class="band-inner">
-        <div class="band-info">
-          <div class="book-badge"><small>SOURCE</small>3 Books</div>
-          <div class="band-title">
-            <h1>📚 ${biText('Thư viện Sách Chuyên khảo FIDIC (Toàn văn)', 'FIDIC Reference Books (Full-Text Reader)')}</h1>
-            <div class="sub">${biText('Đọc toàn văn, tra cứu mục lục và tìm kiếm toàn văn trên 1.710 trang sách chuyên khảo', 'Full-text search and chapter reader across 1,710 pages of reference books')}</div>
-          </div>
-        </div>
-        <div class="band-controls">
-          <div class="bookpick">
-            <button type="button" data-lib-book="godwin" class="${state.libBook === 'godwin' ? 'active' : ''}">Godwin 2020 (244 tr.)</button>
-            <button type="button" data-lib-book="seppala" class="${state.libBook === 'seppala' ? 'active' : ''}">Seppälä 2023 (1.466 tr.)</button>
-            <button type="button" data-lib-book="ice" class="${state.libBook === 'ice' ? 'active' : ''}">ICE Grutters 2014</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="wrap wrap-wide" id="libContent">
-      <div class="card-box">${biText('⏳ Đang tải dữ liệu sách...', '⏳ Loading book content...')}</div>
-    </div>
-  `;
-
-  $view.querySelectorAll('[data-lib-book]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      state.libBook = btn.dataset.libBook;
-      state.libPage = state.libBook === 'godwin' ? 21 : 52;
-      state.libQuery = '';
-      renderLibrary();
-    });
-  });
+  $view.innerHTML = `<div id="libContent"><div class="wrap wrap-wide"><div class="card-box">${biText('⏳ Đang tải dữ liệu sách...', '⏳ Loading book content...')}</div></div></div>`;
 
   const $lib = document.getElementById('libContent');
+  const bindBookPills = () => {
+    $lib.querySelectorAll('[data-lib-book]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        state.libBook = btn.dataset.libBook;
+        state.libPage = state.libBook === 'godwin' ? 21 : 52;
+        state.libQuery = '';
+        renderLibrary();
+      });
+    });
+  };
+
   if (isIce) {
     $lib.innerHTML = `
-      <div class="card-box">
-        <h2 style="margin-top:0">ICE FIDIC Users' Guide (3rd Ed., Leo Grutters, 2014 · 318 trang)</h2>
-        <p>${biText(
-          'Tệp PDF gốc trong Source (170 MB) là bản scan dạng ảnh (0 trang text nhúng), nên chưa thể hiển thị toàn văn trực tiếp dưới dạng text nếu chưa chạy OCR. Dưới đây là 4 phần chính của sách:',
-          'The source PDF (170 MB) is an image-only scan with no embedded text layer. Below is its 4-part structure:'
-        )}</p>
-        <div class="section-grid">
-          ${BOOK_CHAPTERS.filter((c) => c.book === 'ice-grutters-2014')
-            .map(
-              (c) => `
-            <div class="card-box">
-              <span class="tl-pill">${escapeHtml(c.pg)}</span>
-              <h3>${escapeHtml(c.title)}</h3>
-              <p style="font-size:14px">${escapeHtml(c.vi)}</p>
-            </div>
-          `
-            )
-            .join('')}
+      <div class="lib-sticky-bar">
+        <div class="lib-sticky-row">
+          <div class="lib-book-pills">
+            <button type="button" class="lib-book-pill" data-lib-book="godwin">Godwin 2020 (244 tr.)</button>
+            <button type="button" class="lib-book-pill" data-lib-book="seppala">Seppälä 2023 (1.466 tr.)</button>
+            <button type="button" class="lib-book-pill active" data-lib-book="ice">ICE Grutters 2014</button>
+          </div>
+          <span style="font-size:12.5px;color:var(--mute)">${biText('Bản scan ảnh PDF gốc (Source)', 'Image scan PDF in Source')}</span>
+        </div>
+      </div>
+      <div class="wrap wrap-wide">
+        <div class="card-box">
+          <h2 style="margin-top:0">ICE FIDIC Users' Guide (3rd Ed., Leo Grutters, 2014 · 318 trang)</h2>
+          <p>${biText(
+            'Tệp PDF gốc trong Source (170 MB) là bản scan dạng ảnh (0 trang text nhúng), nên chưa thể hiển thị toàn văn trực tiếp dưới dạng text nếu chưa chạy OCR. Dưới đây là 4 phần chính của sách:',
+            'The source PDF (170 MB) is an image-only scan with no embedded text layer. Below is its 4-part structure:'
+          )}</p>
+          <div class="section-grid">
+            ${BOOK_CHAPTERS.filter((c) => c.book === 'ice-grutters-2014')
+              .map(
+                (c) => `
+              <div class="card-box">
+                <span class="tl-pill">${escapeHtml(c.pg)}</span>
+                <h3>${escapeHtml(c.title)}</h3>
+                <p style="font-size:14px">${escapeHtml(c.vi)}</p>
+              </div>
+            `
+              )
+              .join('')}
+          </div>
         </div>
       </div>
     `;
+    bindBookPills();
     return;
   }
 
-  const fileUrl = state.libBook === 'godwin' ? './data/books/godwin.json?v=38' : './data/books/seppala.json?v=38';
+  const fileUrl = state.libBook === 'godwin' ? './data/books/godwin.json?v=39' : './data/books/seppala.json?v=39';
   let bookData = state.bookCache[state.libBook];
   if (!bookData) {
     try {
@@ -1880,44 +1910,91 @@ async function renderLibrary() {
       )
       .join('');
 
+    const activeSectionTitle = activeTocIdx >= 0 ? bookData.toc[activeTocIdx].title : '';
+    const isBookmarked = state.libBookmarks.some((bm) => bm.book === state.libBook && bm.page === state.libPage);
     const showAnnPanel = state.libNoteOpen || Boolean(pageNote) || pageHls.length > 0;
 
-    $lib.innerHTML = `
-      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px">
-        <button type="button" class="act-btn" id="libDesktopTocBtn">☰ ${state.libTocCollapsed ? biText('Hiện Mục lục', 'Show TOC') : biText('Ẩn Mục lục', 'Hide TOC')}</button>
-        <input type="search" id="libSearchInp" value="${escapeHtml(state.libQuery)}" placeholder="${biText('Tìm toàn văn trong sách (VD: time-bar, 20.2, good faith, concurrent delay)...', 'Full-text search in book...')}" style="flex:1 1 260px;padding:9px 14px;border-radius:10px;border:1px solid var(--rule2);background:var(--bg2);color:var(--ink);font-size:14px" />
-        <div style="display:flex;align-items:center;gap:6px">
-          <button type="button" class="act-btn" id="libPrevBtn" ${state.libPage <= 1 ? 'disabled' : ''}>${t('prev')}</button>
-          <span style="font-size:13px">Tr.</span>
-          <input type="number" id="libPageInp" min="1" max="${total}" value="${state.libPage}" style="width:72px;padding:6px 8px;border-radius:8px;border:1px solid var(--rule2);background:var(--bg2);color:var(--ink);text-align:center" />
-          <span style="font-size:13px;color:var(--mute)">/ ${total}</span>
-          <button type="button" class="act-btn" id="libNextBtn" ${state.libPage >= total ? 'disabled' : ''}>${t('next')}</button>
-        </div>
-      </div>
-      ${hitsHtml}
-      <div class="lib-layout ${state.libTocCollapsed ? 'lib-collapsed' : ''}">
-        <div class="lib-toc-col">
-          <button type="button" class="toc-toggle" id="libTocToggle">☰ ${biText('Mục lục Sách', 'Book TOC')} (${bookData.toc.length})</button>
-          <nav class="index ${state.tocOpen ? 'open' : ''}" aria-label="Book TOC">
-            <div class="index-title">${biText('Mục lục Sách', 'Book TOC')}</div>
-            ${tocHtml}
-          </nav>
-        </div>
-        <div style="min-width:0">
-          <div class="lib-toolbar">
-            <div class="lib-toolbar-group">
-              <span class="lib-page-badge">${biText('Trang', 'Page')} ${state.libPage} / ${total}</span>
-              <strong style="color:var(--ink);font-size:14px">${escapeHtml(bookData.title)}</strong>
-              ${viText ? `<span style="font-size:12px;color:var(--teal);font-weight:600">✅ ${biText('Song ngữ', 'Bilingual')}</span>` : ''}
-            </div>
-            <div class="lib-toolbar-group">
-              <button type="button" class="act-btn" id="libHighlightBtn" title="${biText('Bôi đen đoạn văn bản rồi bấm để Highlight & Comment', 'Select text first, then click to Highlight & Comment')}">🖍 ${biText('Highlight chọn', 'Highlight')}${pageHls.length ? ` (${pageHls.length})` : ''}</button>
-              <button type="button" class="act-btn ${pageNote ? 'has-note' : ''}" id="libNoteBtn">📝 ${biText('Ghi chú', 'Note')}${pageNote ? ' ●' : ''}</button>
-              <button type="button" class="act-btn" id="libCopyPage">📋 ${t('copy')}</button>
-              <button type="button" class="act-btn saved" id="libTranslatePage">🤖 ${viText ? biText('Dịch lại (AI)', 'Re-translate (AI)') : biText('Dịch & Lưu (AI)', 'Translate & Cache (AI)')}</button>
+    const bmDrawerHtml = state.libBmOpen
+      ? `<div class="lib-bm-drawer">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+            <strong style="font-size:13px">📑 ${biText('Danh sách Bookmark cá nhân', 'Personal Page Bookmarks')} (${state.libBookmarks.length})</strong>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span class="lib-local-badge">🔒 ${biText('Lưu riêng trên máy này', 'Saved locally on device')}</span>
+              <button type="button" class="act-btn" id="libBmCloseBtn">✕</button>
             </div>
           </div>
-          <div id="libHlBarSlot"></div>
+          ${
+            state.libBookmarks.length
+              ? `<div class="lib-bm-list">
+                  ${state.libBookmarks
+                    .map(
+                      (bm, idx) => `
+                    <div class="lib-bm-item">
+                      <button type="button" class="lib-bm-jump" data-bm-jump="${idx}">
+                        <strong>${bm.book === 'godwin' ? 'Godwin' : 'Seppälä'} tr.${bm.page}</strong>
+                        <span style="display:block;color:var(--mute);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(bm.label || bm.section || '')}</span>
+                      </button>
+                      <button type="button" class="act-btn" data-bm-rename="${idx}" title="${biText('Đổi tên bookmark', 'Rename')}">✏️</button>
+                      <button type="button" class="act-btn" data-bm-del="${idx}" title="${biText('Xóa bookmark', 'Delete')}">✕</button>
+                    </div>`
+                    )
+                    .join('')}
+                </div>`
+              : `<div style="font-size:12.5px;color:var(--mute);margin-top:8px">${biText('Chưa có bookmark nào. Bấm "🔖 Bookmark" hoặc phím tắt để đánh dấu trang đang đọc.', 'No bookmarks yet. Click Bookmark or use your shortcut to save pages.')}</div>`
+          }
+        </div>`
+      : '';
+
+    $lib.innerHTML = `
+      <div class="lib-sticky-bar">
+        <div class="lib-sticky-row">
+          <div class="lib-book-pills">
+            <button type="button" class="lib-book-pill ${state.libBook === 'godwin' ? 'active' : ''}" data-lib-book="godwin">Godwin 2020</button>
+            <button type="button" class="lib-book-pill ${state.libBook === 'seppala' ? 'active' : ''}" data-lib-book="seppala">Seppälä 2023</button>
+            <button type="button" class="lib-book-pill" data-lib-book="ice">ICE 2014</button>
+          </div>
+          <button type="button" class="act-btn" id="libDesktopTocBtn" title="${escapeHtml(state.shortcuts.toggleToc)}">☰ ${state.libTocCollapsed ? biText('Mục lục', 'TOC') : biText('Ẩn ML', 'Hide TOC')}</button>
+          <input type="search" id="libSearchInp" value="${escapeHtml(state.libQuery)}" placeholder="${biText('Tìm toàn văn (time-bar, 20.2, DAAB)...', 'Search full text...')} [${escapeHtml(state.shortcuts.focusSearch)}]" style="flex:1 1 200px;padding:6px 12px;border-radius:8px;border:1px solid var(--rule2);background:var(--bg2);color:var(--ink);font-size:13px" />
+          <div style="display:flex;align-items:center;gap:5px">
+            <button type="button" class="lib-nav-arrow" id="libPrevBtn" ${state.libPage <= 1 ? 'disabled' : ''} title="${biText('Trang trước', 'Prev page')} (${escapeHtml(state.shortcuts.prevPage)})">◀</button>
+            <span style="font-size:12.5px;color:var(--mute)">Tr.</span>
+            <input type="number" id="libPageInp" min="1" max="${total}" value="${state.libPage}" style="width:62px;padding:4px 6px;border-radius:7px;border:1px solid var(--rule2);background:var(--bg2);color:var(--ink);text-align:center;font-size:13px" />
+            <span style="font-size:12.5px;color:var(--mute)">/ ${total}</span>
+            <button type="button" class="lib-nav-arrow" id="libNextBtn" ${state.libPage >= total ? 'disabled' : ''} title="${biText('Trang tiếp', 'Next page')} (${escapeHtml(state.shortcuts.nextPage)})">▶</button>
+          </div>
+        </div>
+        <div class="lib-sticky-row">
+          <div class="lib-toolbar-group" style="font-size:12.5px">
+            <span class="lib-page-badge" title="${escapeHtml(bookData.title)}">${state.libBook === 'godwin' ? 'Godwin 2020' : 'Seppälä 2023'} · Tr. ${state.libPage}</span>
+            ${activeSectionTitle ? `<span style="color:var(--mute);max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeHtml(activeSectionTitle)}">${escapeHtml(activeSectionTitle)}</span>` : ''}
+            ${viText ? `<span style="font-size:11.5px;color:var(--teal);font-weight:600">✅ Song ngữ</span>` : ''}
+          </div>
+          <div class="lib-toolbar-group">
+            <button type="button" class="act-btn ${isBookmarked ? 'saved' : ''}" id="libBookmarkBtn" title="${biText('Đánh dấu trang này', 'Bookmark page')} (${escapeHtml(state.shortcuts.bookmarkPage)})">${isBookmarked ? '★' : '🔖'} ${isBookmarked ? biText('Đã lưu tr.', 'Bookmarked') : 'Bookmark'}</button>
+            <button type="button" class="act-btn ${state.libBmOpen ? 'has-note' : ''}" id="libBmToggleBtn" title="${biText('Xem danh sách Bookmark', 'View Bookmarks')}">📑 (${state.libBookmarks.length})</button>
+            <button type="button" class="act-btn" id="libHighlightBtn" title="${biText('Bôi đen rồi bấm Highlight', 'Select text to Highlight')} (${escapeHtml(state.shortcuts.highlightSel)})">🖍 Highlight${pageHls.length ? ` (${pageHls.length})` : ''}</button>
+            <button type="button" class="act-btn ${pageNote ? 'has-note' : ''}" id="libNoteBtn" title="${biText('Ghi chú trang', 'Page Note')} (${escapeHtml(state.shortcuts.toggleNote)})">📝 ${biText('Ghi chú', 'Note')}${pageNote ? ' ●' : ''}</button>
+            <button type="button" class="act-btn" id="libCopyPage" title="${t('copy')}">📋</button>
+            <button type="button" class="act-btn saved" id="libTranslatePage" title="${biText('Dịch bằng AI', 'AI Translate')}">🤖 AI</button>
+            <button type="button" class="act-btn" id="libShortcutsBtn" title="${biText('Cài đặt phím tắt', 'Customize shortcuts')}">⌨</button>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="lib-edge-arrow prev" id="libEdgePrev" ${state.libPage <= 1 ? 'disabled' : ''} title="${biText('Trang trước', 'Prev page')} (${escapeHtml(state.shortcuts.prevPage)})">◀</button>
+      <button type="button" class="lib-edge-arrow next" id="libEdgeNext" ${state.libPage >= total ? 'disabled' : ''} title="${biText('Trang sau', 'Next page')} (${escapeHtml(state.shortcuts.nextPage)})">▶</button>
+      <div class="wrap wrap-wide">
+        ${bmDrawerHtml}
+        ${hitsHtml}
+        <div class="lib-layout ${state.libTocCollapsed ? 'lib-collapsed' : ''}">
+          <div class="lib-toc-col">
+            <button type="button" class="toc-toggle" id="libTocToggle">☰ ${biText('Mục lục Sách', 'Book TOC')} (${bookData.toc.length})</button>
+            <nav class="index ${state.tocOpen ? 'open' : ''}" aria-label="Book TOC">
+              <div class="index-title">${biText('Mục lục Sách', 'Book TOC')}</div>
+              ${tocHtml}
+            </nav>
+          </div>
+          <div style="min-width:0">
+            <div id="libHlBarSlot"></div>
           ${
             (() => {
               if (!viText) return `<div class="lib-page-card">${renderLibText(rawText, state.libQuery, pageHls)}</div>`;
@@ -1997,9 +2074,82 @@ async function renderLibrary() {
                 </div>`
               : ''
           }
+          </div>
         </div>
       </div>
     `;
+
+    bindBookPills();
+
+    // Scroll to top gently on explicit page turn
+    const goToPage = (p) => {
+      state.libPage = clampPage(p);
+      renderReader();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // Bookmark toggle & Drawer actions (local-only)
+    document.getElementById('libBookmarkBtn')?.addEventListener('click', () => {
+      const idx = state.libBookmarks.findIndex((bm) => bm.book === state.libBook && bm.page === state.libPage);
+      if (idx >= 0) {
+        state.libBookmarks.splice(idx, 1);
+        showToast(biText('Đã gỡ Bookmark trang', 'Removed page bookmark'));
+      } else {
+        state.libBookmarks.unshift({
+          book: state.libBook,
+          page: state.libPage,
+          section: activeSectionTitle,
+          label: activeSectionTitle || `${bookData.shortTitle || bookData.title} tr.${state.libPage}`,
+          createdAt: Date.now()
+        });
+        showToast(biText('Đã lưu Bookmark cá nhân (cục bộ)', 'Saved personal bookmark (locally)'));
+      }
+      localStorage.setItem('fidic_lib_bookmarks', JSON.stringify(state.libBookmarks));
+      renderReader();
+    });
+    document.getElementById('libBmToggleBtn')?.addEventListener('click', () => {
+      state.libBmOpen = !state.libBmOpen;
+      renderReader();
+    });
+    document.getElementById('libBmCloseBtn')?.addEventListener('click', () => {
+      state.libBmOpen = false;
+      renderReader();
+    });
+    $lib.querySelectorAll('[data-bm-jump]').forEach((b) => {
+      b.addEventListener('click', () => {
+        const bm = state.libBookmarks[Number(b.dataset.bmJump)];
+        if (!bm) return;
+        state.libBmOpen = false;
+        if (bm.book !== state.libBook) {
+          state.libBook = bm.book;
+          state.libPage = bm.page;
+          renderLibrary();
+        } else {
+          goToPage(bm.page);
+        }
+      });
+    });
+    $lib.querySelectorAll('[data-bm-rename]').forEach((b) => {
+      b.addEventListener('click', () => {
+        const idx = Number(b.dataset.bmRename);
+        const bm = state.libBookmarks[idx];
+        if (!bm) return;
+        const next = window.prompt(biText('Đặt tên ghi nhớ cho Bookmark:', 'Bookmark label:'), bm.label || bm.section || '');
+        if (next === null) return;
+        bm.label = next.trim() || bm.section;
+        localStorage.setItem('fidic_lib_bookmarks', JSON.stringify(state.libBookmarks));
+        renderReader();
+      });
+    });
+    $lib.querySelectorAll('[data-bm-del]').forEach((b) => {
+      b.addEventListener('click', () => {
+        const idx = Number(b.dataset.bmDel);
+        state.libBookmarks.splice(idx, 1);
+        localStorage.setItem('fidic_lib_bookmarks', JSON.stringify(state.libBookmarks));
+        renderReader();
+      });
+    });
+    document.getElementById('libShortcutsBtn')?.addEventListener('click', openShortcutsModal);
 
     // Draggable split resizer between VI and EN panes
     const $split = document.getElementById('libSplitPane');
@@ -2138,24 +2288,14 @@ async function renderLibrary() {
       }
     });
 
-    document.getElementById('libPrevBtn')?.addEventListener('click', () => {
-      state.libPage = clampPage(state.libPage - 1);
-      renderReader();
-    });
-    document.getElementById('libNextBtn')?.addEventListener('click', () => {
-      state.libPage = clampPage(state.libPage + 1);
-      renderReader();
-    });
-    document.getElementById('libPageInp')?.addEventListener('change', (e) => {
-      state.libPage = clampPage(e.target.value);
-      renderReader();
-    });
+    document.getElementById('libPrevBtn')?.addEventListener('click', () => goToPage(state.libPage - 1));
+    document.getElementById('libNextBtn')?.addEventListener('click', () => goToPage(state.libPage + 1));
+    document.getElementById('libEdgePrev')?.addEventListener('click', () => goToPage(state.libPage - 1));
+    document.getElementById('libEdgeNext')?.addEventListener('click', () => goToPage(state.libPage + 1));
+    document.getElementById('libPageInp')?.addEventListener('change', (e) => goToPage(e.target.value));
 
     $lib.querySelectorAll('[data-jump-page]').forEach((b) => {
-      b.addEventListener('click', () => {
-        state.libPage = clampPage(b.dataset.jumpPage);
-        renderReader();
-      });
+      b.addEventListener('click', () => goToPage(b.dataset.jumpPage));
     });
 
     document.getElementById('libCopyPage')?.addEventListener('click', async () => {
@@ -2195,6 +2335,326 @@ async function renderLibrary() {
   };
 
   renderReader();
+}
+
+function getFccmActiveQuestions() {
+  if (state.fccmSetId === 'full-mock') {
+    return [...FCCM_SETS.flatMap((s) => s.questions), ...state.fccmCustomQuestions];
+  }
+  if (state.fccmSetId === 'ai-custom') {
+    return state.fccmCustomQuestions;
+  }
+  return (FCCM_SETS.find((s) => s.id === state.fccmSetId) || FCCM_SETS[0]).questions;
+}
+
+function renderFccm() {
+  document.title = `FCCM Mock Exam · ${t('brand')}`;
+  if (state.fccmTimerId) {
+    clearInterval(state.fccmTimerId);
+    state.fccmTimerId = null;
+  }
+
+  const questions = getFccmActiveQuestions();
+  const totalQ = questions.length;
+  state.fccmIdx = Math.max(0, Math.min(Math.max(0, totalQ - 1), state.fccmIdx));
+
+  const formatTimer = (sec) => {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  };
+
+  const resetAttempt = (setId = state.fccmSetId, mode = state.fccmMode) => {
+    state.fccmSetId = setId;
+    state.fccmMode = mode;
+    state.fccmIdx = 0;
+    state.fccmAnswers = {};
+    state.fccmFlags = {};
+    state.fccmSubmitted = false;
+    const qs = getFccmActiveQuestions();
+    state.fccmSecondsLeft = Math.max(10, Math.round(qs.length * 2.5)) * 60;
+    renderFccm();
+  };
+
+  const submitAttempt = () => {
+    if (state.fccmSubmitted || !totalQ) return;
+    state.fccmSubmitted = true;
+    if (state.fccmTimerId) {
+      clearInterval(state.fccmTimerId);
+      state.fccmTimerId = null;
+    }
+    let correct = 0;
+    questions.forEach((q) => {
+      if (state.fccmAnswers[q.id] === q.ans) correct += 1;
+    });
+    const pct = Math.round((correct / totalQ) * 100);
+    const entry = {
+      setId: state.fccmSetId,
+      mode: state.fccmMode,
+      correct,
+      total: totalQ,
+      pct,
+      passed: pct >= FCCM_META.passMarkPct,
+      at: new Date().toLocaleString()
+    };
+    state.fccmHistory = [entry, ...state.fccmHistory].slice(0, 15);
+    localStorage.setItem('fidic_fccm_history', JSON.stringify(state.fccmHistory));
+    renderFccm();
+  };
+
+  const q = questions[state.fccmIdx];
+  const answeredCount = questions.filter((it) => state.fccmAnswers[it.id] !== undefined).length;
+  const correctCount = questions.filter((it) => state.fccmAnswers[it.id] === it.ans).length;
+  const showExplain = q && (state.fccmSubmitted || (state.fccmMode === 'practice' && state.fccmAnswers[q.id] !== undefined));
+
+  const setPills = [
+    ...FCCM_SETS.map((s) => `<button type="button" class="chip ${state.fccmSetId === s.id ? 'active' : ''}" data-fccm-set="${s.id}">${escapeHtml(biText(s.titleVi, s.titleEn))}</button>`),
+    `<button type="button" class="chip ${state.fccmSetId === 'full-mock' ? 'active' : ''}" data-fccm-set="full-mock">🎯 ${biText(`Đề Tổng hợp (${FCCM_SETS.reduce((a, b) => a + b.questions.length, 0) + state.fccmCustomQuestions.length} câu)`, `Full Simulation (${FCCM_SETS.reduce((a, b) => a + b.questions.length, 0) + state.fccmCustomQuestions.length} Qs)`)}</button>`,
+    state.fccmCustomQuestions.length
+      ? `<button type="button" class="chip ${state.fccmSetId === 'ai-custom' ? 'active' : ''}" data-fccm-set="ai-custom">✨ AI (${state.fccmCustomQuestions.length})</button>`
+      : ''
+  ].join('');
+
+  $view.innerHTML = `
+    <div class="wrap wrap-wide" id="fccmRoom">
+      <div class="fccm-hero">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px">
+          <div>
+            <h1 style="margin:0 0 4px;font-size:21px">🏆 ${biText('Phòng Thi Thử Chứng chỉ Quản lý Hợp đồng FIDIC (FCCM Mock Exam Room)', 'FIDIC Certified Contract Manager (FCCM) Mock Exam Room')}</h1>
+            <div style="font-size:13px;color:var(--ink2)">
+              <strong>${escapeHtml(FCCM_META.body)}:</strong> ${FCCM_META.questions} MCQs · ${FCCM_META.durationMinutes} ${biText('phút · Open-Book · Đạt', 'min · Open-Book · Pass')} ≥ ${FCCM_META.passMarkPct}% · ${escapeHtml(biText(FCCM_META.scopeVi, FCCM_META.scopeEn))}
+            </div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <button type="button" class="act-btn ${state.fccmMode === 'practice' ? 'saved' : ''}" data-fccm-mode="practice">📖 ${biText('Luyện tập (Giải thích ngay)', 'Practice (Instant Feedback)')}</button>
+            <button type="button" class="act-btn ${state.fccmMode === 'exam' ? 'saved' : ''}" data-fccm-mode="exam">⏱ ${biText('Thi thử bấm giờ (FCL Sim)', 'Timed Exam Sim')}</button>
+            <button type="button" class="act-btn" id="fccmGenAiBtn">✨ ${biText('Tạo câu hỏi AI mới', 'AI Question Gen')}</button>
+          </div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px">
+          ${setPills}
+        </div>
+      </div>
+
+      ${
+        totalQ === 0
+          ? `<div class="card-box">${biText('Chưa có câu hỏi nào trong bộ đề này.', 'No questions in this set yet.')}</div>`
+          : `
+        <div class="fccm-layout">
+          <aside class="fccm-sidebar">
+            ${
+              state.fccmMode === 'exam' && !state.fccmSubmitted
+                ? `<div class="fccm-timer ${state.fccmSecondsLeft < 180 ? 'warn' : ''}" id="fccmTimer">⏱ ${formatTimer(state.fccmSecondsLeft)}</div>`
+                : `<div class="fccm-timer" style="font-size:15px">${answeredCount}/${totalQ} ${biText('đã trả lời', 'answered')}</div>`
+            }
+            <div style="display:flex;gap:6px;margin-bottom:8px">
+              <button type="button" class="act-btn saved" style="flex:1;justify-content:center" id="fccmSubmitBtn" ${state.fccmSubmitted ? 'disabled' : ''}>✅ ${biText('Nộp bài & Chấm', 'Submit & Grade')}</button>
+              <button type="button" class="act-btn" id="fccmResetBtn" title="${biText('Làm lại đề này', 'Restart')}">↻</button>
+            </div>
+            ${
+              state.fccmSubmitted
+                ? (() => {
+                    const pct = Math.round((correctCount / totalQ) * 100);
+                    const pass = pct >= FCCM_META.passMarkPct;
+                    return `<div style="padding:10px;border-radius:9px;margin:8px 0;background:${pass ? 'rgba(34,197,94,0.14)' : 'var(--red-soft)'};border:1px solid ${pass ? '#22c55e' : 'var(--red)'};font-size:13px">
+                      <strong>${pass ? '🎉 ĐẠT CHUẨN FCCM' : '📘 CHƯA ĐẠT (Cần ≥ 60%)'}: ${correctCount}/${totalQ} (${pct}%)</strong>
+                    </div>`;
+                  })()
+                : ''
+            }
+            <div style="font-size:12px;color:var(--mute);font-weight:600;margin-top:6px">${biText('Bảng câu hỏi', 'Question Navigator')}</div>
+            <div class="fccm-qgrid">
+              ${questions
+                .map((it, i) => {
+                  const chosen = state.fccmAnswers[it.id];
+                  const cls = [
+                    'fccm-qnum',
+                    i === state.fccmIdx ? 'active' : '',
+                    state.fccmFlags[it.id] ? 'flagged' : '',
+                    state.fccmSubmitted || (state.fccmMode === 'practice' && chosen !== undefined)
+                      ? chosen === undefined
+                        ? ''
+                        : chosen === it.ans
+                        ? 'correct'
+                        : 'wrong'
+                      : chosen !== undefined
+                      ? 'answered'
+                      : ''
+                  ]
+                    .filter(Boolean)
+                    .join(' ');
+                  return `<button type="button" class="${cls}" data-fccm-jump="${i}">${i + 1}</button>`;
+                })
+                .join('')}
+            </div>
+            ${
+              state.fccmHistory.length
+                ? `<div style="margin-top:14px;border-top:1px solid var(--rule);padding-top:10px">
+                    <div style="font-size:12px;color:var(--mute);font-weight:600;margin-bottom:6px">📊 ${biText('Lịch sử thi thử (cục bộ)', 'Local Attempt History')}</div>
+                    ${state.fccmHistory
+                      .slice(0, 4)
+                      .map(
+                        (h) => `<div style="font-size:11.5px;color:var(--ink2);margin-bottom:4px;display:flex;justify-content:space-between"><span>${h.passed ? '✅' : '❌'} ${h.correct}/${h.total} (${h.pct}%)</span><span style="color:var(--mute)">${escapeHtml(h.mode)}</span></div>`
+                      )
+                      .join('')}
+                  </div>`
+                : ''
+            }
+          </aside>
+
+          <section class="fccm-card">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--rule)">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span class="lib-page-badge">${biText('Câu', 'Question')} ${state.fccmIdx + 1} / ${totalQ}</span>
+                <span class="tl-pill">${escapeHtml(q.clause)}</span>
+              </div>
+              <div style="display:flex;gap:6px">
+                <button type="button" class="act-btn ${state.fccmFlags[q.id] ? 'has-note' : ''}" id="fccmFlagBtn">⚑ ${state.fccmFlags[q.id] ? biText('Đã gắn cờ', 'Flagged') : biText('Gắn cờ xem lại', 'Flag')}</button>
+                <button type="button" class="act-btn" id="fccmPrevBtn" ${state.fccmIdx <= 0 ? 'disabled' : ''}>◀</button>
+                <button type="button" class="act-btn" id="fccmNextBtn" ${state.fccmIdx >= totalQ - 1 ? 'disabled' : ''}>▶</button>
+              </div>
+            </div>
+
+            <div style="font-size:16px;font-weight:600;line-height:1.65;margin-bottom:16px">
+              ${
+                state.lang === 'vi'
+                  ? escapeHtml(q.qVi)
+                  : state.lang === 'en'
+                  ? escapeHtml(q.qEn)
+                  : `<div>${escapeHtml(q.qVi)}</div><div style="margin-top:8px;color:var(--ink2);font-weight:500;font-size:14.5px">${escapeHtml(q.qEn)}</div>`
+              }
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:10px">
+              ${q.opts
+                .map((opt, idx) => {
+                  const chosen = state.fccmAnswers[q.id];
+                  const reveal = showExplain;
+                  let cls = 'fccm-opt';
+                  if (reveal) {
+                    if (idx === q.ans) cls += ' correct';
+                    else if (chosen === idx) cls += ' wrong';
+                  } else if (chosen === idx) {
+                    cls += ' selected';
+                  }
+                  const letter = String.fromCharCode(65 + idx);
+                  const txt =
+                    state.lang === 'vi'
+                      ? escapeHtml(opt.vi)
+                      : state.lang === 'en'
+                      ? escapeHtml(opt.en)
+                      : `<div>${escapeHtml(opt.vi)}</div><div style="color:var(--mute);font-size:13px;margin-top:2px">${escapeHtml(opt.en)}</div>`;
+                  return `<button type="button" class="${cls}" data-fccm-opt="${idx}" ${state.fccmSubmitted ? 'disabled' : ''}><strong style="color:var(--teal);min-width:22px">${letter}.</strong><div style="flex:1">${txt}</div></button>`;
+                })
+                .join('')}
+            </div>
+
+            ${
+              showExplain
+                ? `<div class="note-preview" style="margin-top:16px">
+                    <div style="font-weight:700;margin-bottom:4px">${state.fccmAnswers[q.id] === q.ans ? `✅ ${biText('Chính xác!', 'Correct!')}` : `❌ ${biText(`Đáp án đúng: ${String.fromCharCode(65 + q.ans)}`, `Correct Answer: ${String.fromCharCode(65 + q.ans)}`)}`} (${escapeHtml(q.clause)})</div>
+                    ${
+                      state.lang === 'vi'
+                        ? escapeHtml(q.expVi)
+                        : state.lang === 'en'
+                        ? escapeHtml(q.expEn)
+                        : `<div>${escapeHtml(q.expVi)}</div><div style="margin-top:6px;color:var(--ink2)">${escapeHtml(q.expEn)}</div>`
+                    }
+                  </div>`
+                : ''
+            }
+
+            <div style="display:flex;justify-content:space-between;margin-top:18px;padding-top:12px;border-top:1px solid var(--rule)">
+              <button type="button" class="act-btn" id="fccmPrevBtn2" ${state.fccmIdx <= 0 ? 'disabled' : ''}>◀ ${biText('Câu trước', 'Prev Question')}</button>
+              <button type="button" class="act-btn saved" id="fccmNextBtn2" ${state.fccmIdx >= totalQ - 1 ? 'disabled' : ''}>${biText('Câu tiếp theo', 'Next Question')} ▶</button>
+            </div>
+          </section>
+        </div>
+      `
+      }
+    </div>
+  `;
+
+  if (state.fccmMode === 'exam' && !state.fccmSubmitted && totalQ > 0) {
+    state.fccmTimerId = setInterval(() => {
+      state.fccmSecondsLeft = Math.max(0, state.fccmSecondsLeft - 1);
+      const $tm = document.getElementById('fccmTimer');
+      if ($tm) {
+        $tm.textContent = `⏱ ${formatTimer(state.fccmSecondsLeft)}`;
+        $tm.classList.toggle('warn', state.fccmSecondsLeft < 180);
+      }
+      if (state.fccmSecondsLeft <= 0) submitAttempt();
+    }, 1000);
+  }
+
+  $view.querySelectorAll('[data-fccm-set]').forEach((b) => {
+    b.addEventListener('click', () => resetAttempt(b.dataset.fccmSet, state.fccmMode));
+  });
+  $view.querySelectorAll('[data-fccm-mode]').forEach((b) => {
+    b.addEventListener('click', () => resetAttempt(state.fccmSetId, b.dataset.fccmMode));
+  });
+  $view.querySelectorAll('[data-fccm-jump]').forEach((b) => {
+    b.addEventListener('click', () => {
+      state.fccmIdx = Number(b.dataset.fccmJump);
+      renderFccm();
+    });
+  });
+  $view.querySelectorAll('[data-fccm-opt]').forEach((b) => {
+    b.addEventListener('click', () => {
+      if (state.fccmSubmitted || !q) return;
+      state.fccmAnswers[q.id] = Number(b.dataset.fccmOpt);
+      renderFccm();
+    });
+  });
+  document.getElementById('fccmFlagBtn')?.addEventListener('click', () => {
+    if (!q) return;
+    state.fccmFlags[q.id] = !state.fccmFlags[q.id];
+    renderFccm();
+  });
+  const goQ = (d) => {
+    state.fccmIdx = Math.max(0, Math.min(totalQ - 1, state.fccmIdx + d));
+    renderFccm();
+  };
+  document.getElementById('fccmPrevBtn')?.addEventListener('click', () => goQ(-1));
+  document.getElementById('fccmPrevBtn2')?.addEventListener('click', () => goQ(-1));
+  document.getElementById('fccmNextBtn')?.addEventListener('click', () => goQ(1));
+  document.getElementById('fccmNextBtn2')?.addEventListener('click', () => goQ(1));
+  document.getElementById('fccmSubmitBtn')?.addEventListener('click', submitAttempt);
+  document.getElementById('fccmResetBtn')?.addEventListener('click', () => resetAttempt(state.fccmSetId, state.fccmMode));
+
+  document.getElementById('fccmGenAiBtn')?.addEventListener('click', async () => {
+    if (!state.geminiKey) {
+      state.aiOpen = true;
+      state.aiSettingsOpen = true;
+      renderAiDrawer();
+      showToast(biText('Nhập Gemini API Key để sinh câu hỏi FCCM mới', 'Enter Gemini API Key to generate new FCCM questions'));
+      return;
+    }
+    const topic = window.prompt(biText('Chủ đề muốn sinh thêm 2 câu hỏi tình huống FCCM:', 'Topic for 2 new FCCM scenario questions:'), 'Sub-Clause 20.2 Time-Bar & 3.7 Determination (2017 vs 1999)');
+    if (!topic) return;
+    const btn = document.getElementById('fccmGenAiBtn');
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = '⏳ Đang tạo...';
+    }
+    try {
+      const prompt = `Generate 2 rigorous bilingual (English + Vietnamese) scenario-based FCCM (FIDIC Certified Contract Manager) exam multiple-choice questions on topic: "${topic}". Output STRICT JSON array ONLY with no markdown code fences: [{"clause":"20.2.2","qVi":"...","qEn":"...","opts":[{"vi":"...","en":"..."},{"vi":"...","en":"..."},{"vi":"...","en":"..."},{"vi":"...","en":"..."}],"ans":1,"expVi":"...","expEn":"..."}]`;
+      const raw = await askGemini(prompt);
+      const cleaned = raw.replace(/```json|```/g, '').trim();
+      const parsed = JSON.parse(cleaned);
+      if (Array.isArray(parsed) && parsed.length) {
+        parsed.forEach((item, k) => {
+          state.fccmCustomQuestions.push({ ...item, id: `ai-${Date.now()}-${k}` });
+        });
+        localStorage.setItem('fidic_fccm_custom', JSON.stringify(state.fccmCustomQuestions));
+        showToast(biText(`Đã thêm ${parsed.length} câu hỏi AI vào bộ đề cá nhân`, `Added ${parsed.length} AI questions locally`));
+        resetAttempt('ai-custom', 'practice');
+      }
+    } catch (err) {
+      showToast(`⚠️ ${err.message}`);
+      renderFccm();
+    }
+  });
 }
 
 function renderSaved() {
@@ -3055,6 +3515,82 @@ function openCompare3(item) {
 function closeModal() {
   $modalRoot.innerHTML = '';
   state.presIdx = -1;
+  state.shortcutListenAction = null;
+}
+
+const SHORTCUT_META = [
+  { key: 'prevPage', vi: 'Trang trước / Câu trước', en: 'Previous Page / Question' },
+  { key: 'nextPage', vi: 'Trang sau / Câu tiếp', en: 'Next Page / Question' },
+  { key: 'toggleToc', vi: 'Ẩn / Hiện Mục lục Sách', en: 'Toggle Book TOC' },
+  { key: 'focusSearch', vi: 'Tập trung ô Tìm kiếm', en: 'Focus Search Box' },
+  { key: 'bookmarkPage', vi: 'Bookmark / Bỏ đánh dấu trang', en: 'Toggle Page Bookmark' },
+  { key: 'highlightSel', vi: 'Highlight đoạn đang bôi đen', en: 'Highlight Selected Text' },
+  { key: 'toggleNote', vi: 'Mở / Đóng Ghi chú trang', en: 'Toggle Page Note' },
+  { key: 'cycleLang', vi: 'Chuyển nhanh VI / VI+EN / EN', en: 'Cycle Language Mode' },
+  { key: 'toggleTheme', vi: 'Đổi giao diện Sáng / Tối', en: 'Cycle Theme' },
+  { key: 'openPalette', vi: 'Mở Tìm nhanh (Command Palette)', en: 'Open Command Palette' }
+];
+
+function formatKeyCombo(e) {
+  if (['Control', 'Shift', 'Alt', 'Meta'].includes(e.key)) return null;
+  const parts = [];
+  if (e.ctrlKey || e.metaKey) parts.push('Ctrl');
+  if (e.altKey) parts.push('Alt');
+  if (e.shiftKey && e.key.length > 1) parts.push('Shift');
+  const k = e.key === ' ' ? 'Space' : e.key.length === 1 ? e.key.toLowerCase() : e.key;
+  parts.push(k);
+  return parts.join('+');
+}
+
+function openShortcutsModal() {
+  state.shortcutListenAction = null;
+  const renderModal = () => {
+    $modalRoot.innerHTML = `
+      <div class="modal-backdrop" id="scBackdrop" role="dialog" aria-modal="true" aria-label="Keyboard Shortcuts">
+        <div class="modal-box" style="max-width:620px">
+          <div class="modal-head">
+            <h2 style="margin:0;font-size:18px">⌨ ${biText('Cài đặt Phím tắt (Lưu cục bộ trên máy)', 'Customize Keyboard Shortcuts (Saved Locally)')}</h2>
+            <button type="button" class="act-btn" id="closeSc">✕ ${t('close')}</button>
+          </div>
+          <p style="font-size:13px;color:var(--mute);margin:0 0 10px">${biText('Bấm vào nút phím tắt bất kỳ rồi nhấn tổ hợp phím mới trên bàn phím của bạn để gán lại.', 'Click any shortcut badge below, then press your desired key or key combo.')}</p>
+          <div class="shortcut-grid">
+            ${SHORTCUT_META.map(
+              (m) => `
+              <div class="shortcut-row">
+                <span>${escapeHtml(biText(m.vi, m.en))}</span>
+                <button type="button" class="shortcut-key ${state.shortcutListenAction === m.key ? 'listening' : ''}" data-sc-bind="${m.key}">
+                  ${state.shortcutListenAction === m.key ? biText('Nhấn phím...', 'Press key...') : escapeHtml(state.shortcuts[m.key] || '')}
+                </button>
+              </div>`
+            ).join('')}
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px">
+            <span class="lib-local-badge">🔒 ${biText('Chỉ lưu trên trình duyệt máy này', 'Stored locally in browser')}</span>
+            <button type="button" class="act-btn" id="scResetDefaults">↻ ${biText('Khôi phục mặc định', 'Reset Defaults')}</button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.getElementById('closeSc')?.addEventListener('click', closeModal);
+    document.getElementById('scBackdrop')?.addEventListener('click', (e) => {
+      if (e.target.id === 'scBackdrop') closeModal();
+    });
+    document.getElementById('scResetDefaults')?.addEventListener('click', () => {
+      state.shortcuts = { ...DEFAULT_SHORTCUTS };
+      state.shortcutListenAction = null;
+      localStorage.setItem('fidic_shortcuts', JSON.stringify(state.shortcuts));
+      showToast(biText('Đã khôi phục phím tắt mặc định', 'Reset default shortcuts'));
+      renderModal();
+    });
+    $modalRoot.querySelectorAll('[data-sc-bind]').forEach((b) => {
+      b.addEventListener('click', () => {
+        state.shortcutListenAction = b.dataset.scBind;
+        renderModal();
+      });
+    });
+  };
+  renderModal();
+  window._rerenderShortcutsModal = renderModal;
 }
 
 function openCommandPalette() {
@@ -3079,6 +3615,7 @@ function openCommandPalette() {
     { label: '📄 Biểu mẫu Hợp đồng', hash: '#models' },
     { label: '📅 Dự án & Deadline Tracker', hash: '#project' },
     { label: '📚 Thư viện Sách (Toàn văn 1.710 tr.)', hash: '#library' },
+    { label: '🏆 Phòng thi thử FCCM (62+ câu chuẩn FCL)', hash: '#fccm' },
     { label: '🔐 Đã lưu · Mã hóa · Gist Sync', hash: '#saved' }
   ];
 
@@ -3135,20 +3672,104 @@ function renderLockScreen() {
 }
 
 document.addEventListener('keydown', (e) => {
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+  if (state.shortcutListenAction) {
+    if (e.key === 'Escape') {
+      state.shortcutListenAction = null;
+      window._rerenderShortcutsModal?.();
+      return;
+    }
+    const combo = formatKeyCombo(e);
+    if (!combo) return;
+    e.preventDefault();
+    state.shortcuts[state.shortcutListenAction] = combo;
+    localStorage.setItem('fidic_shortcuts', JSON.stringify(state.shortcuts));
+    state.shortcutListenAction = null;
+    showToast(`${biText('Đã gán phím:', 'Bound key:')} ${combo}`);
+    window._rerenderShortcutsModal?.();
+    return;
+  }
+
+  const combo = formatKeyCombo(e);
+  if (!combo) return;
+
+  if (combo === state.shortcuts.openPalette || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k')) {
     e.preventDefault();
     openCommandPalette();
     return;
   }
-  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Escape') {
+    if (document.activeElement && ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+      document.activeElement.blur();
+    } else {
+      closeModal();
+    }
+    return;
+  }
+
+  const tag = document.activeElement?.tagName;
+  const inInput = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || document.activeElement?.isContentEditable;
+  if (inInput) return;
+
   if (state.presIdx >= 0 && state.presList.length) {
-    if (e.key === 'ArrowRight' && state.presIdx < state.presList.length - 1) {
+    if (combo === state.shortcuts.nextPage && state.presIdx < state.presList.length - 1) {
+      e.preventDefault();
       state.presIdx += 1;
       renderPresSlide(state.presList, state.presIdx);
-    } else if (e.key === 'ArrowLeft' && state.presIdx > 0) {
+      return;
+    } else if (combo === state.shortcuts.prevPage && state.presIdx > 0) {
+      e.preventDefault();
       state.presIdx -= 1;
       renderPresSlide(state.presList, state.presIdx);
+      return;
     }
+  }
+
+  const route = parseHash().route;
+  if (combo === state.shortcuts.prevPage) {
+    if (route === 'library') {
+      e.preventDefault();
+      document.getElementById('libPrevBtn')?.click();
+    } else if (route === 'fccm') {
+      e.preventDefault();
+      document.getElementById('fccmPrevBtn')?.click();
+    }
+  } else if (combo === state.shortcuts.nextPage) {
+    if (route === 'library') {
+      e.preventDefault();
+      document.getElementById('libNextBtn')?.click();
+    } else if (route === 'fccm') {
+      e.preventDefault();
+      document.getElementById('fccmNextBtn')?.click();
+    }
+  } else if (combo === state.shortcuts.toggleToc && route === 'library') {
+    e.preventDefault();
+    document.getElementById('libDesktopTocBtn')?.click();
+  } else if (combo === state.shortcuts.focusSearch) {
+    const inp = document.getElementById('libSearchInp') || document.getElementById('searchInput');
+    if (inp) {
+      e.preventDefault();
+      inp.focus();
+      inp.select?.();
+    }
+  } else if (combo === state.shortcuts.bookmarkPage && route === 'library') {
+    e.preventDefault();
+    document.getElementById('libBookmarkBtn')?.click();
+  } else if (combo === state.shortcuts.highlightSel && route === 'library') {
+    e.preventDefault();
+    document.getElementById('libHighlightBtn')?.click();
+  } else if (combo === state.shortcuts.toggleNote && route === 'library') {
+    e.preventDefault();
+    document.getElementById('libNoteBtn')?.click();
+  } else if (combo === state.shortcuts.cycleLang) {
+    e.preventDefault();
+    const order = ['bi', 'vi', 'en'];
+    state.lang = order[(order.indexOf(state.lang) + 1) % order.length];
+    localStorage.setItem('fidic_lang', state.lang);
+    applyHeaderI18n();
+    render(true);
+  } else if (combo === state.shortcuts.toggleTheme) {
+    e.preventDefault();
+    document.getElementById('themeBtn')?.click();
   }
 });
 
@@ -3222,6 +3843,8 @@ document.getElementById('langSeg').addEventListener('click', (e) => {
   }
 });
 
+document.getElementById('shortcutsBtn')?.addEventListener('click', openShortcutsModal);
+
 document.getElementById('themeBtn').addEventListener('click', () => {
   const order = ['auto', 'dark', 'light'];
   state.theme = order[(order.indexOf(state.theme) + 1) % order.length];
@@ -3280,6 +3903,10 @@ window.addEventListener('scroll', () => {
 
 function render(preserveScroll = false) {
   const parsed = parseHash();
+  if (parsed.route !== 'fccm' && state.fccmTimerId) {
+    clearInterval(state.fccmTimerId);
+    state.fccmTimerId = null;
+  }
   updateActiveTab(parsed.route);
   if (parsed.route === 'home') renderHome();
   else if (parsed.route === 'books') renderBooks(parsed, preserveScroll);
@@ -3287,6 +3914,7 @@ function render(preserveScroll = false) {
   else if (parsed.route === 'models') renderModels();
   else if (parsed.route === 'project') renderProject();
   else if (parsed.route === 'library') renderLibrary();
+  else if (parsed.route === 'fccm') renderFccm();
   else if (parsed.route === 'saved') renderSaved();
 }
 
