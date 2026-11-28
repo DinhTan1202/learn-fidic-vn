@@ -1,4 +1,4 @@
-const CACHE_NAME = 'learn-fidic-v37';
+const CACHE_NAME = 'learn-fidic-v38';
 const ASSETS = [
   './',
   './index.html',

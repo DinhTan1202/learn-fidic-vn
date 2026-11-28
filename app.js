@@ -1794,7 +1794,7 @@ async function renderLibrary() {
     return;
   }
 
-  const fileUrl = state.libBook === 'godwin' ? './data/books/godwin.json?v=37' : './data/books/seppala.json?v=37';
+  const fileUrl = state.libBook === 'godwin' ? './data/books/godwin.json?v=38' : './data/books/seppala.json?v=38';
   let bookData = state.bookCache[state.libBook];
   if (!bookData) {
     try {
@@ -1921,11 +1921,13 @@ async function renderLibrary() {
           ${
             (() => {
               if (!viText) return `<div class="lib-page-card">${renderLibText(rawText, state.libQuery, pageHls)}</div>`;
-              if (state.lang === 'vi') return `<div class="lib-page-card">${renderLibText(viText, state.libQuery, pageHls)}</div>`;
-              if (state.lang === 'en') return `<div class="lib-page-card">${renderLibText(rawText, state.libQuery, pageHls)}</div>`;
+              const stripDash = (s) => s.split(/\n{2,}/).filter((x) => x.trim() && x.trim() !== '—').join('\n\n');
+              if (state.lang === 'vi') return `<div class="lib-page-card">${renderLibText(stripDash(viText), state.libQuery, pageHls)}</div>`;
+              if (state.lang === 'en') return `<div class="lib-page-card">${renderLibText(stripDash(rawText), state.libQuery, pageHls)}</div>`;
               const viParas = viText.split(/\n{2,}/).map((s) => s.trim()).filter(Boolean);
               const enParas = rawText.split(/\n{2,}/).map((s) => s.trim()).filter(Boolean);
               const resizerTitle = biText('Kéo để điều chỉnh độ rộng khung Việt / Anh', 'Drag to resize VI / EN panes');
+              const renderCell = (txt) => (txt === '—' ? '<span style="color:var(--mute)">—</span>' : renderLibText(txt, state.libQuery, pageHls));
               const groupToCount = (arr, targetCount) => {
                 if (arr.length <= targetCount) return arr;
                 const res = [];
@@ -1943,7 +1945,7 @@ async function renderLibrary() {
                 const rows = vAligned
                   .map(
                     (vp, idx) =>
-                      `<div class="lib-bi-cell lib-bi-vi">${renderLibText(vp, state.libQuery, pageHls)}</div><div class="lib-bi-cell lib-bi-en">${renderLibText(eAligned[idx], state.libQuery, pageHls)}</div>`
+                      `<div class="lib-bi-cell lib-bi-vi">${renderCell(vp)}</div><div class="lib-bi-cell lib-bi-en">${renderCell(eAligned[idx])}</div>`
                   )
                   .join('');
                 return `<div class="lib-split lib-bi-aligned" id="libSplitPane" style="--lib-split:${state.libSplit}%"><div class="lib-bi-head lib-bi-vi"><span class="col-label" style="margin-bottom:0">Tiếng Việt</span></div><div class="lib-resizer" id="libResizer" style="grid-column:2;grid-row:1 / span ${rowCount + 1}" title="${resizerTitle}"></div><div class="lib-bi-head lib-bi-en"><span class="col-label" style="margin-bottom:0">English</span></div>${rows}</div>`;
