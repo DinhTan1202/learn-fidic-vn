@@ -86,14 +86,14 @@ button {
 }
 
 .top-inner {
-  max-width: var(--maxw);
+  max-width: min(1480px, 100%);
   height: 100%;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 10px;
 }
 
 .brand {
@@ -124,12 +124,13 @@ button {
 }
 
 .tab {
-  padding: 7px 13px;
+  padding: 6px 10px;
   border-radius: 9px;
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 500;
   color: var(--mute);
   white-space: nowrap;
+  flex-shrink: 0;
   transition: background 0.15s, color 0.15s;
 }
 .tab:hover {
@@ -2180,11 +2181,21 @@ mark.user-hl[data-hl-color="pink"] {
 
 /* FCCM Mock Exam Room */
 .fccm-hero {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--red-soft) 90%, transparent), color-mix(in srgb, var(--teal-soft) 60%, var(--bg2)));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--red-soft) 80%, transparent), color-mix(in srgb, var(--teal-soft) 45%, var(--bg2)));
   border: 1px solid var(--rule);
   border-radius: var(--radius);
-  padding: 16px 20px;
-  margin-bottom: 16px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+}
+.fccm-select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--rule2);
+  background: var(--bg2);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+  max-width: 420px;
 }
 .fccm-layout {
   display: grid;
@@ -2218,6 +2229,9 @@ mark.user-hl[data-hl-color="pink"] {
   grid-template-columns: repeat(5, 1fr);
   gap: 6px;
   margin-top: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 .fccm-qnum {
   padding: 6px 0;

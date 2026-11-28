@@ -14,6 +14,10 @@ export const FCCM_META = {
 export const FCCM_SETS = [
   {
     id: 'set-1-foundations',
+    level: 1,
+    levelBadge: '⭐',
+    levelVi: 'Cơ bản',
+    levelEn: 'Foundation',
     badge: 'Set 1 · 12 câu',
     titleVi: 'Đề 1: Nền tảng, Golden Principles & Khác biệt 1999 vs 2017',
     titleEn: 'Set 1: Contract Foundations, Golden Principles & 1999 vs 2017',
@@ -347,6 +351,10 @@ export const FCCM_SETS = [
   },
   {
     id: 'set-2-time-defects',
+    level: 2,
+    levelBadge: '⭐⭐',
+    levelVi: 'Trung cấp',
+    levelEn: 'Intermediate',
     badge: 'Set 2 · 12 câu',
     titleVi: 'Đề 2: Tiến độ, EOT, Tiền chậm trễ, Bàn giao & Sai sót (Cl. 8–11)',
     titleEn: 'Set 2: Time, Programme, EOT, Taking-Over & Defects (Clauses 8–11)',
@@ -680,6 +688,10 @@ export const FCCM_SETS = [
   },
   {
     id: 'set-3-money-variations',
+    level: 2,
+    levelBadge: '⭐⭐',
+    levelVi: 'Trung cấp',
+    levelEn: 'Intermediate',
     badge: 'Set 3 · 12 câu',
     titleVi: 'Đề 3: Đo lường, Thay đổi (Variations) & Thanh toán (Cl. 12–14)',
     titleEn: 'Set 3: Measurement, Variations & Payment (Clauses 12–14)',
@@ -917,6 +929,10 @@ export const FCCM_SETS = [
   },
   {
     id: 'set-4-claims-daab',
+    level: 3,
+    levelBadge: '⭐⭐⭐',
+    levelVi: 'Nâng cao',
+    levelEn: 'Advanced',
     badge: 'Set 4 · 14 câu',
     titleVi: 'Đề 4: Khiếu nại (Cl. 20), Tham vấn 3.7, DAAB & Trọng tài (Cl. 21)',
     titleEn: 'Set 4: Claims (Cl. 20), 3.7 Determination, DAAB & Arbitration (Cl. 21)',
@@ -1280,6 +1296,10 @@ export const FCCM_SETS = [
   },
   {
     id: 'set-5-termination-risk',
+    level: 3,
+    levelBadge: '⭐⭐⭐',
+    levelVi: 'Nâng cao',
+    levelEn: 'Advanced',
     badge: 'Set 5 · 12 câu',
     titleVi: 'Đề 5: Tạm ngừng, Chấm dứt, Rủi ro, Sự kiện Ngoại lệ & Đấu thầu (Cl. 15–19)',
     titleEn: 'Set 5: Termination, Risks, Exceptional Events & Procurement (Cl. 15–19)',
@@ -1526,5 +1546,971 @@ export const FCCM_SETS = [
         expEn: '2017 Sub-Clause 2.4 adds upfront Contract Data disclosure, proactive notice of material changes, and specific triggers (>10% / >30% Variations, non-payment) for 28-day evidence requests.'
       }
     ]
+  },
+  {
+    id: 'set-6-epc-design-build',
+    level: 2,
+    levelBadge: '⭐⭐',
+    levelVi: 'Trung cấp',
+    levelEn: 'Intermediate',
+    badge: 'Set 6 · 12 câu',
+    titleVi: 'Đề 6: Sách Bạc EPC & Sách Vàng Design-Build Chuyên sâu',
+    titleEn: 'Set 6: Silver Book EPC & Yellow Book Design-Build Deep Dive',
+    durationMin: 30,
+    questions: [
+      {
+        id: 'f6-1',
+        clause: 'Yel 1.9 vs Sil 5.1',
+        qVi: 'Về Sai sót trong Yêu cầu của Chủ đầu tư (Errors in Employer’s Requirements), điểm khác biệt lớn nhất giữa Sách Vàng (Yellow Book) và Sách Bạc (Silver Book) là gì?',
+        qEn: 'Regarding Errors in the Employer’s Requirements, what is the critical difference between the Yellow Book (Sub-Clause 1.9) and the Silver Book (Sub-Clause 5.1)?',
+        opts: [
+          { vi: 'Cả hai sách đều miễn trách nhiệm cho Nhà thầu như nhau', en: 'Both books grant identical Contractor relief' },
+          { vi: 'Ở Sách Vàng (1.9), nếu nhà thầu có kinh nghiệm không thể phát hiện sai sót bằng cẩn trọng hợp lý trước Base Date/thời hạn 1.9, Nhà thầu được EOT + Cost + Profit; ở Sách Bạc (5.1), Nhà thầu chịu trách nhiệm thẩm tra và GÁNH RỦI RO sai sót (trừ 4 ngoại lệ cụ thể tại 5.1(a)–(d) như định nghĩa mục đích sử dụng)', en: 'In Yellow Book (1.9), unforeseeable ER errors entitle EOT + Cost + Profit; in Silver Book (5.1), Contractor verifies and bears error risk except for narrow 5.1(a)–(d) Employer items' },
+          { vi: 'Sách Vàng bắt Nhà thầu tự chịu 100% sai sót trong ER', en: 'Yellow Book places 100% of ER error risk on Contractor' },
+          { vi: 'Sách Bạc cho phép khiếu nại mọi sai sót kể cả rõ ràng nhất', en: 'Silver Book allows claiming all ER errors' }
+        ],
+        ans: 1,
+        expVi: 'So sánh chuẩn FCCM giữa Yellow Book 1.9 (chỉ kiểm tra lỗi mà nhà thầu kinh nghiệm không thấy được -> EOT+Cost+Profit) và Silver Book 5.1 (trách nhiệm tuyệt đối trừ 4 mục (a) thông tin ghi rõ không thể xác minh/bất biến, (b) định nghĩa mục đích công trình, (c) tiêu chí kiểm định hiệu năng, (d) sai sót mà Nhà thầu không thể kiểm tra ngay trước Base Date không tính riêng).',
+        expEn: 'Yellow 1.9 relieves unforeseeable ER errors; Silver 5.1 makes Contractor verify ER, excluding only the narrow 5.1(a)–(d) Employer-retained items.'
+      },
+      {
+        id: 'f6-2',
+        clause: 'Sil 4.10 vs RB/YB 4.10',
+        qVi: 'Theo Khoản 4.10 [Sử dụng Dữ liệu Công trường] trong Sách Bạc (Silver Book), ai chịu trách nhiệm về tính chính xác, đầy đủ và khả năng sử dụng của dữ liệu công trường do Chủ đầu tư cung cấp?',
+        qEn: 'Under Silver Book Sub-Clause 4.10 [Use of Site Data], who bears responsibility for the accuracy, sufficiency, and completeness of Site Data supplied by the Employer?',
+        opts: [
+          { vi: 'Chủ đầu tư chịu trách nhiệm hoàn toàn về độ chính xác dữ liệu đã cấp', en: 'Employer guarantees full accuracy of supplied Site Data' },
+          { vi: 'Nhà thầu chịu trách nhiệm tự xác minh và diễn giải mọi dữ liệu đó; Chủ đầu tư không chịu trách nhiệm (ngoại trừ các phần rơi vào ngoại lệ Khoản 5.1)', en: 'The Contractor is responsible for verifying and interpreting all such data, and the Employer has no responsibility for accuracy/sufficiency (save as stated in 5.1)' },
+          { vi: 'Nhà tư vấn chịu trách nhiệm thẩm định dữ liệu', en: 'The Engineer warrants the Site Data' },
+          { vi: 'Chia 50% rủi ro giữa các bên', en: 'Risk is split 50/50' }
+        ],
+        ans: 1,
+        expVi: 'Điểm then chốt của EPC Silver Book Khoản 4.10: "The Employer shall have no responsibility for the accuracy, sufficiency or completeness of such data..." — khác hẳn Sách Đỏ/Vàng (nơi Nhà thầu chỉ cần diễn giải hợp lý dữ liệu Chủ đầu tư phải cung cấp đầy đủ).',
+        expEn: 'Silver Book 4.10 expressly disclaims Employer liability for accuracy/sufficiency/completeness of Site Data (except narrow Sub-Clause 5.1 carve-outs).'
+      },
+      {
+        id: 'f6-3',
+        clause: '5.2.2 (Review Period 21d)',
+        qVi: 'Trong Sách Vàng & Sách Bạc 2017 Khoản 5.2.2 [Xem xét Tài liệu của Nhà thầu - Review], thời hạn xem xét của Nhà tư vấn/Đại diện Chủ đầu tư là bao nhiêu ngày kể từ khi nhận hồ sơ thiết kế, và điều gì xảy ra nếu họ không phản hồi?',
+        qEn: 'Under 2017 Yellow and Silver Books Sub-Clause 5.2.2 [Review of Contractor’s Documents], what is the Review Period and what happens upon silence?',
+        opts: [
+          { vi: '14 ngày; hết hạn tự động coi là bác bỏ thiết kế', en: '14 days; deemed rejected upon expiry' },
+          { vi: '21 ngày (trừ khi ER ghi khác); nếu không gửi Notice phản đối trong 21 ngày thì được coi là đã gửi Notice of No-objection để Nhà thầu chuyển bước thi công', en: '21 days (unless otherwise stated in ER); failure to notify non-compliance within 21 days deems a Notice of No-objection' },
+          { vi: '28 ngày; Nhà thầu phải chờ văn bản phê duyệt đóng dấu mới được làm', en: '28 days; Contractor must wait indefinitely for written approval' },
+          { vi: '42 ngày không có cơ chế mặc định', en: '42 days with no deeming mechanism' }
+        ],
+        ans: 1,
+        expVi: 'Khoản 5.2.2 áp dụng Review Period 21 ngày kèm cơ chế deeming Notice of No-objection (giúp tránh kẹt phê duyệt thiết kế). Lưu ý bản 2017 cũng nhấn mạnh: Dù có Notice of No-objection hay không, Nhà thầu KHÔNG được miễn trách nhiệm thiết kế!',
+        expEn: 'Sub-Clause 5.2.2 provides a 21-day Review Period with a deemed Notice of No-objection, without relieving Contractor’s design responsibility.'
+      },
+      {
+        id: 'f6-4',
+        clause: 'Cl. 12 Yel/Sil (Tests after Completion)',
+        qVi: 'Điều 12 trong Sách Vàng & Sách Bạc [Kiểm định sau khi Hoàn thành - Tests after Completion] khác biệt gì căn bản so với Điều 12 của Sách Đỏ?',
+        qEn: 'How does Clause 12 differ fundamentally between the Red Book and the Yellow/Silver Books?',
+        opts: [
+          { vi: 'Giống hệt nhau ở cả 3 sách', en: 'Identical across all 3 books' },
+          { vi: 'Sách Đỏ Điều 12 là "Đo lường và Xác định giá trị" (Measurement and Valuation); Sách Vàng & Sách Bạc Điều 12 là "Kiểm định sau khi Hoàn thành" (Tests after Completion — kiểm tra vận hành thực tế/hiệu năng nhà máy sau Bàn giao)', en: 'Red Book Clause 12 is Measurement and Valuation; Yellow and Silver Books Clause 12 is Tests after Completion (performance testing after Taking Over)' },
+          { vi: 'Sách Đỏ cũng dùng Tests after Completion tại Điều 12', en: 'Red Book uses Tests after Completion at Clause 12' },
+          { vi: 'Sách Bạc không có Điều 12', en: 'Silver Book skips Clause 12' }
+        ],
+        ans: 1,
+        expVi: 'Bẫy đọc nhanh trong Open-Book FCCM: Điều 12 & 14 là điểm rẽ nhánh cấu trúc giữa Red Book (Đo lường khối lượng) và Yellow/Silver Book (Trọn gói + Kiểm định hiệu năng sau Bàn giao)!',
+        expEn: 'Key Rainbow Suite structural split: Clause 12 is Measurement/Valuation in Red Book vs Tests after Completion in Yellow/Silver Books.'
+      },
+      {
+        id: 'f6-5',
+        clause: 'Yel/Sil 12.2 & 12.4 (Non-Performance)',
+        qVi: 'Theo Khoản 12.4 [Không đạt Kiểm định sau khi Hoàn thành] trong Sách Vàng/Bạc, nếu Công trình không đạt giá trị bảo đảm tối thiểu nhưng vẫn vận hành được (hoặc nằm trong dải đền bù hiệu suất - Performance Damages), giải pháp chuẩn hợp đồng là gì?',
+        qEn: 'Under Yellow/Silver Sub-Clause 12.4 [Failure to Pass Tests after Completion], if the Works fail guaranteed minimum performance parameters where non-performance damages are specified in Schedules, what applies?',
+        opts: [
+          { vi: 'Chủ đầu tư bắt buộc phải từ chối toàn bộ nhà máy', en: 'Employer must reject the entire plant' },
+          { vi: 'Nếu sai lệch nằm trong giới hạn cho phép trả Tiền bồi thường Hiệu suất (Non-Performance Damages) nêu tại Schedules/Contract Data, Nhà thầu trả khoản tiền đó để coi như đạt Kiểm định sau khi Hoàn thành', en: 'Contractor may pay Non-Performance Damages stated in the Schedules/Contract Data, whereupon the Works/Section are deemed to have passed the Tests after Completion' },
+          { vi: 'Nhà thầu không phải trả tiền mà chỉ kéo dài bảo hành thêm 1 năm', en: 'Contractor extends warranty by 1 year with zero payment' },
+          { vi: 'Chỉ áp dụng cho thiết bị điện dân dụng', en: 'Applies only to residential fittings' }
+        ],
+        ans: 1,
+        expVi: 'Khoản 12.4(b) cho phép thanh toán Performance Damages (tiền phạt hiệu suất/công suất định trước) như một cơ chế giải phóng trách nhiệm khi công suất hơi thiếu nhưng vẫn dùng được.',
+        expEn: 'Sub-Clause 12.4 allows Contractor to pay scheduled Non-Performance Damages as full satisfaction of passing Tests after Completion.'
+      },
+      {
+        id: 'f6-6',
+        clause: 'Yel/Sil 14.1 (Lump Sum)',
+        qVi: 'Trong Sách Vàng & Sách Bạc Khoản 14.1 [Giá Hợp đồng], tính chất thanh toán mặc định là gì và mọi khối lượng trong bảng biểu (Schedules) được xử lý ra sao?',
+        qEn: 'Under Yellow/Silver Sub-Clause 14.1 [The Contract Price], what is the pricing basis and how are any quantities listed in a Schedule treated?',
+        opts: [
+          { vi: 'Đo bóc lại 100% theo khối lượng thực tế thi công tại hiện trường', en: '100% remeasured based on actual site quantities' },
+          { vi: 'Giá Hợp đồng là Trọn gói (Lump Sum Accepted Contract Amount) tùy thuộc điều chỉnh theo Hợp đồng; mọi khối lượng trong Schedule chỉ mang tính ước tính (estimated) và KHÔNG dùng để xác định thanh toán (trừ phần đo lường riêng nếu Hợp đồng ghi rõ)', en: 'Payment is based on a Lump Sum Accepted Contract Amount (subject to contractual adjustments); quantities set out in any Schedule are estimated only and NOT used for payment valuation' },
+          { vi: 'Thanh toán theo chi phí thực tế cộng 10% phí quản lý', en: 'Cost-plus 10% management fee' },
+          { vi: 'Mỗi biến động >1% khối lượng đều phải thay đổi giá trọn gói', en: 'Every >1% quantity deviation alters the lump sum' }
+        ],
+        ans: 1,
+        expVi: 'Khác với Red Book Điều 12 (re-measurement), Yellow/Silver 14.1 quy định Giá trọn gói: mọi khối lượng liệt kê trong Schedule đều chỉ mang tính tham khảo/ước tính ("estimated and are not to be taken as actual and correct quantities").',
+        expEn: 'Yellow/Silver 14.1 establishes lump-sum pricing; any quantities in Schedules are strictly estimated and non-binding for valuation.'
+      },
+      {
+        id: 'f6-7',
+        clause: 'Yel/Sil 13.3 vs 5.2 (Changes)',
+        qVi: 'Trong Sách Bạc/Vàng 2017, khi Đại diện Chủ đầu tư / Nhà tư vấn xem xét Tài liệu thiết kế của Nhà thầu theo Khoản 5.2 và yêu cầu chỉnh sửa vượt quá yêu cầu ban đầu trong Employer’s Requirements, việc này được xử lý theo điều khoản nào?',
+        qEn: 'In 2017 Yellow/Silver, if the Engineer/Employer’s Representative instructs a design modification during Clause 5.2 review that goes beyond the Employer’s Requirements, how should it be treated?',
+        opts: [
+          { vi: 'Nhà thầu phải sửa miễn phí vì mọi ý kiến 5.2 đều miễn phí', en: 'Contractor modifies free of charge because 5.2 review overrides ER' },
+          { vi: 'Cấu thành một Thay đổi (Variation) theo Điều 13 (nếu Nhà thầu đã thông báo/chỉ rõ yêu cầu đó là Variation khi nộp lại hoặc trước khi thực hiện)', en: 'Constitutes a Variation under Clause 13 because instructions departing from the Employer’s Requirements alter Scope' },
+          { vi: 'Chuyển thành khoản tạm ứng không hoàn lại', en: 'Treated as non-refundable advance' },
+          { vi: 'Tự động chấm dứt hợp đồng theo Khoản 15.5', en: 'Triggers termination under 15.5' }
+        ],
+        ans: 1,
+        expVi: 'Quản trị Design-Build cực hay gặp: Chủ đầu tư góp ý "tiện nghi/nâng cấp thêm" khi duyệt thiết kế 5.2 -> phải chốt rõ dưới dạng **Variation (Điều 13)** qua Notice kịp thời để tránh tranh cãi scope creep!',
+        expEn: 'Classic Design-Build risk: comments during 5.2 review demanding higher standards than Employer’s Requirements require treatment as a Variation under Clause 13.'
+      },
+      {
+        id: 'f6-8',
+        clause: 'Sil 1.15 vs Cap',
+        qVi: 'Nếu Hợp đồng không ghi cụ thể số tiền Giới hạn Trách nhiệm Tổng thể (Total Liability Cap) của Nhà thầu tại Dữ liệu Hợp đồng (Contract Data), Khoản 1.15 (2017) / 17.6 (1999) ấn định mức trần mặc định bằng bao nhiêu?',
+        qEn: 'Under Sub-Clause 1.15 (2017) / 17.6 (1999), if no specific sum is stated in the Contract Data, what is the default cap on Contractor’s total liability to the Employer?',
+        opts: [
+          { vi: '10% Giá Hợp đồng Được chấp nhận', en: '10% of Accepted Contract Amount' },
+          { vi: '50% Giá Hợp đồng Được chấp nhận', en: '50% of Accepted Contract Amount' },
+          { vi: 'Bằng Giá Hợp đồng Được chấp nhận (Accepted Contract Amount) ở Red/Yellow Book — hoặc Contract Price stated in Contract Agreement ở Silver Book!', en: 'Equal to the Accepted Contract Amount (Red/Yellow) or the Contract Price stated in the Contract Agreement (Silver)' },
+          { vi: 'Không giới hạn trách nhiệm nếu Contract Data để trống', en: 'Unlimited liability if Contract Data is blank' }
+        ],
+        ans: 2,
+        expVi: 'Mẹo nhớ Open-Book Khoản 1.15: Mặc định trần trách nhiệm = **Accepted Contract Amount** (Red/Yellow) hoặc **Contract Price** (Silver — vì Silver Book không dùng thuật ngữ Accepted Contract Amount!).',
+        expEn: 'Default liability cap under 1.15 is the Accepted Contract Amount (Red/Yellow) or Contract Price stated in the Contract Agreement (Silver).'
+      },
+      {
+        id: 'f6-9',
+        clause: '5.5–5.7 (Training, As-Built, O&M)',
+        qVi: 'Trong Sách Vàng & Sách Bạc Khoản 5.5–5.7 (và Sách Đỏ 2017 mở rộng Khoản 4.5), điều kiện tiên quyết gắn liền với việc hoàn thiện Tài liệu Hoàn công (As-Built) và Hướng dẫn Vận hành Bảo trì (O&M Manuals) là gì?',
+        qEn: 'Under Yellow/Silver Sub-Clauses 5.6–5.7 (and RB/17 4.4–4.5), how are As-Built Drawings and O&M Manuals tied to Taking-Over?',
+        opts: [
+          { vi: 'Chỉ cần nộp trong vòng 1 năm sau khi hết bảo hành', en: 'Submitted 1 year after DNP expires' },
+          { vi: 'Công trình KHÔNG được coi là đã hoàn thành để bàn giao (Taking-Over theo Khoản 10.1) cho đến khi Nhà thầu đã nộp đủ Tài liệu Hoàn công và Sổ tay O&M theo đúng Employer’s Requirements/Specification', en: 'The Works are NOT considered complete for Taking-Over under Sub-Clause 10.1 until the Contractor has supplied the specified As-Built Records and O&M Manuals' },
+          { vi: 'Chỉ cần bản nháp viết tay', en: 'Handwritten drafts suffice' },
+          { vi: 'Không cần cho thiết bị cơ điện', en: 'Exempted for MEP works' }
+        ],
+        ans: 1,
+        expVi: 'Khoản 5.6 & 5.7 (Yel/Sil) và 4.4.2/4.4.3 (RB/17) đều gắn điều kiện: Chưa nộp đủ As-Built & O&M Manuals thì chưa đủ điều kiện cấp Chứng chỉ Bàn giao (10.1)!',
+        expEn: 'Works are explicitly not considered complete for Taking-Over under 10.1 until As-Built documents and O&M manuals are supplied.'
+      },
+      {
+        id: 'f6-10',
+        clause: 'Sil 2.5 vs 3.5 (2017)',
+        qVi: 'Trong Sách Bạc 2017 (Silver Book 2017), khi Chủ đầu tư không đồng ý trả một khoản tiền hoặc EOT, vai trò của Đại diện Chủ đầu tư (Employer’s Representative) tại Khoản 3.5 khác gì Sách Đỏ/Vàng 2017 Khoản 3.7?',
+        qEn: 'In Silver Book 2017 Sub-Clause 3.5 [Agreement or Determination], how does the Employer’s Representative differ from the Red/Yellow 2017 Engineer under Sub-Clause 3.7?',
+        opts: [
+          { vi: 'Không có bất kỳ quy định 42+42 ngày nào ở Sách Bạc 2017', en: 'Silver Book 2017 omits 42+42 deadlines' },
+          { vi: 'Về quy trình 42+42 ngày & nghĩa vụ "act neutrally" (ra quyết định công bằng dựa theo Hợp đồng, không được coi là hành động thay mặt Chủ đầu tư khi thực thi 3.5) là GIỐNG Sách Đỏ/Vàng 3.7 — khác tên gọi chủ thể là Employer’s Representative và không có quy định chứng chỉ IPC trung gian kiểu kỹ sư độc lập', en: 'Silver Book 2017 Sub-Clause 3.5 mirrors Red/Yellow 3.7 procedural neutrality ("act neutrally", 42+42 days, not deemed to act for Employer during 3.5), simply substituting Employer’s Representative for Engineer' },
+          { vi: 'Đại diện Chủ đầu tư được phép thiên vị Chủ đầu tư khi quyết định 3.5', en: 'ER is expressly partial to Employer under 3.5' },
+          { vi: 'Sách Bạc bỏ hoàn toàn quy trình Agreement or Determination', en: 'Silver Book deletes Agreement or Determination' }
+        ],
+        ans: 1,
+        expVi: 'Điểm thay đổi chấn động ở Silver Book 2017: Lần đầu tiên Đại diện Chủ đầu tư (ER) trong EPC cũng bị ràng buộc quy trình "act neutrally" 42+42 ngày tại **Khoản 3.5** giống hệt Nhà tư vấn tại Khoản 3.7!',
+        expEn: 'Major 2017 Silver Book innovation: Sub-Clause 3.5 imposes the same neutrality duty and 42+42 day procedure on the Employer’s Representative.'
+      },
+      {
+        id: 'f6-11',
+        clause: '1.10 (Copyright / IP)',
+        qVi: 'Theo Khoản 1.10 [Quyền sử dụng Tài liệu của Nhà thầu], ai nắm bản quyền thiết kế của Tài liệu Nhà thầu (Contractor’s Documents) và Chủ đầu tư có quyền sử dụng như thế nào?',
+        qEn: 'Under Sub-Clause 1.10 [Employer’s Use of Contractor’s Documents], who retains copyright and intellectual property rights in the Contractor’s Documents?',
+        opts: [
+          { vi: 'Chủ đầu tư sở hữu toàn bộ bản quyền để đem bán lại cho dự án khác', en: 'Employer owns full copyright for commercial resale' },
+          { vi: 'Nhà thầu giữ nguyên bản quyền và quyền sở hữu trí tuệ; Chủ đầu tư được cấp giấy phép không độc quyền, miễn phí bản quyền (royalty-free licence) vĩnh viễn chỉ để vận hành, bảo trì, sửa đổi và vận hành Công trình này (và sao chép/dùng khi hoàn thiện nốt nếu chấm dứt)', en: 'The Contractor retains copyright and IP; the Employer receives a non-exclusive, royalty-free licence strictly to operate, maintain, alter, repair, and complete the Works' },
+          { vi: 'Giấy phép hết hạn ngay sau khi hết thời hạn bảo hành DNP', en: 'Employer licence expires when DNP ends' },
+          { vi: 'Nhà tư vấn là chủ sở hữu bản quyền', en: 'Engineer owns the copyright' }
+        ],
+        ans: 1,
+        expVi: 'Khoản 1.10 bảo vệ sở hữu trí tuệ của Nhà thầu (Contractor retains copyright) đồng thời trao giấy phép vĩnh viễn miễn phí bản quyền cho Chủ đầu tư dùng trong phạm vi Công trình đó.',
+        expEn: 'Sub-Clause 1.10 balances Contractor IP ownership with a royalty-free, irrevocable Employer licence for the Works.'
+      },
+      {
+        id: 'f6-12',
+        clause: 'Yel 14.15 (Payment Currencies)',
+        qVi: 'Theo Khoản 14.15 [Đồng tiền Thanh toán], nếu Hợp đồng có quy định tỷ giá hối đoái cố định (fixed rate of exchange) tại Contract Data và thanh toán thực hiện bằng đồng tiền khác đồng tiền Giá Hợp đồng Được chấp nhận, rủi ro tỷ giá thuộc về ai?',
+        qEn: 'Under Sub-Clause 14.15 [Currencies of Payment], where Contract Data specifies fixed exchange rates for multi-currency payments, how are currency conversion amounts certified?',
+        opts: [
+          { vi: 'Chủ đầu tư quy đổi theo tỷ giá thị trường giao ngay từng tháng bất chấp Contract Data', en: 'Spot bank rate each month regardless of Contract Data' },
+          { vi: 'Áp dụng tỷ giá cố định đã ghi tại Contract Data (hoặc tỷ giá ngày Base Date của Ngân hàng Trung ương nếu Contract Data không ghi tỷ giá cố định)', en: 'Calculated using the exchange rates stated in Contract Data (or if none stated, central bank Base Date rates unless specified otherwise)' },
+          { vi: 'Do Nhà thầu tự chọn tỷ giá có lợi nhất vào ngày xuất hóa đơn', en: 'Contractor picks most favorable rate on invoice date' },
+          { vi: 'Chỉ thanh toán bằng USD trong mọi hợp đồng FIDIC', en: 'All FIDIC contracts pay exclusively in USD' }
+        ],
+        ans: 1,
+        expVi: 'Khoản 14.15(c): Tỷ giá cố định trong Contract Data (hoặc Base Date rate) được cố định xuyên suốt hợp đồng để tránh tranh cãi trượt giá tiền tệ cho thanh toán & tỷ lệ hoàn trả tạm ứng.',
+        expEn: 'Sub-Clause 14.15 mandates using the fixed exchange rates stated in Contract Data (or Base Date central bank rates where omitted).'
+      }
+    ]
+  },
+  {
+    id: 'set-7-records-delay-finance',
+    level: 3,
+    levelBadge: '⭐⭐⭐',
+    levelVi: 'Nâng cao',
+    levelEn: 'Advanced',
+    badge: 'Set 7 · 12 câu',
+    titleVi: 'Đề 7: Hồ sơ Đồng thời, Phương pháp EOT & Bồi thường Tài chính',
+    titleEn: 'Set 7: Contemporary Records, Delay Analysis & Financial Claims',
+    durationMin: 30,
+    questions: [
+      {
+        id: 'f7-1',
+        clause: '20.2.3 (Contemporary Records)',
+        qVi: 'Theo Khoản 20.2.3 [Hồ sơ Đồng thời - Contemporary Records] bản 2017, "Hồ sơ Đồng thời" được định nghĩa là gì và Nhà tư vấn có quyền gì đối với chúng?',
+        qEn: 'Under 2017 Sub-Clause 20.2.3 [Contemporary Records], what are "contemporary records" and what rights does the Engineer hold?',
+        opts: [
+          { vi: 'Biên bản hồi tưởng được lập sau khi kết thúc dự án 1 năm', en: 'Retrospective witness statements drafted 1 year after completion' },
+          { vi: 'Các hồ sơ được lập hoặc tạo ra tại thời điểm hoặc ngay sát thời điểm sự kiện/tình huống phát sinh (nhật ký công trường, báo cáo nhân lực/máy, nghiệm thu, thư từ, tiến độ cập nhật); Nhà tư vấn có quyền kiểm tra (inspect) tất cả hồ sơ đó và hướng dẫn giữ thêm hồ sơ', en: 'Records prepared or generated at or immediately following the event/circumstance; the Engineer may inspect all contemporary records and instruct additional record-keeping' },
+          { vi: 'Nhà thầu có quyền giữ bí mật tuyệt đối không cho Nhà tư vấn xem hồ sơ công trường khi đang khiếu nại', en: 'Contractor may withhold site records as confidential' },
+          { vi: 'Chỉ bao gồm hóa đơn VAT tài chính cuối cùng', en: 'Limited strictly to final VAT invoices' }
+        ],
+        ans: 1,
+        expVi: 'Khoản 20.2.3 định nghĩa rõ ràng khái niệm "contemporary records" (tạo lập tại thời điểm hoặc ngay sau sự kiện) và nhấn mạnh: Việc Nhà tư vấn kiểm tra hồ sơ KHÔNG mặc nhiên đồng nghĩa thừa nhận tính hợp lệ của khiếu nại!',
+        expEn: 'Sub-Clause 20.2.3 defines contemporary records as those created at/immediately after the event and clarifies that Engineer inspection does not constitute admission.'
+      },
+      {
+        id: 'f7-2',
+        clause: 'EOT Methodology',
+        qVi: 'Trong các phương pháp phân tích chậm trễ EOT (như SCL Protocol / tài liệu thực hành FIDIC), phương pháp nào được coi là chính xác và thuyết phục nhất cho các khiếu nại EOT phát sinh trong lúc đang thi công (prospective) lẫn sau hoàn thành nếu có dữ liệu tiến độ cập nhật tốt?',
+        qEn: 'Among standard EOT delay analysis methods (recognized in FIDIC/SCL guidance), which dynamic method evaluates actual critical path progress period-by-period against updated programmes?',
+        opts: [
+          { vi: 'Impacted As-Planned (chỉ chèn sự kiện vào tiến độ gốc mà bỏ qua tiến độ thực tế công trường)', en: 'Impacted As-Planned (ignores actual site progress)' },
+          { vi: 'Time Slice Windows / Retrospective Time Impact Analysis dựa trên các tiến độ cập nhật thực tế đồng thời (Contemporaneous Updated Programmes)', en: 'Time Slice Windows / Dynamic Time Impact Analysis anchored to contemporaneous updated programmes' },
+          { vi: 'Ước lượng cộng tổng đơn giản tổng ngày chậm từng hạng mục không xét đường găng', en: 'Simple global addition ignoring float and critical path' },
+          { vi: 'Global Claim không tách riêng nhân-quả', en: 'Unsubstantiated Global Claim' }
+        ],
+        ans: 1,
+        expVi: 'Thực hành quốc tế FIDIC & SCL Protocol (được dẫn chiếu ngay trong FIDIC Guidance 2017 Clause 8.5): **Time Slice Windows** và **Time Impact Analysis** dùng tiến độ cập nhật thực tế phản ánh đúng biến động đường găng theo thời gian.',
+        expEn: 'Windows Analysis and Time Impact Analysis anchored to contemporaneous programme updates best capture shifting critical paths over time.'
+      },
+      {
+        id: 'f7-3',
+        clause: 'Cost vs Cost plus Profit',
+        qVi: 'Trong Hợp đồng FIDIC 2017, trường hợp nào dưới đây Nhà thầu được đòi **Cost plus Profit** (Chi phí cộng Lợi nhuận), so với chỉ được đòi **Cost** (không có Profit)?',
+        qEn: 'Under the 2017 FIDIC Contracts, which Contractor entitlement grants **Cost plus Profit** as opposed to **Cost only** (no profit)?',
+        opts: [
+          { vi: 'Điều kiện Vật chất Không lường trước được (4.12) được Cost + Profit; Thay đổi Luật (13.6) cũng được Cost + Profit', en: '4.12 Unforeseeable physical conditions and 13.6 Changes in Laws both grant Cost + Profit' },
+          { vi: 'Chủ đầu tư chậm bàn giao mặt bằng (2.1) hoặc Tham vấn tìm lỗi Chủ đầu tư (4.7/1.9/16.1) được **Cost plus Profit**; trong khi Sự kiện Ngoại lệ chiến tranh (18.4), Điều kiện vật chất bất khả kháng 4.12 hay Thay đổi Luật (13.6) chỉ được **Cost** (KHÔNG có Profit)!', en: 'Employer defaults (e.g., 2.1 Delayed Access, 1.9 Errors, 16.1 Suspension) grant **Cost plus Profit**; neutral/external risks (4.12 Physical Conditions, 13.6 Changes in Laws, 18.4 War/Riots) grant **Cost only**' },
+          { vi: 'Mọi khiếu nại FIDIC đều luôn cộng thêm Lợi nhuận', en: 'All FIDIC financial claims automatically include Profit' },
+          { vi: 'Không điều khoản nào cho phép tính Profit ngoài Variation', en: 'No clause grants Profit outside Clause 13' }
+        ],
+        ans: 1,
+        expVi: 'Quy tắc vàng ghi nhớ khi thi Open-Book FCCM: **Lỗi của Chủ đầu tư -> EOT + Cost + Profit** (1.9, 2.1, 4.7, 7.4, 10.2, 10.3, 16.1, 17.2). **Rủi ro trung lập ngoài kiểm soát cả 2 bên -> EOT + Cost (không Profit)** (4.12, 4.15, 13.6, 18.4(b)). **Thiên tai 18.1(f) / Chậm do cơ quan công quyền 8.6 / Thời tiết bất lợi đặc biệt 8.5(c) -> Chỉ EOT (không Cost)**!',
+        expEn: 'Golden FCCM Rule: Employer default = EOT + Cost + Profit; Neutral third-party/ground/law risk (4.12, 13.6, 18.4(b)) = EOT + Cost only; Natural catastrophe/weather/authorities (8.5(c), 8.6, 18.1(f)) = EOT only.'
+      },
+      {
+        id: 'f7-4',
+        clause: '1.1.20 / Profit Definition',
+        qVi: 'Trong ấn bản 2017, thuật ngữ "Cost Plus Profit" ấn định mức tỷ lệ phần trăm Lợi nhuận (Profit) mặc định bằng bao nhiêu nếu Contract Data không ghi rõ tỷ lệ?',
+        qEn: 'In the 2017 FIDIC editions, under the definition of "Cost Plus Profit" (Clause 1.1), what is the default Profit percentage if none is stated in the Contract Data?',
+        opts: [
+          { vi: '3%', en: '3%' },
+          { vi: '5% (tính trên Cost)', en: '5% (added to Cost)' },
+          { vi: '10%', en: '10%' },
+          { vi: '15%', en: '15%' }
+        ],
+        ans: 1,
+        expVi: 'Cải tiến quan trọng ở 2017 (Khoản 1.1.20 Red/Yellow / 1.1.17 Silver): Định nghĩa "Cost Plus Profit" chốt sẵn **5%** nếu Contract Data bỏ trống (ở 1999 thuật ngữ này ghi "reasonable profit" gây tranh cãi liên miên)!',
+        expEn: '2017 editions lock default Profit in "Cost Plus Profit" at **5%** (unless otherwise stated in Contract Data), removing the 1999 "reasonable profit" dispute.'
+      },
+      {
+        id: 'f7-5',
+        clause: 'Prolongation vs Disruption',
+        qVi: 'Trong quản trị khiếu nại tài chính FIDIC, sự khác biệt căn bản giữa chi phí Kéo dài Thời gian (Prolongation Costs) và chi phí Gián đoạn Năng suất (Disruption Costs) là gì?',
+        qEn: 'In FIDIC claims administration, what is the fundamental difference between Prolongation Costs and Disruption Costs?',
+        opts: [
+          { vi: 'Hai khái niệm là một và luôn tỷ lệ thuận theo số ngày EOT', en: 'They are synonymous and strictly proportional to EOT days' },
+          { vi: 'Prolongation liên quan đến chi phí duy trì nguồn lực kéo dài theo THỜI GIAN (công trường/trụ sở) do kéo dài ngày hoàn thành; Disruption là tổn thất HIỆU SUẤT / NĂNG SUẤT lao động-máy móc (thậm chí xảy ra khi công trình không bị chậm ngày hoàn thành hoặc trên công việc không nằm trên đường găng!)', en: 'Prolongation concerns time-related costs over an extended period; Disruption concerns loss of productivity/efficiency of resources, which can occur even WITHOUT critical delay to completion!' },
+          { vi: 'Disruption luôn được thanh toán trọn gói qua Delay Damages', en: 'Disruption is recovered via Delay Damages' },
+          { vi: 'Nhà thầu không được phép đòi chi phí Disruption theo FIDIC', en: 'Disruption costs are barred under FIDIC' }
+        ],
+        ans: 1,
+        expVi: 'Một câu hỏi tình huống rất hay gặp ở FCCM: Một Nhà thầu **không có EOT** (hoặc kịp về đích bằng tăng ca) VẪN có thể đòi **Disruption Cost** nếu hành vi/thay đổi của Chủ đầu tư làm giảm năng suất thi công (qua phương pháp Measured Mile)!',
+        expEn: 'Crucial claim distinction: Disruption (loss of productivity, e.g., proved via Measured Mile) does not require critical path delay or an EOT.'
+      },
+      {
+        id: 'f7-6',
+        clause: 'Measured Mile & Overheads',
+        qVi: 'Khi chứng minh tổn thất năng suất (Disruption) và Chi phí quản lý trụ sở chính chưa thu hồi (Unabsorbed Head Office Overheads) theo chuẩn thực hành FIDIC, các công thức/phương pháp tiêu chuẩn nào được áp dụng phổ biến nhất?',
+        qEn: 'Which benchmark methods are internationally recognized for substantiating Disruption vs Unabsorbed Head Office Overheads claims under FIDIC contracts?',
+        opts: [
+          { vi: 'Measured Mile (cho Disruption) và Hudson / Emden / Eichleay formulas (cho Head Office Overheads, nếu chứng minh được không thể nhận dự án thay thế)', en: 'Measured Mile (for Disruption) and Hudson / Emden / Eichleay formulas (for Head Office Overheads, subject to proof of inability to deploy resources elsewhere)' },
+          { vi: 'Tính phẳng 30% tổng giá trị gói thầu không cần chứng từ', en: 'Flat 30% uplift with zero records' },
+          { vi: 'Chỉ dựa vào hóa đơn bán lẻ', en: 'Retail invoices only' },
+          { vi: 'Công thức Black-Scholes', en: 'Black-Scholes pricing model' }
+        ],
+        ans: 0,
+        expVi: 'Trong phần kiến thức định giá khiếu nại FCCM & Seppälä: **Measured Mile** so sánh năng suất đoạn không bị ảnh hưởng với đoạn bị ảnh hưởng; **Emden/Hudson/Eichleay** dùng cho chi phí trụ sở chính (lưu ý: không tự động áp công thức mà phải chứng minh có thiệt hại thực tế / cơ hội bị bỏ lỡ).',
+        expEn: 'Measured Mile measures productivity loss against an unimpacted baseline; Hudson/Emden/Eichleay model unabsorbed HO overheads subject to proof of causation.'
+      },
+      {
+        id: 'f7-7',
+        clause: '14.2 (Advance Payment)',
+        qVi: 'Theo Khoản 14.2 [Thanh toán Tạm ứng - Advance Payment] (2017), nếu Hợp đồng không nêu khác trong Contract Data, việc khấu trừ thu hồi tiền tạm ứng trong mỗi IPC bắt đầu khi nào và theo tỷ lệ nào?',
+        qEn: 'Under 2017 Sub-Clause 14.2.3 [Repayment of Advance Payment], unless otherwise stated in Contract Data, when do IPC deductions start and at what rate?',
+        opts: [
+          { vi: 'Khấu trừ 50% ngay từ IPC đầu tiên', en: '50% deduction from the very first IPC' },
+          { vi: 'Bắt đầu khấu trừ khi tổng giá trị thanh toán xác nhận (trừ tạm ứng & trừ/hoàn giữ lại) vượt 10% (hoặc 30% tùy bản 99 vs 17 — ở bản 2017 là 10% Accepted Contract Amount!) ở tỷ lệ hoàn trả 25% số tiền mỗi IPC cho tới khi hết tạm ứng', en: 'Starts once total certified interim payments (excluding advance & retention) exceed 10% of Accepted Contract Amount (in 2017, vs 30% in 1999 without schedule!), at 25% of each IPC’s net certified amount until fully repaid' },
+          { vi: 'Khấu trừ 100% tại Chứng chỉ Thanh toán Cuối cùng', en: '100% deducted at Final Statement only' },
+          { vi: 'Không cần Bảo lãnh Tạm ứng', en: 'No Advance Payment Guarantee required' }
+        ],
+        ans: 1,
+        expVi: 'So sánh 1999 vs 2017 ở Khoản 14.2: Bản 2017 điều chỉnh ngưỡng bắt đầu hoàn trả mặc định xuống **10%** (bản 1999 từng ghi **30%** — hoặc 25% nếu là Silver 99), với tỷ lệ khấu trừ **25%** mỗi IPC và bắt buộc thu hồi hết trước khi cấp TOC hoặc chấm dứt!',
+        expEn: 'Watch the 1999-vs-2017 change in 14.2: Default trigger dropped from 30% (1999) to 10% of ACA (2017) with 25% amortization per IPC.'
+      },
+      {
+        id: 'f7-8',
+        clause: '14.5 (Plant & Materials on Site)',
+        qVi: 'Theo Khoản 14.5 [Thiết bị và Vật tư cho Công trình] (khi có áp dụng thanh toán hàng chưa lắp đặt), tỷ lệ giá trị hóa đơn thiết bị/vật tư vừa giao tới Công trường (hoặc đã gửi tàu nếu quy định) được đưa vào IPC thường bằng bao nhiêu phần trăm?',
+        qEn: 'Under Sub-Clause 14.5 [Plant and Materials intended for the Works], when applicable, what percentage of the verified cost is included in the IPC once materials/plant are delivered to Site?',
+        opts: [
+          { vi: '50%', en: '50%' },
+          { vi: '80% chi phí thực tế hợp lý do Nhà tư vấn xác định (với điều kiện Nhà thầu đã chứng minh quyền sở hữu và lưu giữ hồ sơ đầy đủ)', en: '80% of the actual reasonable cost determined by the Engineer (subject to proper records and transfer of ownership/lien protection)' },
+          { vi: '100%', en: '100%' },
+          { vi: '25%', en: '25%' }
+        ],
+        ans: 1,
+        expVi: 'Con số chuẩn Khoản 14.5(c)(i): **80%** chi phí thực tế sau khi giao tới Site (kèm chứng từ bảo hiểm, vận chuyển, chuyển giao quyền sở hữu tự động theo 7.7), nhằm giảm rủi ro thanh toán 100% khi chưa lắp đặt.',
+        expEn: 'Sub-Clause 14.5 certifies **80%** of cost upon delivery to Site (subject to property transfer under 7.7 and documentary proof).'
+      },
+      {
+        id: 'f7-9',
+        clause: '14.13 & 14.14 (Final Payment & Cessation)',
+        qVi: 'Theo Khoản 14.14 [Chấm dứt Trách nhiệm của Chủ đầu tư], sau khi thanh toán theo Chứng chỉ Thanh toán Cuối cùng (FPC), Chủ đầu tư có thể vẫn phải chịu trách nhiệm đối với một khiếu nại của Nhà thầu CHỈ KHI khiếu nại đó thỏa mãn điều kiện nào?',
+        qEn: 'Under Sub-Clause 14.14 [Cessation of Employer’s Liability], after final settlement, in what narrow circumstance can the Employer still remain liable to the Contractor?',
+        opts: [
+          { vi: 'Nhà thầu gửi khiếu nại mới bất kỳ trong vòng 5 năm sau dự án', en: 'Contractor submits any fresh claim within 5 years post-project' },
+          { vi: 'Khoản mục đó đã được Nhà thầu ghi rõ trong Hồ sơ Đề nghị Thanh toán Cuối cùng (Final Statement) HOẶC trong Văn bản Tuyên bố khi Hoàn thành (Statement at Completion - 14.10) trừ các vấn đề phát sinh sau Chứng chỉ Bàn giao', en: 'Only if the Contractor included the specific matter/amount in the Final Statement AND (unless arising after Taking Over) in the Statement at Completion (14.10)' },
+          { vi: 'Khoản 14.14 bảo lưu mọi quyền đòi của Nhà thầu không giới hạn', en: 'Sub-Clause 14.14 preserves unlimited post-completion claims' },
+          { vi: 'Chỉ cần nói miệng tại lễ khánh thành', en: 'Oral reservation at commissioning' }
+        ],
+        ans: 1,
+        expVi: 'Khoản 14.14 ("Cessation of Employer’s Liability"): Một cái bẫy quản trị cực lớn — nếu Nhà thầu quên không đưa khiếu nại trước TOC vào Statement at Completion (14.10) hoặc quên không bảo lưu trong Final Statement (14.11), Chủ đầu tư được giải phóng trách nhiệm (save for fraud/1.15)!',
+        expEn: 'Sub-Clause 14.14 cuts off Employer liability for matters omitted from the Final Statement and (for pre-TOC matters) the Statement at Completion.'
+      },
+      {
+        id: 'f7-10',
+        clause: '4.15 (Access Route)',
+        qVi: 'Về Đường tiếp cận Công trường (Khoản 4.15 - Access Route), bản 2017 bổ sung quyền mới nào cho Nhà thầu so với bản 1999?',
+        qEn: 'What new Contractor entitlement did the 2017 editions add to Sub-Clause 4.15 [Access Route] compared to 1999?',
+        opts: [
+          { vi: 'Chủ đầu tư luôn chịu 100% chi phí bảo trì mọi đường công cộng', en: 'Employer guarantees all public highway repairs' },
+          { vi: 'Nếu đường tiếp cận trở nên không phù hợp hoặc không sẵn có do sự thay đổi tuyến đường BỞI CHỦ ĐẦU TƯ hoặc Nhân sự Chủ đầu tư/nhà thầu khác của Chủ đầu tư (từ lúc nộp thầu), Nhà thầu có quyền đòi EOT + Cost + Profit (nếu thay đổi do Chủ đầu tư gây ra) qua 20.2', en: 'To the extent non-suitability or non-availability arises from changes to the access route by the Employer or a third party after Base Date, Contractor may claim EOT (and Cost+Profit if caused by Employer changes) under 20.2!' },
+          { vi: 'Xóa bỏ nghĩa vụ khảo sát đường tiếp cận trước khi đấu thầu', en: 'Removes pre-tender route inspection duty' },
+          { vi: 'Miễn cho Nhà thầu mọi phí cầu đường', en: 'Exempts Contractor from road tolls' }
+        ],
+        ans: 1,
+        expVi: 'Bản 1999 đổ 100% rủi ro đường tiếp cận sang Nhà thầu; đoạn cuối Khoản 4.15 bản 2017 sửa lỗi bất công này: nếu tuyến tiếp cận thay đổi sau Base Date do Chủ đầu tư (được EOT + Cost + Profit) hoặc thậm chí bên thứ ba (tùy câu chữ cụ thể Red/Yel 4.15 cho thay đổi bởi Employer hoặc bên thứ ba -> EOT + Cost)!',
+        expEn: '2017 Sub-Clause 4.15 reverses the harsh 1999 rule when route suitability changes after Base Date due to Employer or third-party changes.'
+      },
+      {
+        id: 'f7-11',
+        clause: '4.7 (Setting Out)',
+        qVi: 'Theo Khoản 4.7 [Định vị Công trình - Setting Out] trong Sách Đỏ & Sách Vàng 2017, nếu mốc chuẩn gốc (reference points) do Chủ đầu tư cung cấp có sai sót mà nhà thầu kinh nghiệm không thể phát hiện, Nhà thầu được hưởng gì (và lưu ý thời hạn kiểm tra mốc trong bản 2017)?',
+        qEn: 'Under Red/Yellow 2017 Sub-Clause 4.7 [Setting Out], what happens if errors in Employer-provided reference points were unforeseeable despite due verification?',
+        opts: [
+          { vi: 'Nhà thầu chịu hoàn toàn chi phí sửa sai sót mốc chuẩn', en: 'Contractor bears all costs of Employer reference errors' },
+          { vi: 'Bản 2017 quy định thời hạn **28 ngày** (hoặc nêu trong Contract Data) kể từ Ngày Khởi công để kiểm tra sai sót tài liệu/mốc chuẩn; nếu sai sót không thể phát hiện dù đã kiểm tra hợp lý -> Nhà thầu được EOT + Cost + Profit qua Khoản 20.2!', en: '2017 sets a 28-day inspection period from Commencement Date (in 4.7.2) to check reference items; if an error could not reasonably be discovered -> Contractor recovers EOT + Cost + Profit via 20.2!' },
+          { vi: 'Chỉ được EOT mà không được Cost hay Profit', en: 'EOT only without Cost or Profit' },
+          { vi: 'Phải tạm ngừng vô thời hạn', en: 'Indefinite suspension applies' }
+        ],
+        ans: 1,
+        expVi: 'Khoản 4.7.2 (2017) lần đầu đưa vào khung thời hạn kiểm tra mốc chuẩn là **28 ngày** kể từ Commencement Date (nếu Contract Data không ghi khác), sau đó áp cơ chế 4.7.3 đòi EOT + Cost + Profit.',
+        expEn: 'Sub-Clause 4.7.2 (2017) adds a 28-day verification window from Commencement Date, preserving EOT + Cost + Profit for undetectable reference errors.'
+      },
+      {
+        id: 'f7-12',
+        clause: '4.12.1–4.12.4 (Physical Conditions 2017)',
+        qVi: 'Trong Sách Đỏ & Sách Vàng 2017 Khoản 4.12 [Điều kiện Vật chất Không lường trước được], nếu đồng thời phát hiện cả điều kiện thuận lợi hơn và điều kiện bất lợi hơn trên Công trường tại cùng hạng mục tương tự, Nhà tư vấn xử lý như thế nào khi xác định Cost?',
+        qEn: 'Under 2017 Red/Yellow Sub-Clause 4.12.4 [Delay and/or Cost], if the Contractor encounters both adverse and more favourable unforeseeable physical conditions on similar parts of the Works, how may the Engineer treat the Cost adjustment?',
+        opts: [
+          { vi: 'Nhà tư vấn hoàn toàn không được phép tính đến các điều kiện thuận lợi hơn', en: 'Engineer cannot consider favourable conditions' },
+          { vi: 'Nhà tư vấn có thể tính đến việc bù trừ các điều kiện vật chất thuận lợi hơn trên các phần tương tự của Công trình (nhưng tổng hợp KHÔNG được dẫn đến giảm ròng Giá Hợp đồng — net reduction!)', en: 'Engineer may take account of more favourable conditions on similar parts to reduce additional Cost, PROVIDED net reductions shall not result in a net reduction in Contract Price (nor a net reduction in Time for Completion!)' },
+          { vi: 'Chủ đầu tư được trừ tiền trực tiếp vào Giá Hợp đồng gốc dù vượt chi phí bất lợi', en: 'Employer reduces original Contract Price directly' },
+          { vi: 'Chỉ áp dụng cho chi phí, không áp dụng cho Thời gian Hoàn thành', en: 'Applies to Cost only, never Time' }
+        ],
+        ans: 1,
+        expVi: 'Chi tiết đắt giá ở Khoản 4.12.4 & 4.12.5: Cho phép cấn trừ ("offset") giữa thuận lợi và bất lợi cùng tính chất (cả về Time và Cost), nhưng **tác động ròng không được làm giảm Thời gian Hoàn thành hay Giá Hợp đồng gốc**!',
+        expEn: 'Sub-Clause 4.12 allows offsetting favourable conditions against adverse claims on similar works, capped so neither Time for Completion nor original Contract Price is reduced.'
+      }
+    ]
+  },
+  {
+    id: 'set-8-site-ops-traps',
+    level: 4,
+    levelBadge: '⭐⭐⭐⭐',
+    levelVi: 'Thực chiến',
+    levelEn: 'Expert Case-Study',
+    badge: 'Set 8 · 12 câu',
+    titleVi: 'Đề 8: Tình huống Quản trị Công trường & Bẫy Thủ tục 2017',
+    titleEn: 'Set 8: Site Contract Administration & 2017 Procedural Traps',
+    durationMin: 30,
+    questions: [
+      {
+        id: 'f8-1',
+        clause: '3.2 & 3.3 (Engineer Delegation)',
+        qVi: 'Theo Khoản 3.2 & 3.3 của Sách Đỏ/Vàng 2017 [Đại diện Nhà tư vấn & Ủy quyền của Nhà tư vấn], Nhà tư vấn ĐƯỢC PHÉP hay BỊ CẤM ủy quyền thẩm quyền ra Quyết định theo Khoản 3.7 cho Trợ lý / Đại diện công trường của mình?',
+        qEn: 'Under 2017 Red/Yellow Sub-Clauses 3.3 and 3.4 [Engineer’s Representative & Delegation], may the Engineer delegate the power to make Determinations under Sub-Clause 3.7 to an assistant?',
+        opts: [
+          { vi: 'Được phép ủy quyền hoàn toàn quyền ra Quyết định 3.7 cho bất kỳ giám sát viên nào', en: 'May delegate 3.7 Determinations freely to any site inspector' },
+          { vi: 'BỊ CẤM: Trừ khi các Bên có thỏa thuận khác, Nhà tư vấn KHÔNG được ủy quyền thẩm quyền thực hiện chức năng Thỏa thuận hoặc Quyết định theo Khoản 3.7, cũng như không được ủy quyền quyền gửi Notice to Correct (15.1) (cả bản 1999 & 2017!)', en: 'PROHIBITED: Unless otherwise agreed by both Parties, the Engineer shall NOT delegate the authority to act under Sub-Clause 3.7 [Agreement or Determination] nor to give a Notice to Correct under 15.1!' },
+          { vi: 'Chỉ được ủy quyền nếu Chủ đầu tư đồng ý miệng', en: 'Allowed with oral Employer consent' },
+          { vi: 'Bản 2017 cho phép ủy quyền 3.7 nhưng cấm ủy quyền 13.3', en: '2017 permits 3.7 delegation while banning 13.3 delegation' }
+        ],
+        ans: 1,
+        expVi: 'CỰC KỲ HAY THI FCCM: Khoản 3.4 (3.2 bản 1999) nghiêm cấm Nhà tư vấn ủy quyền thẩm quyền ra **Quyết định 3.7 (3.5 bản 1999)** và **Notice to Correct (15.1)** trừ khi CẢ HAI Bên cùng đồng ý!',
+        expEn: 'Classic FCCM trap: Under Sub-Clause 3.4 (2017) / 3.2 (1999), the Engineer cannot delegate Sub-Clause 3.7/3.5 determinations or 15.1 Notices to Correct without both Parties’ agreement.'
+      },
+      {
+        id: 'f8-2',
+        clause: '3.5 (Instructions & Oral)',
+        qVi: 'Theo Khoản 3.5 [Chỉ thị của Nhà tư vấn] (2017), nếu Trợ lý được ủy quyền đưa ra chỉ thị miệng tại hiện trường và Nhà thầu xác nhận bằng văn bản theo thủ tục, chỉ thị miệng đó sẽ xử lý ra sao nếu Trợ lý/Nhà tư vấn im lặng không phản hồi?',
+        qEn: 'Under 2017 Sub-Clause 3.5 [Engineer’s Instructions], if an oral instruction is given and confirmed in writing by the Contractor within 2 working days, what happens if the Engineer does not reject or confirm within 2 working days?',
+        opts: [
+          { vi: 'Chỉ thị miệng luôn bị coi là vô hiệu dù đã xác nhận bằng văn bản', en: 'Oral instructions remain invalid regardless of confirmation' },
+          { vi: 'Nếu Nhà thầu gửi xác nhận bằng văn bản trong vòng 2 ngày làm việc (working days) và Nhà tư vấn không bác bỏ/trả lời bằng văn bản trong vòng 2 ngày làm việc tiếp theo, văn bản xác nhận đó ĐƯỢC COI LÀ CHỈ THỊ VĂN BẢN của Nhà tư vấn! (Và nếu chỉ thị thực chất là Variation -> xử lý theo Điều 13)', en: 'If Contractor confirms the oral instruction in writing within 2 working days and the Engineer does not reject in writing within 2 working days, the confirmation becomes deemed the Engineer’s written instruction' },
+          { vi: 'Thời hạn xác nhận là 28 ngày', en: 'Confirmation window is 28 days' },
+          { vi: 'Chỉ áp dụng cho Sách Bạc', en: 'Applies solely to Silver Book' }
+        ],
+        ans: 1,
+        expVi: 'Quy tắc vàng bảo vệ Nhà thầu công trường ở Khoản 3.5 (3.3 bản 1999): **2 ngày làm việc + 2 ngày làm việc**! Đồng thời bản 2017 làm rõ thêm: Nếu Nhà thầu coi một chỉ thị dưới danh nghĩa thường thực chất là **Variation**, phải gửi Notice ngay trước khi thực hiện!',
+        expEn: 'Sub-Clause 3.5 preserves the **2 working days + 2 working days** oral confirmation rule, plus a new 2017 procedure for instructions disguised as non-variations.'
+      },
+      {
+        id: 'f8-3',
+        clause: '3.6 (Replacement of Engineer)',
+        qVi: 'Theo Khoản 3.6 [Thay thế Nhà tư vấn] (2017), nếu Chủ đầu tư dự định thay thế Nhà tư vấn, Chủ đầu tư phải gửi Thông báo cho Nhà thầu trước bao nhiêu ngày, và Nhà thầu có quyền phản đối nếu có căn cứ hợp lý không?',
+        qEn: 'Under 2017 Sub-Clause 3.6 [Replacement of the Engineer], how much prior Notice must the Employer give the Contractor, and what happens if the Contractor raises a reasonable objection?',
+        opts: [
+          { vi: 'Chủ đầu tư thay Nhà tư vấn bất kỳ lúc nào không cần báo trước', en: 'Employer replaces Engineer immediately without notice' },
+          { vi: 'Phải gửi Thông báo trước không ít hơn **42 ngày** (nêu tên, địa chỉ, kinh nghiệm ứng viên thay thế); nếu Nhà thầu có phản đối hợp lý trong **14 ngày**, Chủ đầu tư KHÔNG ĐƯỢC bổ nhiệm người bị phản đối đó (lưu ý bản 2017 còn quy định thay thế tạm thời tối đa 7 ngày nếu bất khả kháng)!', en: 'Must give not less than **42 days’ Notice**; if Contractor gives reasonable objection within **14 days** with supporting particulars, the Employer shall not appoint that person' },
+          { vi: '7 ngày báo trước và Nhà thầu không có quyền phản đối', en: '7 days notice with no Contractor objection right' },
+          { vi: '84 ngày báo trước và phải xin phép DAAB', en: '84 days notice and DAAB approval required' }
+        ],
+        ans: 1,
+        expVi: 'Khoản 3.6: Bảo vệ tính độc lập của Nhà tư vấn bằng ngưỡng **42 ngày báo trước** + quyền phản đối hợp lý trong **14 ngày** của Nhà thầu!',
+        expEn: 'Sub-Clause 3.6 protects the Engineer role: **42 days’ prior Notice** and **14-day reasonable objection** window for the Contractor.'
+      },
+      {
+        id: 'f8-4',
+        clause: '2.1 (Right of Access to Site)',
+        qVi: 'Theo Khoản 2.1 [Quyền Tiếp cận Công trường], nếu Hợp đồng quy định Chủ đầu tư bàn giao mặt bằng theo từng giai đoạn/mốc tại Contract Data mà Chủ đầu tư chậm bàn giao, điều kiện nào khiến Nhà thầu KHÔNG được hưởng EOT + Cost + Profit dù Chủ đầu tư bàn giao trễ?',
+        qEn: 'Under Sub-Clause 2.1 [Right of Access to the Site], if the Employer delays granting site access/possession, when will the Contractor NOT be entitled to EOT + Cost + Profit?',
+        opts: [
+          { vi: 'Nếu Nhà thầu chậm tiến độ ở hạng mục khác trước đó', en: 'If Contractor lagged elsewhere' },
+          { vi: 'Khi sự chậm bàn giao mặt bằng của Chủ đầu tư là hệ quả do lỗi/chậm trễ của chính Nhà thầu (như chưa nộp Bảo lãnh Thực hiện Hợp đồng theo 4.2 hoặc chưa mua Bảo hiểm theo 19)', en: 'To the extent the Employer’s failure was caused by any error or delay by the Contractor (such as failing to deliver Performance Security or Insurance evidence)' },
+          { vi: 'Khi thời tiết xấu xảy ra cùng lúc', en: 'During rainy season' },
+          { vi: 'Không bao giờ có ngoại lệ; Nhà thầu luôn được tiền', en: 'Never an exception' }
+        ],
+        ans: 1,
+        expVi: 'Đoạn cuối Khoản 2.1: Quyền khiếu nại EOT + Cost + Profit (qua 20.2) bị loại trừ tương ứng với phần chậm bàn giao phát sinh do sai sót/trễ nghĩa vụ tiên quyết của chính Nhà thầu (như chưa nộp Bảo lãnh Thực hiện Hợp đồng theo 4.2!).',
+        expEn: 'Sub-Clause 2.1 entitles EOT + Cost + Profit UNLESS the delay in giving access was caused by an error or delay of the Contractor.'
+      },
+      {
+        id: 'f8-5',
+        clause: '4.3 (Contractor’s Representative)',
+        qVi: 'Theo Khoản 4.3 [Đại diện của Nhà thầu], nếu người đại diện chính thức của Nhà thầu cần tạm vắng mặt khỏi Công trường hoặc Nhà thầu muốn thay thế Đại diện Nhà thầu đang làm việc, Nhà thầu phải làm gì?',
+        qEn: 'Under Sub-Clause 4.3 [Contractor’s Representative], what is required if the Contractor intends to replace its appointed Representative or if they become temporarily absent?',
+        opts: [
+          { vi: 'Tự ý thay thế rồi báo sau 1 tháng', en: 'Replace unilaterally and report a month later' },
+          { vi: 'Không được thay thế hoặc rút người nếu không có sự đồng ý trước của Nhà tư vấn (và phải cử người thay thế phù hợp tương đương trước hoặc khi tạm vắng mặt theo cơ chế bản 2017)', en: 'Contractor shall not revoke the appointment or appoint a replacement without the Engineer’s prior consent (and must appoint a suitably qualified replacement / temporary deputy during absence)' },
+          { vi: 'Chỉ cần thông báo cho DAAB', en: 'Merely notify the DAAB' },
+          { vi: 'Chờ Chủ đầu tư phê duyệt bằng Phụ lục Hợp đồng', en: 'Requires formal Contract Addendum' }
+        ],
+        ans: 1,
+        expVi: 'Khoản 4.3 (2017) siết chặt cả trình tự đồng ý trước của Nhà tư vấn lẫn quy định thời hạn **28 ngày** (Nhà tư vấn không phản hồi sau 28 ngày coi là chấp thuận!).',
+        expEn: 'Sub-Clause 4.3 requires prior Engineer consent for replacement/revocation (with a 28-day deemed-consent check in 2017).'
+      },
+      {
+        id: 'f8-6',
+        clause: '4.4 / 5.1 (Subcontractors)',
+        qVi: 'Theo Khoản 4.4 [Nhà thầu phụ] (Sách Đỏ 1999) / Khoản 5.1 (Sách Đỏ 2017), giá trị cộng dồn tối đa của tổng phần công việc giao cho Nhà thầu phụ là bao nhiêu (nếu Contract Data có ghi tỷ lệ trần) và Nhà thầu cần báo trước cho Nhà tư vấn bao nhiêu ngày trước khi cho Nhà thầu phụ bắt đầu làm trên công trường?',
+        qEn: 'Under Red Book 2017 Sub-Clause 5.1 [Subcontractors] (4.4 in 1999), how many days’ prior Notice must the Contractor give before a consented Subcontractor starts work on Site?',
+        opts: [
+          { vi: '7 ngày trước ngày dự kiến khởi công của nhà thầu phụ', en: '7 days' },
+          { vi: 'Không ít hơn 28 ngày trước ngày dự kiến khởi công tại hiện trường (và Nhà thầu hoàn toàn chịu trách nhiệm về mọi hành vi/sai sót của Nhà thầu phụ như lỗi của chính mình)', en: 'Not less than 28 days before the intended date of each Subcontractor’s commencement on Site (and Contractor remains strictly liable for Subcontractor defaults)' },
+          { vi: '14 ngày trước khi ký hợp đồng thầu phụ', en: '14 days' },
+          { vi: 'Không cần thông báo nếu nhà thầu phụ đã nêu trong Hồ sơ dự thầu', en: 'No notice needed for pre-listed subcontractors' }
+        ],
+        ans: 1,
+        expVi: 'Khoản 5.1 (RB/17) / 4.4 (99): Nhà thầu không được giao toàn bộ Công trình (và không vượt trần % Contract Data ở 2017); phải xin chấp thuận trước (với 14 ngày deeming của Nhà tư vấn nếu im lặng ở 2017) VÀ thông báo **ít nhất 28 ngày** trước khi thầu phụ vào làm tại công trường!',
+        expEn: 'Sub-Clause 5.1 (RB/17) requires prior consent AND at least **28 days’ prior Notice** before commencement on Site.'
+      },
+      {
+        id: 'f8-7',
+        clause: '5.2 Nominated Subcontractor (Red)',
+        qVi: 'Theo Khoản 5.2 [Nhà thầu phụ Chỉ định - Nominated Subcontractors] trong Sách Đỏ 2017 (Điều 5 bản 1999), Nhà thầu chính có quyền phản đối hợp lý một Nhà thầu phụ Chỉ định do Chủ đầu tư/Nhà tư vấn đưa ra khi nào?',
+        qEn: 'Under Red Book Sub-Clause 5.2 [Nominated Subcontractors] (Clause 5 in 1999), when may the Contractor raise a reasonable objection against employing a Nominated Subcontractor?',
+        opts: [
+          { vi: 'Khi Nhà thầu chính thích sử dụng công ty con của mình hơn', en: 'Whenever Contractor prefers an affiliate' },
+          { vi: 'Nếu có cơ sở hợp lý tin rằng Thầu phụ Chỉ định thiếu năng lực/nguồn lực/tài chính, HOẶC hợp đồng thầu phụ không ràng buộc Thầu phụ bồi hoàn cho Nhà thầu chính khỏi sai sót/chậm trễ tương ứng với hợp đồng chính, hoặc không chịu trả tiến độ/trách nhiệm khi chưa được thanh toán back-to-back', en: 'If reasonable grounds show insufficient competence/resources/financial strength, OR the subcontract fails to indemnify the Contractor against defaults or does not include matching/back-to-back payment and performance protections' },
+          { vi: 'Nhà thầu chính không bao giờ có quyền từ chối Thầu phụ Chỉ định', en: 'Contractor can never object' },
+          { vi: 'Chỉ được phản đối nếu giá thầu phụ đắt hơn dự toán', en: 'Only based on price variance' }
+        ],
+        ans: 1,
+        expVi: 'Khoản 5.2.2 quy định 3 căn cứ phản đối hợp lý rõ ràng giúp bảo vệ Nhà thầu chính khỏi bị ép nhận một Thầu phụ Chỉ định yếu năng lực hoặc đẩy rủi ro pháp lý bất cân xứng lên Nhà thầu chính.',
+        expEn: 'Sub-Clause 5.2.2 protects the Contractor via defined reasonable objection grounds (lack of capacity/financials, missing indemnities, or unaligned payment back-to-back terms).'
+      },
+      {
+        id: 'f8-8',
+        clause: '7.5 & 7.6 (Defects & Remedial Before TO)',
+        qVi: 'Trước Chứng chỉ Bàn giao, nếu Nhà thầu không tuân thủ chỉ thị loại bỏ/thay thế vật tư/công việc sai sót theo Khoản 7.5–7.6 [Bác bỏ & Công việc Khắc phục], Chủ đầu tư được quyền thuê bên khác làm và đòi lại chi phí ở đâu?',
+        qEn: 'Prior to Taking-Over, if the Contractor fails to comply with a Sub-Clause 7.6 [Remedial Work] instruction within reasonable time, how does the Employer recover the cost of hiring third parties?',
+        opts: [
+          { vi: 'Tự ý trừ thẳng tiền mà không cần thông báo hay thủ tục nào', en: 'Deducts unilaterally with zero notice or process' },
+          { vi: 'Chủ đầu tư thuê bên khác thực hiện, và gửi Khiếu nại theo **Khoản 20.2** (2017) để thu hồi mọi chi phí hợp lý phát sinh từ Nhà thầu', en: 'Employer may employ others to carry out the work and claim all reasonable costs from the Contractor via **Sub-Clause 20.2**' },
+          { vi: 'Chờ đến khi hết bảo hành 11.4 mới được đòi', en: 'Must wait until end of DNP' },
+          { vi: 'Không thể thuê bên thứ ba trước khi Bàn giao', en: 'Cannot hire third parties prior to Taking Over' }
+        ],
+        ans: 1,
+        expVi: 'Ở bản 2017 Khoản 7.6, quyền đòi tiền của Chủ đầu tư bắt buộc tuân thủ quy trình Khiếu nại đối xứng **Khoản 20.2**!',
+        expEn: 'Under 2017 Sub-Clause 7.6, Employer recovery of third-party remediation costs explicitly follows the Sub-Clause 20.2 claim workflow.'
+      },
+      {
+        id: 'f8-9',
+        clause: '8.3 (Early Warning 8.4)',
+        qVi: 'Khoản 8.4 [Cảnh báo Sớm - Advance Warning] là điều khoản mới toàn diện của bộ FIDIC 2017 (đưa từ Gold Book 2008 sang Đỏ/Vàng/Bạc). Mục đích và nghĩa vụ của hai bên theo Khoản 8.4 là gì?',
+        qEn: 'Sub-Clause 8.4 [Advance Warning] was newly introduced across Red/Yellow/Silver 2017. What obligation does it impose?',
+        opts: [
+          { vi: 'Chỉ Nhà thầu phải gửi cảnh báo sớm để tính time-bar phạt thay cho Khoản 20.2', en: 'Applies solely to Contractor as a strict time-bar' },
+          { vi: 'CẢ HAI Bên và Nhà tư vấn phải thông báo trước cho nhau sớm nhất có thể về bất kỳ sự kiện/hoàn cảnh đã biết hoặc có khả năng xảy ra trong tương lai có thể làm ảnh hưởng bất lợi đến công trình, tăng Giá Hợp đồng hoặc làm chậm tiến độ; Nhà tư vấn có thể yêu cầu đề xuất giải pháp phòng ngừa', en: 'Each Party (and the Engineer) shall advise the other in advance of any known or probable future events/circumstances that may adversely affect the work, increase Contract Price, or delay execution' },
+          { vi: 'Cảnh báo sớm tự động thay thế hoàn toàn Notice of Claim của Khoản 20.2', en: 'Advance Warning replaces a Sub-Clause 20.2 Notice of Claim' },
+          { vi: 'Áp dụng phạt tiền nếu quên gửi Advance Warning', en: 'Automatic liquidated damages apply for omitting Advance Warning' }
+        ],
+        ans: 1,
+        expVi: 'Lưu ý rất quan trọng khi thi FCCM: **Advance Warning (8.4)** là trách nhiệm hợp tác chung của CẢ 2 bên và KHÔNG thay thế cho Notice of Claim (20.2.1), dù có thể là chứng cứ hữu ích dưới 20.2.5!',
+        expEn: 'Sub-Clause 8.4 creates a reciprocal collaborative duty (adopted from NEC/Gold Book), distinct from a formal Sub-Clause 20.2 Notice of Claim.'
+      },
+      {
+        id: 'f8-10',
+        clause: '1.12 (Confidentiality)',
+        qVi: 'Theo Khoản 1.12 [Bảo mật - Confidentiality] (2017), Nhà thầu bị ràng buộc nghĩa vụ bảo mật chi tiết hợp đồng như thế nào, và Chủ đầu tư/Nhà tư vấn có nghĩa vụ tương ứng nào?',
+        qEn: 'Under 2017 Sub-Clause 1.12 [Confidentiality], what reciprocal obligations bind the Contractor, Employer and Engineer?',
+        opts: [
+          { vi: 'Chỉ Nhà thầu phải bảo mật; Chủ đầu tư được công khai bí mật công nghệ của Nhà thầu thoải mái', en: 'Only Contractor has confidentiality duties' },
+          { vi: 'Nhà thầu giữ bí mật mọi chi tiết hợp đồng (trừ phạm vi cần thiết để thực hiện/tuân thủ luật); bản 2017 bổ sung đối xứng: Chủ đầu tư và Nhà tư vấn cũng PHẢI giữ bí mật các thông tin do Nhà thầu cung cấp và chỉ rõ là bí mật ("confidential")', en: 'Contractor treats Contract details as confidential, AND (new in 2017) Employer and Engineer must treat as confidential all information supplied by Contractor and marked confidential' },
+          { vi: 'Nhà thầu được tự do đăng toàn bộ đơn giá dự thầu lên mạng xã hội', en: 'Contractor may publish unit rates publicly' },
+          { vi: 'Nghĩa vụ bảo mật hết hiệu lực khi ký hợp đồng', en: 'Confidentiality expires at Contract signing' }
+        ],
+        ans: 1,
+        expVi: 'Khoản 1.12 (2017) cân bằng nghĩa vụ bảo mật hai chiều để bảo vệ bí quyết kỹ thuật và giá thầu của Nhà thầu.',
+        expEn: '2017 Sub-Clause 1.12 adds reciprocal confidentiality protecting Contractor-marked confidential information.'
+      },
+      {
+        id: 'f8-11',
+        clause: '10.3 (Interference with Tests)',
+        qVi: 'Theo Khoản 10.3 [Cản trở Kiểm định khi Hoàn thành], nếu Nhà thầu bị ngăn cản thực hiện Kiểm định khi Hoàn thành (Tests on Completion) trong hơn **14 ngày** (liên tục hoặc cộng dồn) do nguyên nhân thuộc trách nhiệm của Chủ đầu tư, hệ quả pháp lý nào xảy ra?',
+        qEn: 'Under Sub-Clause 10.3 [Interference with Tests on Completion], if the Contractor is prevented from carrying out Tests on Completion for more than **14 days** (continuous or in aggregate) due to a cause for which the Employer is responsible, what occurs?',
+        opts: [
+          { vi: 'Nhà thầu phải tự chịu chờ vô thời hạn cho đến khi kiểm định xong mới được bàn giao', en: 'Contractor waits indefinitely before Taking Over' },
+          { vi: 'Chủ đầu tư được coi là đã Bàn giao Công trình/Hạng mục (Deemed Taking Over) vào ngày đáng lẽ kiểm định hoàn thành (hoặc ngày thứ 14 tùy bản 17 vs 99 — ở 2017 là ngày thứ 14 sau thời điểm kiểm định đáng lẽ xong / ngày tiếp theo, và Nhà tư vấn phải cấp TOC + Nhà thầu được EOT + Cost + Profit khi thực hiện kiểm định bù trong DNP!)', en: 'The Employer is deemed to have taken over the Works/Section (Engineer must issue TOC, and Contractor may claim EOT + Cost + Profit for interference and subsequent testing in DNP)' },
+          { vi: 'Công trình bị từ chối nghiệm thu', en: 'Works are rejected' },
+          { vi: 'Nhà thầu bị trừ 10% giá trị kiểm định', en: '10% deduction applies' }
+        ],
+        ans: 1,
+        expVi: 'Khoản 10.3 (14 ngày): Bảo vệ Nhà thầu khỏi tình trạng Chủ đầu tư chậm cấp điện/nước/nguyên liệu đầu vào làm kẹt kiểm định mãi không bàn giao được -> Deemed Taking Over + TOC + EOT + Cost + Profit!',
+        expEn: 'Preventing Tests on Completion for >14 days due to Employer causes triggers Deemed Taking Over under 10.3 plus EOT + Cost + Profit.'
+      },
+      {
+        id: 'f8-12',
+        clause: '1.4 (Law & Language)',
+        qVi: 'Theo Khoản 1.4 [Luật và Ngôn ngữ], nếu Hợp đồng được soạn thảo bằng nhiều ngôn ngữ mà không chỉ rõ ngôn ngữ ưu tiên, hoặc nếu Contract Data bỏ trống ngôn ngữ trao đổi thông tin (ruling language / language for communications), quy định mặc định là gì?',
+        qEn: 'Under Sub-Clause 1.4 [Law and Language], if versions of any Contract part are written in more than one language (and Contract Data omits specifying ruling language), which version prevails?',
+        opts: [
+          { vi: 'Luôn ưu tiên tiếng Pháp', en: 'French always prevails' },
+          { vi: 'Ưu tiên bản ngôn ngữ ghi tại Contract Data làm "ruling language" (ngôn ngữ chính thức); và ngôn ngữ giao dịch mặc định nếu Contract Data bỏ trống là ngôn ngữ mà phần lớn văn bản Hợp đồng (hoặc bản ruling language) được viết bằng', en: 'The version in the "ruling language" stated in Contract Data prevails; if language for communications is unstated, it defaults to the ruling language (or the language in which the Contract is written)' },
+          { vi: 'Cả hai ngôn ngữ có giá trị pháp lý ngang nhau dù mâu thuẫn', en: 'Both versions carry equal weight even in conflict' },
+          { vi: 'Ngôn ngữ của Quốc gia nhà thầu luôn thắng', en: 'Contractor’s home language prevails' }
+        ],
+        ans: 1,
+        expVi: 'Khi dịch & áp dụng hợp đồng FIDIC song ngữ (Anh–Việt tại Việt Nam!), luôn kiểm tra kỹ Khoản 1.4 ở Contract Data xem **Ruling Language** là Tiếng Anh hay Tiếng Việt để tránh rủi ro sai khác dịch thuật!',
+        expEn: 'Always check Ruling Language in Contract Data under 1.4, particularly critical for bilingual contracts in civil/Asian jurisdictions.'
+      }
+    ]
+  },
+  {
+    id: 'set-9-termination-arbitration',
+    level: 4,
+    levelBadge: '⭐⭐⭐⭐',
+    levelVi: 'Thực chiến',
+    levelEn: 'Expert Case-Study',
+    badge: 'Set 9 · 12 câu',
+    titleVi: 'Đề 9: Thu hồi Bảo lãnh, Quyết toán Chấm dứt & Quy tắc DAAB/Trọng tài',
+    titleEn: 'Set 9: Performance Security Calls, Termination Accounts & DAAB Rules',
+    durationMin: 30,
+    questions: [
+      {
+        id: 'f9-1',
+        clause: '4.2.2 (Claims Under Security)',
+        qVi: 'Theo Khoản 4.2.2 [Khiếu nại Bảo lãnh Thực hiện Hợp đồng] bản 2017, Chủ đầu tư CHỈ được phép rút tiền (call/make a demand) từ Bảo lãnh Thực hiện Hợp đồng khi xảy ra ít nhất một trong các trường hợp giới hạn nào?',
+        qEn: 'Under 2017 Sub-Clause 4.2.2 [Claims under the Performance Security], in which limited circumstances is the Employer permitted to make a demand under the Performance Security?',
+        opts: [
+          { vi: 'Chủ đầu tư được gọi rút bảo lãnh bất kỳ lúc nào không cần lý do (unconditional on-demand)', en: 'Whenever Employer desires without restriction' },
+          { vi: 'CHỈ theo 4 trường hợp: (a) Nhà thầu không gia hạn bảo lãnh khi hết hạn <28 ngày trước ngày đáo hạn; (b) Nhà thầu không trả số tiền đã được đồng ý/quyết định tại 3.7/DAAB trong 42 ngày; (c) Nhà thầu không sửa sai sót trong 42 ngày sau thông báo; hoặc (d) Chủ đầu tư đã chấm dứt hợp đồng theo Khoản 15.2', en: 'ONLY for: (a) failure to extend security 28 days before expiry; (b) failure to pay amounts due within 42 days after agreement/3.7/DAAB decision; (c) failure to remedy a default within 42 days after Notice; or (d) grounds for termination under Sub-Clause 15.2' },
+          { vi: 'Ngay khi có bất kỳ chậm trễ 1 ngày trên công trường', en: 'Immediately upon a 1-day schedule slip' },
+          { vi: 'Chủ đầu tư hoàn toàn không được phép rút bảo lãnh', en: 'Employer may never draw the security' }
+        ],
+        ans: 1,
+        expVi: 'Dù bảo lãnh ngân hàng thường là "on-demand" vô điều kiện với ngân hàng phát hành, Khoản 4.2.2 (4.2 bản 1999) ràng buộc Chủ đầu tư theo hợp đồng CHỈ được rút trong 4 tình huống cụ thể (nếu rút sai, Chủ đầu tư phải bồi hoàn toàn bộ thiệt hại cho Nhà thầu theo 4.2.2!).',
+        expEn: 'Sub-Clause 4.2.2 restricts Employer demands on the Performance Security to four exhaustive contractual triggers, backed by an Employer indemnity for wrongful calls.'
+      },
+      {
+        id: 'f9-2',
+        clause: '4.2.3 (Return of Security)',
+        qVi: 'Theo Khoản 4.2.3 [Hoàn trả Bảo lãnh Thực hiện Hợp đồng], Chủ đầu tư phải trả lại Bảo lãnh Thực hiện Hợp đồng cho Nhà thầu trong thời hạn bao nhiêu ngày sau khi cấp Chứng chỉ Thực hiện (Performance Certificate)?',
+        qEn: 'Under Sub-Clause 4.2.3 [Return of the Performance Security], within how many days after issue of the Performance Certificate (or termination clearance) must the Employer return the Performance Security?',
+        opts: [
+          { vi: '7 ngày', en: '7 days' },
+          { vi: '21 ngày sau khi Nhà thầu nhận được Chứng chỉ Thực hiện (và bản 2017 cũng yêu cầu trả lại trong 21 ngày sau chấm dứt thuận tiện 15.5 / Nhà thầu chấm dứt 16.2 / Sự kiện Ngoại lệ 18.5!)', en: 'Within 21 days after issue of the Performance Certificate (or after termination under 15.5, 16.2, or 18.5 in 2017)' },
+          { vi: '56 ngày', en: '56 days' },
+          { vi: '84 ngày', en: '84 days' }
+        ],
+        ans: 1,
+        expVi: 'Mốc chuẩn **21 ngày** tại Khoản 4.2.3 (4.2 đoạn cuối bản 1999) — một con số hay bị nhầm với 28 ngày (thời hạn cấp Chứng chỉ Thực hiện 11.9)!',
+        expEn: 'Notice the FCCM timing distinction: Performance Certificate is issued within 28 days (11.9), then Performance Security is returned within **21 days** (4.2.3).'
+      },
+      {
+        id: 'f9-3',
+        clause: '15.3 & 15.4 (Payment after Termination)',
+        qVi: 'Sau khi Chủ đầu tư chấm dứt hợp đồng do lỗi Nhà thầu theo Khoản 15.2, việc thanh toán tiếp theo cho Nhà thầu theo Khoản 15.3–15.4 diễn ra như thế nào?',
+        qEn: 'Following Employer termination for Contractor default under Sub-Clause 15.2, how are payments handled under Sub-Clauses 15.3–15.4?',
+        opts: [
+          { vi: 'Chủ đầu tư phải trả ngay toàn bộ tiền giữ lại cho Nhà thầu', en: 'Employer immediately releases all Retention Money' },
+          { vi: 'Chủ đầu tư ĐƯỢC QUYỀN TẠM DỪNG MỌI THANH TOÁN cho đến khi xác định xong toàn bộ chi phí thi công phần còn lại do bên khác làm, chi phí sửa sai sót, Delay Damages trước chấm dứt và mọi thiệt hại khác (Khoản 3.7 định giá sau hoàn thiện)', en: 'Employer may withhold further payments until the costs of design, execution, completion, remediation, Delay Damages (up to termination date) and any extra completion costs are established via 3.7' },
+          { vi: 'Chủ đầu tư không được thuê nhà thầu khác hoàn thành công trình', en: 'Employer cannot hire a replacement contractor' },
+          { vi: 'Nhà thầu mất luôn phần giá trị đã nghiệm thu trước đó mà không cần đối trừ', en: 'Contractor automatically forfeits prior certified value without accounting' }
+        ],
+        ans: 1,
+        expVi: 'Khoản 15.3–15.4 (2017 làm rõ thêm cả cách tính Delay Damages trước ngày chấm dứt): Tạm giữ mọi khoản chi trả -> thuê hoàn thiện công trình -> xác định quyết toán bù trừ cuối cùng theo 3.7.',
+        expEn: 'Under 15.3–15.4, Employer withholds further payment until completion/remediation/extra costs and pre-termination Delay Damages are finalized.'
+      },
+      {
+        id: 'f9-4',
+        clause: '16.4 (Payment after Contractor Termination)',
+        qVi: 'Ngược lại, nếu Nhà thầu chấm dứt hợp đồng hợp pháp do lỗi Chủ đầu tư theo Khoản 16.2, Khoản 16.4 [Thanh toán sau khi Nhà thầu Chấm dứt] quy định Chủ đầu tư phải trả những gì?',
+        qEn: 'If the Contractor validly terminates under Sub-Clause 16.2 for Employer default, what must the Employer pay under Sub-Clause 16.4?',
+        opts: [
+          { vi: 'Chỉ trả đúng phần đã hoàn thành, không được tính lợi nhuận bị mất', en: 'Work done only, excluding lost profit' },
+          { vi: 'Hoàn trả Bảo lãnh Thực hiện (4.2.3), trả mọi khoản theo Khoản 18.5 (giá trị đã làm + giải thể + đặt hàng hủy + hồi hương), VÀ bồi thường thêm Mất Lợi nhuận hoặc tổn thất/thiệt hại khác ("loss of profit or other losses and damages suffered") do chấm dứt!', en: 'Return Performance Security (4.2.3), pay 18.5 termination sums (work executed, ordered Plant/Materials, demobilization), AND pay Contractor’s **loss of profit or other losses and damages**' },
+          { vi: 'Chỉ trả tối đa 5% giá trị phần còn lại', en: 'Capped at 5% of remaining works' },
+          { vi: 'Phải chờ 5 năm sau khi công trình xong mới thanh toán', en: 'Payable 5 years after completion' }
+        ],
+        ans: 1,
+        expVi: 'Khi Chủ đầu tư vi phạm dẫn tới Nhà thầu chấm dứt (16.2/16.4), Nhà thầu luôn được hưởng trọn bộ **Costs + Loss of Profit** (giống hệt cơ chế 15.6 ở bản 2017!).',
+        expEn: 'Valid Contractor termination under 16.2 triggers full recovery under 16.4 including 18.5 sums PLUS loss of profit and damages.'
+      },
+      {
+        id: 'f9-5',
+        clause: 'DAAB Rules & Retainer Fee',
+        qVi: 'Theo Thỏa thuận DAAB & Quy tắc Thủ tục (DAAB Procedural Rules) trong bộ 2017, chi phí thù lao thường trực (retainer fee) và chi phí ngày công (daily fee) của thành viên DAAB do ai chi trả?',
+        qEn: 'Under the 2017 General Conditions (Sub-Clause 21.1 & General Conditions of DAAB Agreement), how are the DAAB members’ retainer and daily fees borne?',
+        opts: [
+          { vi: 'Bên khiếu nại trả 100% trước', en: 'Claiming party pays 100%' },
+          { vi: 'Chia đều 50/50 giữa Chủ đầu tư và Nhà thầu (mỗi bên trả một nửa hóa đơn của DAAB; nếu một bên không đóng, bên kia được quyền đóng hộ và thu hồi qua 14.6/20.2 hoặc DAAB từ chối ra quyết định)', en: 'Shared 50/50 between Employer and Contractor; if one Party fails to pay its share, the other Party may pay on its behalf and recover the sum as a debt/under IPC' },
+          { vi: 'Chủ đầu tư trả 100% để đảm bảo độc lập', en: 'Employer pays 100%' },
+          { vi: 'Trừ trực tiếp từ tiền lương Nhà tư vấn', en: 'Deducted from Engineer fees' }
+        ],
+        ans: 1,
+        expVi: 'Nguyên tắc bình đẳng DAAB (21.1 / Phụ lục DAAB): Chủ đầu tư trả 50%, Nhà thầu trả 50%; và bản 2017 làm rõ quyền thanh toán hộ + thu hồi lập tức (qua IPC hoặc yêu cầu trực tiếp) nếu một bên chây ì đóng phí DAAB nhằm phá hoại thủ tục!',
+        expEn: 'DAAB remuneration is split 50/50 between Employer and Contractor, with explicit pay-on-behalf and immediate recovery remedies if a Party stalls payment.'
+      },
+      {
+        id: 'f9-6',
+        clause: '21.2 (Failure to Appoint DAAB)',
+        qVi: 'Theo Khoản 21.2 [Không Bổ nhiệm được Thành viên DAAB], nếu hai Bên bế tắc không thống nhất được nhân sự thành lập DAAB hoặc một bên từ chối ký Thỏa thuận DAAB, giải pháp thoát bế tắc theo hợp đồng là gì?',
+        qEn: 'Under Sub-Clause 21.2 [Failure to Appoint DAAB Member(s)], how is a deadlock or refusal to appoint/sign resolved?',
+        opts: [
+          { vi: 'Hợp đồng tự động chấm dứt', en: 'Contract terminates' },
+          { vi: 'Cơ quan/Cá nhân Chỉ định (Appointing Entity / Official nêu tại Contract Data — mặc định là Chủ tịch FIDIC hoặc người do Chủ tịch ủy quyền nếu bỏ trống) sẽ chỉ định sau tham vấn và quyết định đó mang tính chung thẩm & ràng buộc, các Bên mặc nhiên bị coi là đã ký DAAB Agreement!', en: 'The Appointing Entity/Official named in Contract Data (defaulting to President of FIDIC) appoints the member(s) in final and conclusive manner, and the Parties are deemed to have signed the DAAB Agreement!' },
+          { vi: 'Nhà tư vấn tự làm thành viên DAAB duy nhất', en: 'Engineer becomes sole DAAB member' },
+          { vi: 'Phải kiện ra tòa án địa phương xin chỉ định', en: 'Must petition local courts' }
+        ],
+        ans: 1,
+        expVi: 'Bản 2017 Khoản 21.2 khóa chặt lỗ hổng "tẩy chay DAAB": Chủ tịch FIDIC (nếu Contract Data bỏ trống) có quyền chỉ định thẳng và hai bên mặc nhiên bị ràng buộc bởi Thỏa thuận DAAB!',
+        expEn: 'Sub-Clause 21.2 eliminates DAAB obstruction: the Appointing Entity (defaulting to FIDIC President) makes a binding appointment and Parties are deemed bound by the DAAB Agreement.'
+      },
+      {
+        id: 'f9-7',
+        clause: '21.6 (Arbitration - No Limitation)',
+        qVi: 'Theo Khoản 21.6 [Trọng tài - Arbitration], Hội đồng Trọng tài ICC có bị giới hạn chỉ xem xét lại những chứng cứ và luận cứ pháp lý đã từng xuất trình trước Nhà tư vấn hay DAAB trước đó không?',
+        qEn: 'Under Sub-Clause 21.6 [Arbitration], is the arbitral tribunal restricted to the arguments and evidence previously placed before the Engineer or the DAAB?',
+        opts: [
+          { vi: 'Có, cấm tuyệt đối không được bổ sung chứng cứ mới tại trọng tài', en: 'Yes — strictly barred from admitting new evidence' },
+          { vi: 'Không! Hội đồng Trọng tài có toàn quyền mở ra, xem xét lại và sửa đổi mọi chứng nhận, quyết định, chỉ thị, định giá của Nhà tư vấn cũng như mọi Quyết định (trừ khi đã Final & Binding) của DAAB, và không bên nào bị giới hạn bởi chứng cứ/lập luận từng trình bày trước DAAB', en: 'No — the arbitrator(s) have full power to open up, review and revise any Engineer determination/certificate or non-final DAAB decision, and neither Party is limited to prior evidence or arguments' },
+          { vi: 'Trọng tài chỉ xem xét thủ tục mà không xem xét nội dung kỹ thuật', en: 'Procedural review only' },
+          { vi: 'Chỉ có quyền sửa đổi khi có sự đồng ý của Nhà tư vấn', en: 'Requires Engineer consent' }
+        ],
+        ans: 1,
+        expVi: 'Khoản 21.6 quy định xét xử lại từ đầu ("de novo review"): Hội đồng Trọng tài có toàn quyền "open up, review and revise" và không bị trói vào chứng cứ cũ trước DAAB (trừ quy định tôn trọng quyết định đã Final & Binding).',
+        expEn: 'Arbitration under 21.6 is de novo: full authority to open up, review and revise prior determinations/DAAB decisions, unrestricted to earlier evidence.'
+      },
+      {
+        id: 'f9-8',
+        clause: '21.4.4 (Error in Final DAAB)',
+        qVi: 'Theo Khoản 21.4.4 (bản 2017), trường hợp nào MỘT PHẦN hoặc TOÀN BỘ tranh chấp dù đã có Quyết định DAAB không bị gửi NOD trong 28 ngày nhưng vẫn có thể bị đưa ra trọng tài xem xét tính thi hành? Và trọng tài xử lý việc không tuân thủ Quyết định DAAB chưa NOD ra sao?',
+        qEn: 'Under 2017 Sub-Clause 21.4.4, once a DAAB decision receives NO valid NOD within 28 days, what is its legal status under Clause 21.4.4 & 21.7?',
+        opts: [
+          { vi: 'Chỉ mang tính khuyến nghị tham khảo', en: 'Merely advisory' },
+          { vi: 'Trở thành Chung thẩm và Ràng buộc ("Final and Binding") đối với cả hai Bên; nếu một bên không thi hành, bên kia đưa thẳng ra Trọng tài (21.7) để tuyên thi hành bằng phán quyết trọng tài nhanh mà không cần xem xét lại nội dung vụ việc', en: 'Becomes Final and Binding on both Parties; any failure to comply is enforceable directly via summary arbitration under Sub-Clause 21.7 without re-opening the merits' },
+          { vi: 'Vẫn có thể kháng cáo nội dung sau 6 tháng', en: 'Merits remain appealable after 6 months' },
+          { vi: 'Hết hiệu lực khi Performance Certificate được cấp', en: 'Expires upon Performance Certificate' }
+        ],
+        ans: 1,
+        expVi: 'Không gửi NOD trong **28 ngày** theo 21.4.4 biến Quyết định DAAB thành **Final and Binding** (không thể lật lại nội dung ở trọng tài — chỉ đưa ra trọng tài 21.7 để ép thi hành nếu bên thua chây ì)!',
+        expEn: 'Absent an NOD within 28 days, a DAAB decision becomes Final and Binding, enforceable directly in arbitration under 21.7 without re-litigating the merits.'
+      },
+      {
+        id: 'f9-9',
+        clause: 'DAAB Rule 7 & Site Visits',
+        qVi: 'Theo Quy tắc Thủ tục DAAB (DAAB Procedural Rules) bản 2017, DAAB thường trực phải tổ chức các chuyến thăm Công trường định kỳ (Site Visits) với tần suất mặc định nào nếu chưa thỏa thuận khác?',
+        qEn: 'Under the 2017 DAAB Procedural Rules (Rule 3), how frequently must a Standing DAAB normally hold Site Visits and meetings (absent other agreement)?',
+        opts: [
+          { vi: 'Mỗi năm 1 lần duy nhất', en: 'Once a year' },
+          { vi: 'Khoảng thời gian đều đặn, thường không cách nhau quá **140 ngày** và không ít hơn **70 ngày** (tùy tiến độ thực địa hoặc yêu cầu đột xuất của các bên, kể cả họp trực tuyến nếu khẩn cấp)', en: 'At intervals of not more than 140 days and not less than 70 days (unless otherwise agreed by Parties and DAAB, or special meetings at critical construction events)' },
+          { vi: 'Chỉ thăm công trường khi có đơn khởi kiện', en: 'Only after formal Dispute Referral' },
+          { vi: 'Mỗi tuần 1 lần bắt buộc', en: 'Weekly mandatory site visits' }
+        ],
+        ans: 1,
+        expVi: 'Quy tắc DAAB số 3.2 (2017): Khoảng cách giữa các chuyến thăm công trường/họp thường kỳ là **từ 70 đến 140 ngày** (tạo nhịp bám sát công trường để phòng ngừa tranh chấp!).',
+        expEn: 'DAAB Procedural Rule 3.2 specifies periodic site visits/meetings spaced between **70 and 140 days** apart.'
+      },
+      {
+        id: 'f9-10',
+        clause: '7.7 & 14.12 (Ownership Plant/Mat)',
+        qVi: 'Theo Khoản 7.7 [Quyền sở hữu Thiết bị và Vật tư - Ownership of Plant and Materials], vào thời điểm nào thì Thiết bị và Vật tư trở thành tài sản của Chủ đầu tư?',
+        qEn: 'Under Sub-Clause 7.7 [Ownership of Plant and Materials], when does each item of Plant and Materials become the property of the Employer (to the extent consistent with country laws)?',
+        opts: [
+          { vi: 'Chỉ sau khi cấp Performance Certificate ở cuối bảo hành', en: 'Only upon Performance Certificate' },
+          { vi: 'Vào thời điểm NÀO XẢY RA SỚM HƠN giữa: (a) khi được giao tới Công trường, hoặc (b) khi Nhà thầu được quyền thanh toán giá trị Thiết bị/Vật tư đó trong trường hợp tạm ngừng/thanh toán hàng chưa lắp (theo 8.11 / 14.5)', en: 'Whichever is EARLIER of: (a) when delivered to the Site, or (b) when the Contractor is paid (or entitled to payment) for Plant/Materials under suspension (8.11) or delivery (14.5)' },
+          { vi: 'Ngay khi Nhà thầu ký đơn đặt hàng tại nhà máy ở nước ngoài', en: 'Upon factory PO signature abroad' },
+          { vi: 'Không bao giờ chuyển sở hữu sang Chủ đầu tư', en: 'Never transfers to Employer' }
+        ],
+        ans: 1,
+        expVi: 'Khoản 7.7 (vốn bảo vệ Chủ đầu tư nếu Nhà thầu phá sản giữa chừng): Tài sản chuyển sang Chủ đầu tư (miễn trừ cầm cố/nợ) ngay tại mốc sớm hơn giữa **giao tới Site** hoặc **được chứng nhận thanh toán (14.5 / 8.11)**!',
+        expEn: 'Sub-Clause 7.7 passes ownership free of liens at the earlier of Site delivery or payment entitlement (8.11/14.5).'
+      },
+      {
+        id: 'f9-11',
+        clause: '8.10–8.12 (Employer Suspension)',
+        qVi: 'Nếu Nhà tư vấn chỉ thị Tạm ngừng Công việc (Suspension) theo Khoản 8.9 mà nguyên nhân KHÔNG do lỗi của Nhà thầu, và tình trạng tạm ngừng đó kéo dài liên tục quá **84 ngày** (Khoản 8.12), Nhà thầu có quyền gì?',
+        qEn: 'Under Sub-Clause 8.12 [Prolonged Suspension], if an Engineer-instructed suspension (not due to Contractor default) continues for more than **84 days**, what may the Contractor do?',
+        opts: [
+          { vi: 'Phải tiếp tục chờ miễn phí thêm 180 ngày', en: 'Must wait 180 more days' },
+          { vi: 'Gửi Notice xin phép tiếp tục thi công trong **28 ngày**; nếu Nhà tư vấn không cho phép trong 28 ngày, Nhà thầu có thể coi việc tạm ngừng là **cắt giảm theo Điều 13** (nếu chỉ tác động một phần) HOẶC gửi Notice chấm dứt hợp đồng theo Khoản 16.2 (nếu ảnh hưởng toàn bộ Công trình)!', en: 'Give Notice requesting permission to proceed; if Engineer fails to give permission within **28 days**, Contractor may treat affected part as a Clause 13 omission OR (if whole Works affected) terminate under Sub-Clause 16.2!' },
+          { vi: 'Tự ý phá bỏ lán trại không cần gửi Notice', en: 'Demobilize unilaterally without notice' },
+          { vi: 'Chỉ được đòi EOT mà không được chấm dứt', en: 'EOT only without termination right' }
+        ],
+        ans: 1,
+        expVi: 'Quy trình 2 bước kinh điển của Khoản 8.12 (8.11 bản 1999): Tạm ngừng do lỗi/quyết định Chủ đầu tư kéo dài **> 84 ngày** -> Nhà thầu xin phép làm lại -> chờ **28 ngày** -> nếu vẫn im lặng: cắt giảm (13.3) hoặc chấm dứt (16.2)!',
+        expEn: 'Prolonged Suspension (>84 days + 28-day permission Notice) under 8.12 triggers Clause 13 omission (if partial) or Clause 16.2 termination (if whole Works).'
+      },
+      {
+        id: 'f9-12',
+        clause: '4.18 & 4.8 (HSE / Environment 2017)',
+        qVi: 'So với bản 1999, các bộ FIDIC 2017 tăng cường nghĩa vụ An toàn Sức khỏe và Môi trường (Khoản 4.8 [Health and Safety Obligations] & Khoản 4.18 [Protection of the Environment]) như thế nào?',
+        qEn: 'How did the 2017 FIDIC editions expand Health, Safety and Environmental obligations under Sub-Clauses 4.8 and 4.18 compared to 1999?',
+        opts: [
+          { vi: 'Rút gọn bớt các quy định an toàn công trường', en: 'Reduced site safety rules' },
+          { vi: 'Bắt buộc thiết lập Hệ thống Quản lý Tuân thủ (Compliance Verification System - Khoản 4.9.2), bổ nhiệm Cán bộ An toàn Sức khỏe có trình độ (4.8), nộp Kế hoạch Sức khỏe & An toàn trong 21 ngày sau Ngày Khởi công, và ghi nhận trách nhiệm đánh giá rủi ro môi trường chi tiết', en: 'Mandates submitting a Health and Safety Manual/Plan within 21 days of Commencement Date, appointing a dedicated Health & Safety Officer (4.8), operating a Compliance Verification System (4.9.2), and stricter environmental controls (4.18)' },
+          { vi: 'Chuyển toàn bộ trách nhiệm an toàn công trường sang Chủ đầu tư', en: 'Transferred all site safety responsibility to Employer' },
+          { vi: 'Chỉ áp dụng cho dự án thủy điện', en: 'Applies to hydropower projects only' }
+        ],
+        ans: 1,
+        expVi: 'Bản 2017 nâng chuẩn Quản lý Chất lượng & An toàn lên rất cao (để phù hợp yêu cầu các ngân hàng phát triển như World Bank/ADB): Bổ sung Quality Management System (4.9.1) + Compliance Verification System (4.9.2) + Health & Safety Manual 21 ngày (4.8)!',
+        expEn: '2017 editions significantly strengthened HSE & QA compliance (21-day H&S manual, dedicated H&S Officer under 4.8, QMS 4.9.1 & Compliance Verification System 4.9.2).'
+      }
+    ]
+  },
+  {
+    id: 'set-10-case-math-traps',
+    level: 4,
+    levelBadge: '⭐⭐⭐⭐',
+    levelVi: 'Thực chiến',
+    levelEn: 'Expert Case-Study',
+    badge: 'Set 10 · 12 câu',
+    titleVi: 'Đề 10: Tình huống Số liệu, Tính toán BoQ/EOT & Án lệ Quốc tế',
+    titleEn: 'Set 10: Numeric Scenarios, BoQ/DD Calculations & Landmark Cases',
+    durationMin: 35,
+    questions: [
+      {
+        id: 'f10-1',
+        clause: 'Red 12.3 Math',
+        qVi: 'Bài toán BoQ Sách Đỏ (Khoản 12.3): Giá Hợp đồng Được chấp nhận (ACA) = 100 triệu USD. Một hạng mục đào đá trong BoQ ước tính 10.000 m³ với đơn giá $5/m³. Khối lượng đo thực tế khi hoàn thành là 11.500 m³ (tăng +15%) và chi phí đơn vị trực tiếp tăng 3%. Có đủ điều kiện để áp đơn giá mới theo 12.3(b) không?',
+        qEn: 'Red Book 12.3 Calculation: Accepted Contract Amount (ACA) = $100M. An excavation item in BoQ is estimated at 10,000 m³ at $5/m³. Actual measured quantity is 11,500 m³ (+15%) and direct unit cost rose 3%. Is the item eligible for a new rate under 12.3(b)?',
+        opts: [
+          { vi: 'Có, vì khối lượng đã tăng 15% vượt mốc 10%', en: 'Yes, because quantity exceeded the 10% threshold' },
+          { vi: 'KHÔNG — Mặc dù biến động khối lượng (+15% > 10%) và biến đổi chi phí/đơn vị (3% > 1%) đều đạt, nhưng tích `(1.500 × $5) = $7.500` chỉ bằng **0,0075% ACA**, nhỏ hơn ngưỡng bắt buộc **> 0,01% ACA ($10.000)**!', en: 'NO — While quantity (+15% > 10%) and unit cost change (+3% > 1%) pass, `(1,500 × $5) = $7,500` equals only **0.0075% of ACA**, failing the cumulative **> 0.01% ACA ($10,000)** threshold!' },
+          { vi: 'Có, vì chi phí đơn vị tăng quá 1%', en: 'Yes, because unit cost rose > 1%' },
+          { vi: 'Bắt buộc chuyển sang Daywork', en: 'Converts automatically to Daywork' }
+        ],
+        ans: 1,
+        expVi: 'Đề FCCM thực chiến rất hay cho phép tính nhẩm cả 4 điều kiện tích lũy của Khoản 12.3(a)/(b): Phải thỏa mãn ĐỒNG THỜI `(1) >10% qty`, `(2) ΔQty × Rate > 0.01% ACA`, `(3) Δunit cost > 1%`, và `(4) không phải fixed rate`. Thiếu 1 điều kiện -> giữ nguyên đơn giá BoQ!',
+        expEn: 'Classic FCCM arithmetic trap on 12.3(b): All four criteria are cumulative. Here `$7,500 / $100M = 0.0075% <= 0.01%`, so the original BoQ rate remains!'
+      },
+      {
+        id: 'f10-2',
+        clause: '10.2 / 8.8 Math',
+        qVi: 'Tính giảm Tiền bồi thường chậm trễ (Khoản 10.2): Giá Hợp đồng = 40 triệu USD. Tiền chậm trễ (Delay Damages) toàn bộ Công trình là $40.000/ngày. Chủ đầu tư bàn giao sớm và đưa vào sử dụng 1 Phần (Part) trị giá 10 triệu USD trước khi cấp TOC toàn bộ. Phần còn lại bị chậm 10 ngày. Tổng Delay Damages cho 10 ngày chậm trễ phần còn lại là bao nhiêu?',
+        qEn: 'Sub-Clause 10.2 Pro-Rata Math: Contract Price = $40M; Delay Damages = $40,000/day. Employer takes over/uses a Part valued at $10M early before whole-Works completion. Remaining Works finish 10 days late. What are total Delay Damages?',
+        opts: [
+          { vi: '$400.000 (vẫn giữ nguyên $40.000/ngày)', en: '$400,000 ($40,000/day unchanged)' },
+          { vi: '$300.000 — Vì phần bàn giao trước chiếm $10M / $40M = 25% Giá Hợp đồng, nên tỷ lệ Delay Damages cho phần còn lại giảm tương ứng còn 75% × $40.000 = **$30.000/ngày** (× 10 ngày = $300.000)!', en: '$300,000 — Taking over a $10M Part (25% of $40M) reduces Delay Damages for the remainder proportionally by 25% to **$30,000/day** (× 10 days = $300,000)' },
+          { vi: '$100.000', en: '$100,000' },
+          { vi: '$0 — Không được phạt chậm trễ nếu đã bàn giao 1 phần', en: '$0 — Delay Damages void completely' }
+        ],
+        ans: 1,
+        expVi: 'Khoản 10.2 quy định giảm tỷ lệ Delay Damages cho phần còn lại theo tỷ lệ giá trị của Phần đã bàn giao so với tổng Giá Hợp đồng (tính tại ngày chấp nhận/bàn giao đó) — KHÔNG làm vô hiệu hoàn toàn quyền phạt chậm trễ phần còn lại!',
+        expEn: 'Under Sub-Clause 10.2, early taking-over of a Part reduces Delay Damages pro-rata to remaining value ($30M/$40M = 75% × $40,000/d × 10d = $300,000), rather than voiding Delay Damages.'
+      },
+      {
+        id: 'f10-3',
+        clause: 'Obrascon Case (20.1 / 20.2)',
+        qVi: 'Theo nguyên tắc án lệ quốc tế nổi tiếng *Obrascon Huarte Lain v Gibraltar* (được Seppälä phân tích sâu và hay kiểm tra ở phần Time-Bar), mốc 28 ngày gửi Notice of Claim đối với điều kiện vật chất/thay đổi thiết kế kích hoạt vào thời điểm nào?',
+        qEn: 'Following the landmark *Obrascon Huarte Lain v HM Attorney General for Gibraltar* ruling on FIDIC Notice time-bars, when does the 28-day Notice clock start ticking?',
+        opts: [
+          { vi: 'Ngay ngày đầu tiên phát hiện một hạt bụi đất bất thường dù chưa rõ có gây chậm trễ hay phát sinh chi phí gì không', en: 'Immediately upon seeing any anomaly regardless of delay/cost impact' },
+          { vi: 'KHÔNG tính từ ngày sự kiện xảy ra trừu tượng, mà tính từ ngày Nhà thầu nhận biết (hoặc đáng lẽ phải nhận biết) **sự kiện/hoàn cảnh LÀM PHÁT SINH quyền EOT hoặc thanh toán thêm** (tức đã có cơ sở nhận thấy khả năng gây chậm/tốn kém)!', en: 'Runs NOT merely from when an event first occurs in the abstract, but from when the Contractor became aware (or should have become aware) of the event or circumstance **giving rise to entitlement to EOT/additional payment**' },
+          { vi: 'Chỉ bắt đầu tính sau khi Công trình hoàn thành 100%', en: 'Only after project completion' },
+          { vi: 'Tùy ý Nhà thầu tự chọn ngày bắt đầu đếm', en: 'Whenever Contractor elects arbitrarily' }
+        ],
+        ans: 1,
+        expVi: 'Án lệ *Obrascon* (2014/2015) diễn giải Khoản 20.1 theo hướng thực tiễn: Chừng nào sự kiện chưa biểu hiện rõ khả năng gây chậm trễ hoặc tốn chi phí thêm, đồng hồ 28 ngày chưa bắt đầu chạy — tuy nhiên để an toàn dưới bản 2017 (vốn chặt chẽ hơn 1999), Nhà thầu vẫn nên gửi Notice ngay khi có dấu hiệu tác động!',
+        expEn: '*Obrascon* interpreted Clause 20.1 purposefully: time-bar runs from awareness of the event/circumstance actually giving rise to an EOT/Cost entitlement (though cautious 2017 management favors early protective Notices).'
+      },
+      {
+        id: 'f10-4',
+        clause: 'Triple Point Case (Termination & DD)',
+        qVi: 'Theo án lệ Tòa Tối cao Anh *Triple Point Technology v PTT* (2021 — kinh điển về Delay Damages khi chấm dứt hợp đồng trước khi hoàn thành, và cách soạn thảo FIDIC 2017 Khoản 15.4(c)), nếu hợp đồng bị chấm dứt trước khi Nhà thầu bàn giao xong Công trình, Chủ đầu tư có được hưởng Tiền bồi thường chậm trễ (Delay Damages) không?',
+        qEn: 'Under *Triple Point Technology v PTT* (UK Supreme Court, 2021) and FIDIC 2017 Sub-Clause 15.4(c), when a contract is terminated before Completion, what happens to accrued Delay Damages?',
+        opts: [
+          { vi: 'Chủ đầu tư mất sạch quyền đòi Delay Damages cho khoảng thời gian đã chậm trước khi chấm dứt', en: 'Employer loses all accrued Delay Damages prior to termination' },
+          { vi: 'Chủ đầu tư VẪN được hưởng Delay Damages tích lũy tính đến **ngày chấm dứt Hợp đồng** (date of termination) — và sau ngày chấm dứt sẽ tính theo thiệt hại thực tế hoàn thành thay thế (general damages / 15.4(c)) chứ không tiếp tục cộng dồn Delay Damages hàng ngày vô tận sau chấm dứt!', en: 'Employer RETAINS accrued Delay Damages **up to the date of termination** (and claims replacement completion damages thereafter under 15.4, rather than continuing daily Delay Damages post-termination)' },
+          { vi: 'Delay Damages tiếp tục chạy thêm cho đến khi nhà thầu mới hoàn thành xong công trình', en: 'Daily Delay Damages continue running against the first contractor until replacement contractor finishes' },
+          { vi: 'Delay Damages tăng gấp đôi vào ngày chấm dứt', en: 'Delay Damages double on termination' }
+        ],
+        ans: 1,
+        expVi: '*Triple Point* (2021) khẳng định lại lẽ thông thường thương mại (và **FIDIC 2017 Khoản 15.4(c)** cũng viết sẵn câu chữ rõ ràng): Delay Damages tích lũy **trước/tới ngày chấm dứt** vẫn giữ nguyên hiệu lực, còn thiệt hại sau chấm dứt tính qua chi phí thuê bên khác làm tiếp!',
+        expEn: 'Both *Triple Point* (2021) and 2017 Sub-Clause 15.4(c) confirm accrued Delay Damages survive up to termination date; post-termination losses flow via replacement costs.'
+      },
+      {
+        id: 'f10-5',
+        clause: '3.7.3 + 20.2 Combined Timeline',
+        qVi: 'Bài toán gộp mốc thời gian thực chiến FIDIC 2017: Sự kiện chậm trễ xảy ra ngày 01/01. Nhà thầu gửi Notice of Claim ngày 20/01 (Khoản 20.2.1), nộp Fully Detailed Claim ngày 10/03 (20.2.4). Nếu Nhà tư vấn thực hiện đầy đủ tối đa 42 ngày tham vấn (3.7.1) + 42 ngày ra Quyết định (3.7.2) và các bên giữ im lặng trong 28 ngày tiếp theo (3.7.5), tổng thời gian tối đa từ lúc nộp Hồ sơ Chi tiết (10/03) đến khi Quyết định 3.7 trở thành Final & Binding là bao nhiêu ngày?',
+        qEn: 'FIDIC 2017 Timeline Math: Detailed Claim is submitted on Day 0. Engineer uses the full 42 days for consultation (3.7.1) + full 42 days to determine (3.7.2), followed by the 28-day NOD window (3.7.5) with no NOD issued. Total elapsed days from Detailed Claim to Final & Binding?',
+        opts: [
+          { vi: '84 ngày', en: '84 days' },
+          { vi: '112 ngày (42 ngày Tham vấn + 42 ngày Ra Quyết định + 28 ngày chờ NOD)', en: '112 days (42d Consultation + 42d Determination + 28d NOD expiry)' },
+          { vi: '140 ngày', en: '140 days' },
+          { vi: '56 ngày', en: '56 days' }
+        ],
+        ans: 1,
+        expVi: 'Cộng chuẩn chuỗi thời gian Điều 3.7: **42d (Consultation 3.7.1) + 42d (Determination 3.7.2) + 28d (NOD window 3.7.5) = 112 ngày** (và nếu cộng thêm tối đa 84 ngày từ lúc phát sinh sự kiện nộp Hồ sơ Chi tiết thì tổng hành trình từ Day 0 sự kiện = 84 + 112 = 196 ngày!).',
+        expEn: 'Standard 3.7 cadence: **42d (3.7.1) + 42d (3.7.2) + 28d (3.7.5) = 112 days** from Fully Detailed Claim to Final & Binding (or 196 days max from Day 0 event awareness).'
+      },
+      {
+        id: 'f10-6',
+        clause: '1.1.21 "day" & Calendar',
+        qVi: 'Trong hợp đồng FIDIC (Khoản 1.1 & Khoản 1.2 [Diễn giải]), khi thời hạn được ghi là "28 days" (như Notice of Claim) mà hạn chót rơi đúng vào ngày Chủ Nhật hoặc ngày Lễ Tết Quốc gia, hạn chót đó được tính là ngày dương lịch hay tự động lùi sang ngày làm việc tiếp theo?',
+        qEn: 'Under Sub-Clauses 1.1 ("day") and 1.2 [Interpretation], when a 28-day Notice deadline falls on a Sunday or public holiday, how are "days" counted?',
+        opts: [
+          { vi: 'Tự động cộng thêm số ngày nghỉ lễ Tết vào hạn 28 ngày', en: 'Public holidays and weekends extend the 28-day limit' },
+          { vi: '"day" (viết thường) nghĩa là **ngày dương lịch liên tục (calendar day)**, tính cả thứ 7, Chủ Nhật và ngày Lễ (KHÁC với "working days" tại Khoản 3.5); chỉ có quy tắc Khoản 1.3 nếu gửi trực tiếp hoặc cần xem xét quy định cụ thể tại Country nếu có, nhưng đếm "days" luôn là calendar days (và ngày bắt đầu sự kiện là Day 0, ngày tiếp theo là Day 1 theo 1.2(h))!', en: '"day" means **calendar day** (including weekends and public holidays, unlike "working days" in 3.5), and under 1.2(h) the period excludes the trigger day itself and runs continuously in calendar days!' },
+          { vi: 'Chỉ tính ngày làm việc hành chính (28 ngày = ~40 ngày lịch)', en: 'Business days only' },
+          { vi: 'Tính cả ngày phát sinh sự kiện là Ngày 1', en: 'Trigger day itself counts as Day 1' }
+        ],
+        ans: 1,
+        expVi: 'Khoản 1.2(h) + 1.1.25: Mọi thuật ngữ `day`/`days` đều là **ngày dương lịch liên tục** (chỉ chỗ nào viết rõ `working days` như Khoản 3.5 mới trừ ngày nghỉ), và ngày xảy ra sự kiện nhận Notice không tính vào kỳ hạn (tính từ ngày hôm sau)!',
+        expEn: 'Sub-Clause 1.2(h) & "day" definition: periods run in consecutive **calendar days**, excluding the initial trigger day.'
+      },
+      {
+        id: 'f10-7',
+        clause: 'MT Hojgaard (Fitness for Purpose)',
+        qVi: 'Từ bài học án lệ nổi tiếng *MT Højgaard v E.ON* (Tòa Tối cao Anh) về nghĩa vụ thiết kế trong hợp đồng tương tự Yellow/Silver Book: Khi Employer’s Requirements quy định tuổi thọ thiết kế ("20-year service life") đồng thời hợp đồng lại dẫn chiếu tiêu chuẩn quốc tế có thiếu sót khiến công trình hỏng sau 2 năm dù Nhà thầu đã tuân thủ đúng tiêu chuẩn đó, tòa án xử lý ra sao?',
+        qEn: 'Reflecting the landmark *MT Højgaard v E.ON* UK Supreme Court principle relevant to Design-Build / EPC Contracts: if Employer’s Requirements specify a 20-year design/service life alongside a defective technical standard followed carefully by the Contractor, who bears liability for premature failure?',
+        opts: [
+          { vi: 'Nhà thầu được miễn trách nhiệm hoàn toàn vì đã làm theo tiêu chuẩn kỹ thuật nêu trong hợp đồng', en: 'Contractor is exonerated for obeying the cited technical standard' },
+          { vi: 'Nhà thầu VẪN CHỊU TRÁCH NHIỆM vì nghĩa vụ "Fitness for Purpose / Đạt kết quả hiệu năng thiết kế" (cụ thể tuổi thọ 20 năm trong ER) không bị vô hiệu hóa chỉ vì đã tuân theo tiêu chuẩn tối thiểu trong cùng tài liệu!', en: 'The Contractor REMAINS LIABLE because complying with a prescribed minimum standard does not override an explicit overarching **Fitness for Purpose / specified performance obligation** (e.g., 20-year design life) in the ER!' },
+          { vi: 'Nhà tư vấn chịu toàn bộ thiệt hại', en: 'Engineer bears 100% liability' },
+          { vi: 'Hợp đồng bị vô hiệu vì mâu thuẫn nội tại', en: 'Contract is void for uncertainty' }
+        ],
+        ans: 1,
+        expVi: 'Bài học sống còn cho Nhà thầu Design-Build (Yellow/Silver Book Khoản 4.1): Tiêu chuẩn kỹ thuật trong ER là **mức sàn tối thiểu** ("minimum baseline"), chứ không làm giảm nhẹ cam kết **Fitness for Purpose** hay tuổi thọ công trình!',
+        expEn: '*MT Højgaard* confirms that technical standards in Employer’s Requirements act as minimum baselines and do not dilute an explicit Fitness for Purpose / performance warrant.'
+      },
+      {
+        id: 'f10-8',
+        clause: '4.11 & 14.3 IPC Math (Retention)',
+        qVi: 'Bài toán tính IPC (Khoản 14.3 & 14.6): Giá trị khối lượng đã thi công lũy kế = $20M (kỳ trước đã chứng nhận $15M). Tỷ lệ Giữ lại (Retention) = 10%, giới hạn trần Tiền giữ lại = 5% của ACA ($100M -> trần $5M). Khấu trừ Hoàn trả Tạm ứng kỳ này = $1M. Không có Variation/Claim. Số tiền tịnh (Net Amount) của IPC kỳ này (chỉ xét phần tăng thêm kỳ này) là bao nhiêu?',
+        qEn: 'IPC Calculation (14.3 / 14.6): Cumulative work executed = $20M (prior IPC certified gross work = $15M). Retention = 10% capped at 5% of $100M ACA ($5M limit). Advance repayment this period = $1M. Ignoring prior retention differences outside incremental work, what is net payable for this $5M monthly work increment?',
+        opts: [
+          { vi: '$5.000.000', en: '$5,000,000' },
+          { vi: '$3.500.000 — Giải thích: Công việc tăng thêm kỳ này = $5M -> Trừ Retention 10% × $5M = $0.5M (lũy kế retention mới $2M < trần $5M nên trừ đủ 10%) -> Trừ hoàn trả tạm ứng $1M -> Còn tịnh **$3.500.000**!', en: '$3,500,000 — Incremental work ($5M) minus 10% Retention ($0.5M; cumulative retention $2M < $5M cap) minus Advance Repayment ($1M) = **$3,500,000**!' },
+          { vi: '$4.500.000', en: '$4,500,000' },
+          { vi: '$4.000.000', en: '$4,000,000' }
+        ],
+        ans: 1,
+        expVi: 'Khi tính IPC hàng tháng theo Khoản 14.3: Luôn kiểm tra **cả 2 mốc**: (1) Lũy kế tiền giữ lại đã chạm trần Limit of Retention Money chưa (ở đây $2M < $5M nên vẫn giữ đủ 10% × $5M = $0.5M), và (2) Khoản khấu trừ hoàn trả tạm ứng theo 14.2 ($1M). Kết quả: $5M − $0.5M − $1M = $3.5M.',
+        expEn: 'Monthly IPC math: $5.0M work − $0.5M retention (10%, still below $5M cap) − $1.0M advance repayment = $3.5M net due.'
+      },
+      {
+        id: 'f10-9',
+        clause: 'Civil Law vs Common Law (Penalties)',
+        qVi: 'Trong hợp đồng FIDIC áp dụng **Luật Dân sự (Civil Law - như Pháp, Đức, Việt Nam, Trung Đông)** so với **Thông luật (Common Law - Anh, Singapore)**: Khi số tiền Bồi thường Chậm trễ (Delay Damages - 8.8) bị coi là quá cao bất hợp lý so với thiệt hại thực tế (hoặc ngược lại thấp hơn thiệt hại thực tế nhiều lần), tòa án/trọng tài ở các nước Dân luật thường có quyền gì mà Thông luật KHÔNG cho phép (theo Seppälä Chương II)?',
+        qEn: 'As highlighted in Seppälä Chapter II comparing Civil Law vs Common Law jurisdictions regarding Sub-Clause 8.8 [Delay Damages]: What power do courts/tribunals under many Civil Codes typically possess that Common Law courts traditionally refuse?',
+        opts: [
+          { vi: 'Không có bất kỳ khác biệt nào giữa hai hệ thống', en: 'No difference between systems' },
+          { vi: 'Ở Thông luật (Common Law), điều khoản bồi thường định trước hoặc có hiệu lực nguyên văn hoặc bị vô hiệu hoàn toàn nếu mang tính phạt ("penalty rule" — dù tòa Anh gần đây xét *Cavendish Square* theo lợi ích hợp pháp). Ngược lại, ở nhiều nước Dân luật (như Pháp Art. 1231-5), tòa/trọng tài CÓ THẨM QUYỀN GIẢM (hoặc thậm chí tăng) mức bồi thường ấn định trước nếu chứng minh mức đó quá đáng hoặc quá nhỏ một cách rõ rệt!', en: 'Under many Civil Codes (e.g., French Civil Code Art. 1231-5), courts/tribunals may **equitably reduce (or increase)** an agreed Delay Damages/penalty sum if manifestly excessive or derisory; Common Law enforces liquidated damages as written or strikes down penalties cleanly' },
+          { vi: 'Thông luật cho phép tòa tự tăng gấp đôi Delay Damages', en: 'Common Law allows doubling Delay Damages' },
+          { vi: 'Luật Dân sự cấm hoàn toàn điều khoản Delay Damages', en: 'Civil Law voids all Delay Damages clauses' }
+        ],
+        ans: 1,
+        expVi: 'Kiến thức trọng tâm Chương II *Seppälä*: Trong FIDIC quốc tế, chọn **Governing Law (Khoản 1.4)** cực kỳ quan trọng vì Luật Dân sự cho phép điều chỉnh mức Delay Damages ("clause pénale" / giảm phạt bất hợp lý) theo quy phạm bắt buộc, khác hẳn Thông luật!',
+        expEn: 'Seppälä Ch. II: Civil law codes commonly allow judicial adjustment of manifestly excessive/derisory stipulated damages, unlike strict Common Law binary enforcement.'
+      },
+      {
+        id: 'f10-10',
+        clause: '15.2 vs 15.5 Practical Trap',
+        qVi: 'Tình huống bẫy thực chiến: Chủ đầu tư đang không hài lòng vì tiến độ Nhà thầu chậm nhẹ, nhưng CHƯA cấp Notice to Correct (15.1) và chưa chứng minh vi phạm nghiêm trọng 15.2. Chủ đầu tư bèn gửi Thông báo "chấm dứt hợp đồng theo Khoản 15.2 do vi phạm tiến độ" và ngay lập tức tịch thu công trường giao cho nhà thầu khác. Hành động này cấu thành điều gì theo luật & FIDIC 2017?',
+        qEn: 'Practical Case Trap: Dissatisfied with moderate Contractor slow progress, the Employer sends a termination Notice purporting to act under Sub-Clause 15.2 WITHOUT first issuing a Sub-Clause 15.1 Notice to Correct or establishing valid 15.2 grounds, and ejects the Contractor. What legal risk does this create?',
+        opts: [
+          { vi: 'Hợp đồng tự động chấm dứt hợp pháp theo Khoản 15.5 thuận tiện dù không viện dẫn', en: 'Automatically converts cleanly to valid 15.5 termination for convenience' },
+          { vi: 'Cấu thành hành vi **Chấm dứt Trái Hợp đồng / Từ bỏ Hợp đồng sai trái (Wrongful / Repudiatory Termination)** bởi Chủ đầu tư! Nhà thầu có quyền chấp nhận sự chấm dứt sai trái đó (hoặc chấm dứt theo 16.2) và đòi bồi thường toàn bộ thiệt hại bao gồm **Mất Lợi nhuận (Loss of Profit)**!', en: 'Amounts to **Wrongful / Repudiatory Termination** by the Employer, entitling the Contractor to treat the contract as repudiated (or terminate under 16.2) and recover full damages including **loss of profit**!' },
+          { vi: 'Nhà thầu chỉ được xin gia hạn 14 ngày', en: 'Contractor merely gets 14 days extra' },
+          { vi: 'Bảo lãnh thực hiện hợp đồng tự động thuộc về Chủ đầu tư', en: 'Performance Security automatically belongs to Employer' }
+        ],
+        ans: 1,
+        expVi: 'Chấm dứt hợp đồng (Termination) là "vũ khí hạt nhân" đòi hỏi tuân thủ NGUYÊN VĂN điều kiện tiền quyết (15.1 Notice to Correct -> hết hạn hợp lý -> 15.2.2 14 ngày Notice ý định -> Notice lần 2). Chấm dứt sai thủ tục biến Chủ đầu tư thành bên vi phạm hợp đồng nghiêm trọng (Repudiatory Breach)!',
+        expEn: 'Wrongful termination bypassing mandatory 15.1/15.2 safeguards backfires as Employer repudiatory breach, triggering Contractor damages & loss of profit.'
+      },
+      {
+        id: 'f10-11',
+        clause: 'Silver Book 4.12 vs GP',
+        qVi: 'Tại sao nếu Hợp đồng sử dụng mẫu Sách Bạc (Silver Book EPC) — chuyển rủi ro địa chất (4.12) sang Nhà thầu — mà trong Gói thầu lại chỉ có thời gian đấu thầu 2 tuần, thiếu hẳn khảo sát địa chất nền móng từ Chủ đầu tư, tài liệu Hướng dẫn FIDIC (FIDIC Introductory Note / GP2) khuyến nghị điều gì?',
+        qEn: 'According to the FIDIC Silver Book Introductory Guidance & Golden Principles: What should NOT happen if an Employer proposes using the Silver Book where tenderers have insufficient time/data to verify subsurface conditions?',
+        opts: [
+          { vi: 'Vẫn cứ ép dùng Sách Bạc bình thường để chuyển hết rủi ro cho rẻ', en: 'Use Silver Book regardless to shift risk cheaply' },
+          { vi: 'FIDIC khuyến cáo **KHÔNG NÊN dùng Sách Bạc** (mà nên dùng **Sách Vàng hoặc Sách Đỏ**) khi Nhà thầu không được cấp đủ thời gian & thông tin để kiểm tra Yêu cầu Chủ đầu tư và khảo sát công trường/rủi ro ngầm trước khi nộp thầu — vì ép dùng Silver Book dẫn tới giá dự phòng rủi ro tăng vọt hoặc tranh chấp bùng phát!', en: 'Silver Book **should NOT be used** if tenderers lack sufficient time or information to scrutinise ER / carry out underground investigations before submitting Tenders (use **Yellow or Red Book** instead)!' },
+          { vi: 'Cứ dùng Sách Bạc rồi bổ sung Điều kiện Riêng tước bỏ DAAB', en: 'Use Silver Book and delete DAAB' },
+          { vi: 'Chuyển sang dùng Hợp đồng Xanh lá (Green Book) cho dự án 500 triệu USD', en: 'Use Green Book for $500M mega-projects' }
+        ],
+        ans: 1,
+        expVi: 'Đoạn lưu ý mở đầu chính thức của Silver Book (Godwin Ch. 1.2.3 & Seppälä Ch. 3): Không được lạm dụng Silver Book nếu không cho nhà thầu đủ thời gian/thông tin thẩm tra địa chất — phải quay lại dùng Yellow Book hoặc Red Book!',
+        expEn: 'Official Silver Book Guidance warns against Silver Book when tenderers lack adequate time/data to verify site and underground conditions (use Yellow Book instead).'
+      },
+      {
+        id: 'f10-12',
+        clause: '21.7 + 16.1 (DAAB Non-Compliance)',
+        qVi: 'Tình huống kết hợp bản 2017: DAAB vừa ban hành Quyết định buộc Chủ đầu tư trả cho Nhà thầu $2 triệu. Chủ đầu tư kịp gửi NOD trong vòng 28 ngày (21.4.4) và từ chối thanh toán $2 triệu đó trong IPC tiếp theo với lý do "chưa có phán quyết Trọng tài cuối cùng". Theo FIDIC 2017, Nhà thầu có những quyền hợp đồng nào NGAY LẬP TỨC?',
+        qEn: '2017 Combined Scenario: DAAB orders Employer to pay Contractor $2M. Employer serves a valid NOD within 28 days (21.4.4) and refuses to pay the $2M claiming arbitration is pending. Under 2017 editions, what immediate rights does the Contractor hold?',
+        opts: [
+          { vi: 'Không làm được gì ngoài việc chờ 2–3 năm giải quyết xong toàn bộ nội dung tại Trọng tài', en: 'Must wait 2–3 years for full merits arbitration' },
+          { vi: '(1) Đưa THẲNG việc không tuân thủ Quyết định DAAB ra Trọng tài ICC theo **Khoản 21.7** để xin phán quyết thi hành khẩn cấp/tạm thời (summary/interim award); (2) Đưa khoản tiền DAAB quyết định vào Statement/IPC (hoặc đòi trực tiếp) kèm lãi chậm trả theo 14.8; và (3) Nếu Chủ đầu tư không trả số tiền DAAB đã ràng buộc -> Có quyền gửi Notice 21 ngày Tạm ngừng (16.1) và thậm chí Chấm dứt (16.2) nếu kéo dài!', en: '(1) Refer failure to comply directly to Arbitration under **Sub-Clause 21.7** for summary enforcement; (2) Claim financing charges on unpaid sums; and (3) Under **2017 Clause 16.1/16.2**, Employer’s failure to comply with a binding DAAB Decision is an express ground for Contractor Suspension (21d Notice) & Termination!' },
+          { vi: 'Chỉ được gửi công văn nhắc nhở không có chế tài', en: 'Advisory reminder only' },
+          { vi: 'Nhà thầu mất quyền đòi lãi chậm trả', en: 'Financing charges do not accrue' }
+        ],
+        ans: 1,
+        expVi: 'Đỉnh cao liên kết giữa **21.4.3 + 21.7 + 16.1(d) + 16.2.1(d)** trong FIDIC 2017: Không thi hành Quyết định DAAB (dù đang có NOD!) vừa bị kiện thẳng trọng tài 21.7 VỪA là căn cứ cho phép Nhà thầu **Tạm ngừng (16.1)** và **Chấm dứt Hợp đồng (16.2)**!',
+        expEn: 'Major 2017 integration: Non-compliance with a binding DAAB decision (even with an NOD!) simultaneously unlocks **21.7** summary arbitration AND Contractor suspension/termination under **16.1 / 16.2**!'
+      }
+    ]
   }
 ];
+

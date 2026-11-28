@@ -1824,7 +1824,7 @@ async function renderLibrary() {
     return;
   }
 
-  const fileUrl = state.libBook === 'godwin' ? './data/books/godwin.json?v=39' : './data/books/seppala.json?v=39';
+  const fileUrl = state.libBook === 'godwin' ? './data/books/godwin.json?v=40' : './data/books/seppala.json?v=40';
   let bookData = state.bookCache[state.libBook];
   if (!bookData) {
     try {
@@ -2338,7 +2338,11 @@ async function renderLibrary() {
 }
 
 function getFccmActiveQuestions() {
-  if (state.fccmSetId === 'full-mock') {
+  if (state.fccmSetId === 'fcl-100') {
+    const all = [...FCCM_SETS.flatMap((s) => s.questions), ...state.fccmCustomQuestions];
+    return all.slice(0, 100);
+  }
+  if (state.fccmSetId === 'all-bank') {
     return [...FCCM_SETS.flatMap((s) => s.questions), ...state.fccmCustomQuestions];
   }
   if (state.fccmSetId === 'ai-custom') {
@@ -2354,6 +2358,8 @@ function renderFccm() {
     state.fccmTimerId = null;
   }
 
+  const sortedSets = [...FCCM_SETS].sort((a, b) => (a.level || 1) - (b.level || 1));
+  const currentSet = FCCM_SETS.find((s) => s.id === state.fccmSetId);
   const questions = getFccmActiveQuestions();
   const totalQ = questions.length;
   state.fccmIdx = Math.max(0, Math.min(Math.max(0, totalQ - 1), state.fccmIdx));
@@ -2372,7 +2378,7 @@ function renderFccm() {
     state.fccmFlags = {};
     state.fccmSubmitted = false;
     const qs = getFccmActiveQuestions();
-    state.fccmSecondsLeft = Math.max(10, Math.round(qs.length * 2.5)) * 60;
+    state.fccmSecondsLeft = setId === 'fcl-100' ? 250 * 60 : Math.max(10, Math.round(qs.length * 2.5)) * 60;
     renderFccm();
   };
 
@@ -2407,32 +2413,34 @@ function renderFccm() {
   const correctCount = questions.filter((it) => state.fccmAnswers[it.id] === it.ans).length;
   const showExplain = q && (state.fccmSubmitted || (state.fccmMode === 'practice' && state.fccmAnswers[q.id] !== undefined));
 
-  const setPills = [
-    ...FCCM_SETS.map((s) => `<button type="button" class="chip ${state.fccmSetId === s.id ? 'active' : ''}" data-fccm-set="${s.id}">${escapeHtml(biText(s.titleVi, s.titleEn))}</button>`),
-    `<button type="button" class="chip ${state.fccmSetId === 'full-mock' ? 'active' : ''}" data-fccm-set="full-mock">🎯 ${biText(`Đề Tổng hợp (${FCCM_SETS.reduce((a, b) => a + b.questions.length, 0) + state.fccmCustomQuestions.length} câu)`, `Full Simulation (${FCCM_SETS.reduce((a, b) => a + b.questions.length, 0) + state.fccmCustomQuestions.length} Qs)`)}</button>`,
-    state.fccmCustomQuestions.length
-      ? `<button type="button" class="chip ${state.fccmSetId === 'ai-custom' ? 'active' : ''}" data-fccm-set="ai-custom">✨ AI (${state.fccmCustomQuestions.length})</button>`
-      : ''
+  const setName = (s) => (state.lang === 'en' ? s.titleEn : s.titleVi);
+  const bankTotal = FCCM_SETS.reduce((a, b) => a + b.questions.length, 0) + state.fccmCustomQuestions.length;
+  const setOptions = [
+    ...sortedSets.map(
+      (s) => `<option value="${s.id}" ${state.fccmSetId === s.id ? 'selected' : ''}>${escapeHtml(s.levelBadge || '⭐')} · ${escapeHtml(setName(s))} (${s.questions.length})</option>`
+    ),
+    `<option value="fcl-100" ${state.fccmSetId === 'fcl-100' ? 'selected' : ''}>🏆 ${state.lang === 'en' ? 'Official FCL Simulation (100 Qs · 250m)' : 'Đề Thi Thử Chuẩn FCL (100 câu · 250 phút)'}</option>`,
+    `<option value="all-bank" ${state.fccmSetId === 'all-bank' ? 'selected' : ''}>📚 ${state.lang === 'en' ? `Full Bank (${bankTotal} Qs)` : `Toàn bộ ngân hàng (${bankTotal} câu)`}</option>`,
+    ...(state.fccmCustomQuestions.length
+      ? [`<option value="ai-custom" ${state.fccmSetId === 'ai-custom' ? 'selected' : ''}>✨ ${state.lang === 'en' ? `AI Custom (${state.fccmCustomQuestions.length} Qs)` : `Câu hỏi AI (${state.fccmCustomQuestions.length} câu)`}</option>`]
+      : [])
   ].join('');
 
   $view.innerHTML = `
     <div class="wrap wrap-wide" id="fccmRoom">
       <div class="fccm-hero">
-        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px">
-          <div>
-            <h1 style="margin:0 0 4px;font-size:21px">🏆 ${biText('Phòng Thi Thử Chứng chỉ Quản lý Hợp đồng FIDIC (FCCM Mock Exam Room)', 'FIDIC Certified Contract Manager (FCCM) Mock Exam Room')}</h1>
-            <div style="font-size:13px;color:var(--ink2)">
-              <strong>${escapeHtml(FCCM_META.body)}:</strong> ${FCCM_META.questions} MCQs · ${FCCM_META.durationMinutes} ${biText('phút · Open-Book · Đạt', 'min · Open-Book · Pass')} ≥ ${FCCM_META.passMarkPct}% · ${escapeHtml(biText(FCCM_META.scopeVi, FCCM_META.scopeEn))}
-            </div>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;min-width:0;flex:1">
+            <strong style="font-size:15px;white-space:nowrap">🏆 FCCM Room</strong>
+            <select id="fccmSetSelect" class="fccm-select" aria-label="Chọn bộ đề FCCM">${setOptions}</select>
+            ${currentSet?.levelBadge ? `<span class="tl-pill" title="${escapeHtml(biText(currentSet.levelVi || '', currentSet.levelEn || ''))}">${escapeHtml(currentSet.levelBadge)} ${escapeHtml(state.lang === 'en' ? currentSet.levelEn || '' : currentSet.levelVi || '')}</span>` : ''}
+            <span style="font-size:12px;color:var(--mute);white-space:nowrap">Open-Book · Pass ≥ ${FCCM_META.passMarkPct}%</span>
           </div>
-          <div style="display:flex;flex-wrap:wrap;gap:6px">
-            <button type="button" class="act-btn ${state.fccmMode === 'practice' ? 'saved' : ''}" data-fccm-mode="practice">📖 ${biText('Luyện tập (Giải thích ngay)', 'Practice (Instant Feedback)')}</button>
-            <button type="button" class="act-btn ${state.fccmMode === 'exam' ? 'saved' : ''}" data-fccm-mode="exam">⏱ ${biText('Thi thử bấm giờ (FCL Sim)', 'Timed Exam Sim')}</button>
-            <button type="button" class="act-btn" id="fccmGenAiBtn">✨ ${biText('Tạo câu hỏi AI mới', 'AI Question Gen')}</button>
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px">
+            <button type="button" class="act-btn ${state.fccmMode === 'practice' ? 'saved' : ''}" data-fccm-mode="practice">📖 ${state.lang === 'en' ? 'Practice' : 'Luyện tập'}</button>
+            <button type="button" class="act-btn ${state.fccmMode === 'exam' ? 'saved' : ''}" data-fccm-mode="exam">⏱ ${state.lang === 'en' ? 'Timed Sim' : 'Thi bấm giờ'}</button>
+            <button type="button" class="act-btn" id="fccmGenAiBtn">✨ ${state.lang === 'en' ? '+AI Qs' : '+Câu hỏi AI'}</button>
           </div>
-        </div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px">
-          ${setPills}
         </div>
       </div>
 
@@ -2587,6 +2595,9 @@ function renderFccm() {
     }, 1000);
   }
 
+  document.getElementById('fccmSetSelect')?.addEventListener('change', (e) => {
+    resetAttempt(e.target.value, state.fccmMode);
+  });
   $view.querySelectorAll('[data-fccm-set]').forEach((b) => {
     b.addEventListener('click', () => resetAttempt(b.dataset.fccmSet, state.fccmMode));
   });
@@ -3846,10 +3857,12 @@ document.getElementById('langSeg').addEventListener('click', (e) => {
 document.getElementById('shortcutsBtn')?.addEventListener('click', openShortcutsModal);
 
 document.getElementById('themeBtn').addEventListener('click', () => {
-  const order = ['auto', 'dark', 'light'];
-  state.theme = order[(order.indexOf(state.theme) + 1) % order.length];
+  const isSysDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const effectiveDark = state.theme === 'dark' || (state.theme === 'auto' && isSysDark);
+  state.theme = effectiveDark ? 'light' : 'dark';
   localStorage.setItem('fidic_theme', state.theme);
   applyTheme();
+  showToast(state.theme === 'dark' ? biText('Giao diện: Tối ☾', 'Theme: Dark ☾') : biText('Giao diện: Sáng ☀', 'Theme: Light ☀'));
 });
 
 document.getElementById('aiBtn').addEventListener('click', () => {
